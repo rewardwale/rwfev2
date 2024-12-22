@@ -19,14 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
+
 import {
   Select,
   SelectContent,
@@ -60,7 +53,7 @@ const formSchema = z.object({
     .string()
     .trim()
     .refine(isValidPhoneNumber, { message: "Invalid phone number" }),
-  birthDate: z.date(),
+  selectedDate: z.date(),
   gender: z.string(),
   tncppcgAccepted: z.boolean().default(false),
   commprefAccept: z.boolean().default(false),
@@ -70,22 +63,25 @@ export default function SignupPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      birthDate: new Date("01-Jan-2000"),
+      selectedDate: new Date("01-Jan-2000"),
     },
   });
 
-  const [birthDate, setSelectedDate] = useState<Date>(new Date("01-Jan-2000"));
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    new Date("01-Jan-2000"),
+  );
 
-  console.log("Selected Date:", birthDate); //Access the latest date value
+  console.log("Selected Date:", selectedDate); //Access the latest date value
 
   // Callback to update the selected date
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);
+    form.setValue("selectedDate", newDate);
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values);
+      console.log("inside onSubmit", values);
       // toast(
       //   <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
       //     <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -97,7 +93,7 @@ export default function SignupPage() {
     }
   }
 
-  // console.log("Selected Date:", selectedDate); //Access the latest date values
+  console.log("Selected Date:", selectedDate); //Access the latest date values
 
   return (
     <>
@@ -206,12 +202,12 @@ export default function SignupPage() {
               <div className="md:flex flex-1 gap-4">
                 <FormField
                   control={form.control}
-                  name="birthDate"
+                  name="selectedDate"
                   render={({ field }) => (
                     <FormItem className="sm:pb-4 flex flex-col">
                       <FormLabel>Date of birth</FormLabel>
                       <DatePicker
-                        selectedDate={birthDate}
+                        selectedDate={selectedDate}
                         onDateChange={handleDateChange}
                       />
                       {/*<Popover>
