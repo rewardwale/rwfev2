@@ -3,6 +3,7 @@ import "./globals.css";
 import { notoSans, notoSerif, inter, roboto } from "@/lib/fonts";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ThemeDataProvider from "@/context/theme-data-provider";
+import { Header } from "@/components/layout";
 
 export const metadata: Metadata = {
   title: "RewardWale - Review honestly Rate diligently Earn Rewards",
@@ -22,6 +23,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
+        <Header/>
         <NextThemesProvider
           attribute="class"
           defaultTheme="system"
