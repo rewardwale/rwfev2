@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+  }
+  
+  .leftArrow,
+  .rightArrow {
+    height: fit-content;
+    position: absolute;
+    z-index: 11;
+    cursor: pointer;
+  }
+  
+  .leftArrow {
+    left: -20px;
+  }
+  
+  .rightArrow {
+    right: -20px;
+  }
+  
+  .productList {
+    display: flex;
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    padding-inline: 0;
+    gap: 20px;
+  }
+  
+  .productList::-webkit-scrollbar {
+    scrollbar-width: none;
+  }
+  
+  @media screen and (max-width: 576px) {
+    .leftArrow,
+    .rightArrow {
+      display: none;
+    }
+  
+    .productList {
+      gap: 20px;
+      padding-inline: 16px;
+    }
+  }
+  

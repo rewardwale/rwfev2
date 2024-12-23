@@ -1,0 +1,248 @@
+.productImage {
+    height: 100% !important;
+    min-height: 100% !important;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .brandDisplayerSeperator {
+    height: 100% !important;
+  }
+  
+  .productImageShadow {
+    height: 100% !important;
+    min-height: 100% !important;
+    border-radius: 0px 0px 24px 24px;
+    margin-bottom: 10px;
+  }
+  /* .liveStatusWidth {
+    width: fit-content !important;
+  } */
+  
+  .bannerImg,
+  .brandImage {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    border-radius: 12px;
+  }
+  
+  .brandImageSearch {
+    border: 1px solid var(--gray-5) !important;
+    border-radius: 30px;
+    object-fit: contain;
+  }
+  
+  .categories,
+  .bannerGrid {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+  }
+  
+  .categories {
+    position: relative !important;
+  }
+  
+  .productOptionsRound {
+    border-radius: 50%;
+  }
+  
+  .bannerGrid,
+  .productOptions {
+    border-radius: 18px;
+  }
+  
+  .cartImage {
+    margin-top: 14px;
+    margin-left: 40px;
+  }
+  
+  .subcategoryImage,
+  .subcategoryImage_main {
+    height: 100% !important;
+    min-height: 100% !important;
+    position: relative !important;
+    border-radius: 8px;
+  }
+  
+  .orderpage_card_productDetailsCard_image {
+    border-radius: 8px;
+    padding: 4px;
+  }
+  
+  .activeImg {
+    border: 2px solid var(--primary-green) !important;
+    border-radius: 8px;
+    padding: 2px !important;
+  }
+  
+  .activeImgRound {
+    border: 2px solid var(--primary-green) !important;
+    border-radius: 22px;
+    padding: 2px !important;
+  }
+  
+  .productPageImg {
+    border-radius: 4px;
+    transform: var(--transform);
+    transform-origin: var(--transform-origin);
+    transition: transform 0.25s ease-in-out;
+  }
+  
+  .notAvaiablePic {
+    border: 1px solid var(--primary-red);
+  }
+  
+  .minicart_img {
+    border-radius: 8px;
+  }
+  
+  .distributionImg {
+    border-radius: 8px;
+  }
+  
+  .newArrivalImage {
+    border-radius: 10px;
+  }
+  
+  .megaMenuFirstSectionImage {
+    border-radius: 16px;
+  }
+  
+  .profilePic {
+    border-radius: 50% !important;
+  }
+  
+  .brandImage {
+    width: 100% !important;
+  }
+  
+  .wishlistCollection {
+    color: red;
+  }
+  
+  .circularImage {
+    border-radius: 50%;
+  }
+  
+  .contentCard {
+    border: 1px solid var(--gray-5) !important;
+    border-radius: 16px;
+  }
+  
+  .content_thumbnail {
+    border-radius: 4px;
+  }
+  
+  .contentBrandIcon {
+    border: 1px solid var(--gray-5) !important;
+    border-radius: 16px;
+  }
+  
+  .moreCategoryImgDesktop {
+    border-radius: 16px;
+    /* width: calc((100% - 100px) / 6);
+    height: auto; */
+  }
+  
+  .videoUserPic {
+    border-radius: 50px;
+  }
+  
+  .howWorkAnalysisImg {
+    width: 100% !important;
+  }
+  
+  .testimonalListCardImg {
+    border-radius: 100%;
+    filter: drop-shadow(2px 2px 6px rgba(0, 0, 0, 0.06)) !important;
+  }
+  
+  .testimonalListCardBrandImg {
+    border-radius: 100%;
+    filter: drop-shadow(2px 2px 6px rgba(0, 0, 0, 0.06)) !important;
+    margin-left: -10px !important;
+  }
+  .liveStreamProductImg {
+    border: solid 1px var(--gray-5) !important;
+    border-radius: 8px;
+  }
+  .liveStrmImg span {
+    height: 100%;
+    width: 100%;
+  }
+  
+  @media screen and (max-width: 700px) {
+    .singleContentPageThumbnail {
+      position: fixed !important;
+    }
+  
+    .bannerImg {
+      height: auto !important;
+      min-height: auto !important;
+      object-fit: fill !important;
+      border-radius: 0px;
+    }
+  
+    .brandImageSCP {
+      border-radius: 16px;
+    }
+  
+    .commentUserImageSCP {
+      border: 1px solid black !important;
+      border-radius: 50% !important;
+    }
+  
+    .orderpage_card_productDetailsCard_image {
+      border-radius: 8px;
+    }
+  
+    .productOptions {
+      border-radius: 4px;
+    }
+  
+    .bannerGrid {
+      border-radius: 12px;
+    }
+  
+    .userImage {
+      border-radius: 50px;
+    }
+  
+    .moreCategoryImg {
+      border-radius: 16px;
+    }
+  
+    /* .playButton {
+      margin-right: 6px !important;
+    } */
+  }
+  
+  .modalImageBorderRadius {
+    border-radius: 24px;
+  }
+  
+  .categoryDropdownImg {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    padding: 0;
+  }
+  
+  .categoryModelImg {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .chipsImg {
+    border-radius: 24px;
+  }
+  .watchLiveImg {
+    height: 100% !important;
+    border-radius: 16px;
+  }
+  
