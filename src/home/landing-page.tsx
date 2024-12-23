@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -13,6 +13,9 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import HorizontalScrollWithArrows from "@/components/horizontalScrollWithArrows/HorizontalScrollWithArrows.component";
 import { useRouter } from "next/navigation";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
 const DynamicSwiper = dynamic(() => import("./dynamic-swipe"), {
   ssr: false,
@@ -44,6 +47,8 @@ interface CategoryData {
     nearby: ShortCardProps[];
   };
 }
+
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 interface LandingPageProps {
   categoriesData: {
@@ -105,11 +110,12 @@ const ShortCard: React.FC<ShortCardProps> = ({
   videoId,
 }) => {
   const router = useRouter();
-  console.log("checking cdnThumbPath", cdnThumbPath[0])
+  console.log("checking cdnThumbPath", cdnThumbPath[0]);
   return (
     <div>
       <Card
-        className="w-[200px] flex-shrink-0 rounded-md cursor-pointer transition-transform hover:scale-105"
+        className="w-[200px] flex-shrink-0 rounded-md cursor-pointer transition-transform
+          hover:scale-105"
         onClick={() => router.push(`/watch?v=${videoId}`)}
       >
         <CardContent className="p-0">
@@ -255,12 +261,35 @@ const CategorySection: React.FC<{
               ] as ShortCardProps[]
             }
           />
-        )
+        ),
     )}
   </div>
 );
 
 const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      let ctx = gsap.context(() => {
+        gsap.to(scrollContainerRef.current, {
+          y: () =>
+            -(scrollContainerRef.current!.scrollHeight - window.innerHeight),
+          ease: "back.inOut",
+          scrollTrigger: {
+            trigger: scrollContainerRef.current,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1,
+            pin: true,
+            invalidateOnRefresh: true,
+          },
+        });
+      }, scrollContainerRef);
+
+      return () => ctx.revert();
+    }
+  }, [categoriesData]);
   if (!categoriesData || !categoriesData.data) {
     return <LoadingUI />; // Use your global loader or any spinner component.
   }
@@ -272,7 +301,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
 
   return (
     <>
-      <div className="min-h-screen">
+      <div  className="min-h-screen">
         {allAdvertisements.length > 0 && (
           <HeroSection slides={allAdvertisements} />
         )}
@@ -284,7 +313,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
                 categoryName={categoryName}
                 categoryContent={categoryContent}
               />
-            )
+            ),
           )}
         </div>
       </div>

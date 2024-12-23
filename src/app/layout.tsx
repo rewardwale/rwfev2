@@ -4,6 +4,7 @@ import { notoSans, notoSerif, inter, roboto } from "@/lib/fonts";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ThemeDataProvider from "@/context/theme-data-provider";
 import { Header } from "@/components/layout";
+import LayoutWrapper from "@/components/layout/layout-wrapper";
 
 export const metadata: Metadata = {
   title: "RewardWale - Review honestly Rate diligently Earn Rewards",
@@ -23,14 +24,17 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
-        <Header/>
         <NextThemesProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <ThemeDataProvider>{children}</ThemeDataProvider>
+          <ThemeDataProvider>
+            <LayoutWrapper>
+              <div className="container mx-auto">{children}</div>
+            </LayoutWrapper>
+          </ThemeDataProvider>
         </NextThemesProvider>
       </body>
     </html>

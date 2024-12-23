@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VideoCard } from "./video-card";
 import { fetchHomePageData } from "../../../apis/home";
 import { Skeleton } from "@/components/ui/skeleton";
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 interface Category {
   categoryId: string;
@@ -51,6 +57,30 @@ export function VideoFeed() {
     loadHomePageData();
   }, []);
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      let ctx = gsap.context(() => {
+        gsap.to(scrollContainerRef.current, {
+          y: () =>
+            -(scrollContainerRef.current!.scrollHeight - window.innerHeight),
+          ease: "back.inOut",
+          scrollTrigger: {
+            trigger: scrollContainerRef.current,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1,
+            pin: true,
+            invalidateOnRefresh: true,
+          },
+        });
+      }, scrollContainerRef);
+
+      return () => ctx.revert();
+    }
+  }, [categories]);
+
   if (loading) {
     return (
       <div className="p-4">
@@ -94,13 +124,13 @@ export function VideoFeed() {
                 {console.log("checking category mapping", category.categoryName)}
               </span> */}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 px-4">
+              <div ref={scrollContainerRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 px-4">
                 {category.reviews.map((review) => (
                   <VideoCard key={review._id} review={review} />
                 ))}
               </div>
             </div>
-          )
+          ),
       )}
     </ScrollArea>
   );

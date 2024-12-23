@@ -29,7 +29,7 @@ export function CategoryFilter() {
       return [];
     }
   }
-
+ console.log("checking categories",categories)
   return (
     <div className="border-b sticky top-16 bg-background z-40">
       <ScrollArea className="w-full whitespace-nowrap">
