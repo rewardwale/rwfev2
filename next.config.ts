@@ -7,6 +7,10 @@ const nextConfig = {
     eslint: {
       ignoreDuringBuilds: true,
     },
+    env: {
+      AUTH_KEY: process.env.AUTH_SECRET,
+      API_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    },
 };
 
 export default nextConfig;

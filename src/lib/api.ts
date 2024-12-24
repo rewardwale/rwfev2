@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://www.elawdrawer.in/';
+
+console.log('Base URL: from axios', baseURL); 
 
 const getLocalStorageValue = (key: string, defaultValue: string | number) => {
   if (typeof window !== "undefined") {
@@ -48,16 +50,18 @@ export const getDeviceFingerprint = () => {
 // const TEMP_TOKEN = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzYxM2YwMGZlYWI0MGFlZDAyNTc2MmMiLCJ1c2VyTmFtZSI6Ik1hZGhhblMiLCJ0b2tlblZlcnNpb24iOjEsImlzQnVzaW5lc3NVc2VyIjpmYWxzZSwidGltZXN0YW1wIjoiMjAyNC0xMi0yMFQwODoyOTozMi4zOTFaIiwicm9sZSI6IjY1ZjZkZmE1ZjFhOGYxMGQ4NjBiYWU4MiIsImluZEZpbmdlclByaW50IjoiRGVsbCIsImluZExhblByZWYiOiJlbiIsImN1c3RJZCI6IjY3NjEzZjAwZmVhYjQwYWVkMDI1NzYyZCIsImlhdCI6MTczNDY4MzM3MiwiZXhwIjoxNzM1OTc5MzcyfQ.YmaMR5X792K-sEtM7vwFd4cF7DAcDePLcFKU3VpAVks`;
 
 const api = axios.create({
-  baseURL: baseURL + "api/",
+  baseURL: `${baseURL}api/`,
   headers: {
     "Content-Type": "application/json",
     fingerprint: getDeviceFingerprint(),
-    latitude:  90,
+    latitude: 90,
     longitude: 90,
     lan: "en",
   },
   timeout: 10000,
 });
+
+console.log('Axios instance baseURL:', api.defaults.baseURL); 
 
 // Request Interceptor: Attach tokens or any required headers
 api.interceptors.request.use(
