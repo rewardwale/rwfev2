@@ -104,10 +104,11 @@ const Navbar = () => {
 
           {/* Login Button */}
           <button
-            onClick={() => {loggedIn ?router.push("/home"):router.push("/login")} }
+            // onClick={() => {loggedIn ?router.push("/home"):router.push("/login")} }
+            onClick={()=> router.push('/home')}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-          {loggedIn ? "Home" : "Login"}  
+          {'Home'}  
           </button>
 
           {/* Hamburger Menu (Mobile only) */}
