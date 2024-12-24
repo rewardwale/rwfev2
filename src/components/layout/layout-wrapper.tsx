@@ -15,7 +15,7 @@ export default function LayoutWrapper({
     <>
       {isHomePage && <Header />}
       {children}
-      {/* {isHomePage && <Footer />} */}
+      {<Footer />}
     </>
   );
 }

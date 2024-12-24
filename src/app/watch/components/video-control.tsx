@@ -199,7 +199,7 @@ export function VideoControls() {
               className={`h-6 w-6 ${unLiked ? "fill-white" : ""}`}
             />
           </Button>
-          <span className="text-white text-sm">Dislike</span>
+          <span className="text-white text-sm">Unlike</span>
         </div>
         <div className="flex flex-col items-center gap-1">
           <Button
@@ -236,9 +236,9 @@ export function VideoControls() {
             <h3 className="font-semibold">@username</h3>
             <p className="text-sm text-white/80">Video title goes here</p>
           </div>
-          <Button variant="secondary" size="sm">
+          {/* <Button variant="secondary" size="sm">
             Follow
-          </Button>
+          </Button> */}
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="secondary" className="bg-white/10 hover:bg-white/20">

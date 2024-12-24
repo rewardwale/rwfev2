@@ -53,14 +53,14 @@ export function Sidebar({ className }: SidebarProps) {
               <Bookmark className="mr-2 h-4 w-4" />
               Bookmarks
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            {/* <Button variant="ghost" className="w-full justify-start">
               <Wallet className="mr-2 h-4 w-4" />
               Wallet
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            </Button> */}
+            {/* <Button variant="ghost" className="w-full justify-start">
               <CircleHelp className="mr-2 h-4 w-4" />
               FAQs
-            </Button>
+            </Button> */}
             <Button
               variant="ghost"
               className="w-full justify-start"

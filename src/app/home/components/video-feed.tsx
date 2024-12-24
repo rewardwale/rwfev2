@@ -124,7 +124,11 @@ export function VideoFeed() {
                 {console.log("checking category mapping", category.categoryName)}
               </span> */}
               </h2>
-              <div ref={scrollContainerRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 px-4">
+              <div ref={scrollContainerRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"
+              style={{
+                paddingRight:'2rem'
+              }}
+              >
                 {category.reviews.map((review) => (
                   <VideoCard key={review._id} review={review} />
                 ))}
