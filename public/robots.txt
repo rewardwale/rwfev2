@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Sitemap: https://Rewardwale.com/sitemap.xml
+
+# Disallow specific paths (examples)
+# Disallow: /home
