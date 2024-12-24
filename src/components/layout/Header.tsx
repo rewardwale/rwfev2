@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "../../hooks/use-router";
@@ -8,8 +8,27 @@ import { useRouter } from "../../hooks/use-router";
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [loggedIn,setisloggedIn]=useState(false)
 
   const router = useRouter();
+  
+  const checkToken = async () => {
+    const token = localStorage.getItem("token");
+  
+    if (token)
+   token.length>0
+        ? setisloggedIn(true)
+        : setisloggedIn(false);
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      checkToken();
+    }, 10000);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
 
   return (
     <div>
@@ -85,10 +104,10 @@ const Navbar = () => {
 
           {/* Login Button */}
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => {loggedIn ?router.push("/home"):router.push("/login")} }
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Home
+          {loggedIn ? "Home" : "Login"}  
           </button>
 
           {/* Hamburger Menu (Mobile only) */}

@@ -1,8 +1,8 @@
 "use client";
-import SignupForm from "@/components/signup/form";
+import LoginForm from "@/components/signin/form";
 import { useEffect } from "react";
 
-export default function Signup() {
+export default function SigninPage() {
   useEffect(() => {
     if (!navigator.geolocation) {
       // setError("Geolocation is not supported by your browser.");
@@ -37,5 +37,9 @@ export default function Signup() {
       },
     );
   }, []);
-  return <SignupForm />;
+  return (
+    <div>
+      <LoginForm />
+    </div>
+  );
 }

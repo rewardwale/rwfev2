@@ -11,11 +11,12 @@ export default function LayoutWrapper({
   const pathname = usePathname();
   const isHomePage = pathname === "/";
 
+
   return (
     <>
       {isHomePage && <Header />}
       {children}
-      {<Footer />}
+      {/* {<Footer />} */}
     </>
   );
 }

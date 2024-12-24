@@ -30,7 +30,7 @@ function getCoordinatesFromLocalStorage() {
 
 const { longitude, latitude } = getCoordinatesFromLocalStorage();
 
-const getDeviceFingerprint = () => {
+export const getDeviceFingerprint = () => {
   if (typeof window !== "undefined" && navigator.userAgent) {
     const userAgent = navigator.userAgent;
     const language = navigator.language;
@@ -45,7 +45,7 @@ const getDeviceFingerprint = () => {
 };
 
 // Temporary token
-const TEMP_TOKEN = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzYxM2YwMGZlYWI0MGFlZDAyNTc2MmMiLCJ1c2VyTmFtZSI6Ik1hZGhhblMiLCJ0b2tlblZlcnNpb24iOjEsImlzQnVzaW5lc3NVc2VyIjpmYWxzZSwidGltZXN0YW1wIjoiMjAyNC0xMi0yMFQwODoyOTozMi4zOTFaIiwicm9sZSI6IjY1ZjZkZmE1ZjFhOGYxMGQ4NjBiYWU4MiIsImluZEZpbmdlclByaW50IjoiRGVsbCIsImluZExhblByZWYiOiJlbiIsImN1c3RJZCI6IjY3NjEzZjAwZmVhYjQwYWVkMDI1NzYyZCIsImlhdCI6MTczNDY4MzM3MiwiZXhwIjoxNzM1OTc5MzcyfQ.YmaMR5X792K-sEtM7vwFd4cF7DAcDePLcFKU3VpAVks`;
+// const TEMP_TOKEN = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzYxM2YwMGZlYWI0MGFlZDAyNTc2MmMiLCJ1c2VyTmFtZSI6Ik1hZGhhblMiLCJ0b2tlblZlcnNpb24iOjEsImlzQnVzaW5lc3NVc2VyIjpmYWxzZSwidGltZXN0YW1wIjoiMjAyNC0xMi0yMFQwODoyOTozMi4zOTFaIiwicm9sZSI6IjY1ZjZkZmE1ZjFhOGYxMGQ4NjBiYWU4MiIsImluZEZpbmdlclByaW50IjoiRGVsbCIsImluZExhblByZWYiOiJlbiIsImN1c3RJZCI6IjY3NjEzZjAwZmVhYjQwYWVkMDI1NzYyZCIsImlhdCI6MTczNDY4MzM3MiwiZXhwIjoxNzM1OTc5MzcyfQ.YmaMR5X792K-sEtM7vwFd4cF7DAcDePLcFKU3VpAVks`;
 
 const api = axios.create({
   baseURL: baseURL + "api/",
@@ -63,14 +63,17 @@ const api = axios.create({
 api.interceptors.request.use(
   (config: any) => {
     let token = localStorage.getItem("token"); // Get the token from localStorage if available
-    if (!token) {
-      token = TEMP_TOKEN; // Use the temporary token if no token is available
+    if (token) {
+      // Use the temporary token if no token is available
       // You can add authentication tokens here if needed
       // const token = localStorage.getItem("token");
       // if (token) {
       //   config.headers["Authorization"] = `Bearer ${token}`;
       // }
+
       config.headers["Authorization"] = `Bearer ${token}`;
+      return config;
+    }else{
       return config;
     }
   },
