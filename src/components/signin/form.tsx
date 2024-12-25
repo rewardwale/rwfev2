@@ -115,7 +115,9 @@ export default function LoginForm() {
                     name="userIdentity"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Login with Email, Mobile Number or Username</FormLabel>
+                        <FormLabel>
+                          Login with Email, Mobile Number or Username
+                        </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -165,6 +167,11 @@ export default function LoginForm() {
                 {/* {shwoTwoFactor ? "Confirm" : "login"} */}
                 login
               </Button>
+              <div onClick={() => router.push("/signup")}>
+                <span className="cursor-pointer">
+                  Dont have Account ? Create now
+                </span>
+              </div>
             </form>
           </Form>
         </div>

@@ -67,7 +67,8 @@ console.log('Axios instance baseURL:', api.defaults.baseURL);
 api.interceptors.request.use(
   (config: any) => {
     // let token = localStorage.getItem("token") ; // Get the token from localStorage if available
-    let token = TEMP_TOKEN
+    // let token = TEMP_TOKEN
+    const token = localStorage.getItem("token");
     if (token) {
       // Use the temporary token if no token is available
       // You can add authentication tokens here if needed
