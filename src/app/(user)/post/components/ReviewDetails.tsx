@@ -3,6 +3,7 @@
 import { Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LocationInput } from "./LocationInput"
 import {
   Select,
   SelectContent,
@@ -116,15 +117,7 @@ export function ReviewDetails({
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="location">Location</Label>
-        <Input
-          id="location"
-          placeholder="Enter the location"
-          value={location}
-          onChange={(e) => onLocationChange(e.target.value)}
-        />
-      </div>
+      <LocationInput value={location} onChange={onLocationChange} />
     </div>
   );
 }

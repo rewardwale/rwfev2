@@ -14,6 +14,7 @@ import {
   UserRound,
   Bookmark,
   CircleHelp,
+  CirclePlus
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -46,7 +47,8 @@ export function Sidebar({ className }: SidebarProps) {
               className="w-full justify-start"
               onClick={() => router.push("/post")}
             >
-              <Library className="mr-2 h-4 w-4" />
+              {/* <Library className="mr-2 h-4 w-4" /> */}
+              <CirclePlus size={32} absoluteStrokeWidth className="mr-2 h-4 w-4"  />
               Post
             </Button>
             <Button variant="ghost" className="w-full justify-start" 

@@ -150,12 +150,25 @@ export function ReviewForm() {
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Share Your Video Review</h2>
             <VideoUploader
+              hasExistingVideo={!!videoUrl}
               onUploadComplete={(url, file) => {
                 setVideoUrl(url);
                 setVideoFile(file);
-                setStep(2);
+                toast.success(
+                  "Video uploaded successfully! Click Next to continue.",
+                );
               }}
             />
+            {videoUrl && (
+              <>
+                <div className="md:hidden">
+                  {/* <VideoPreview videoUrl={videoUrl} /> */}
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={() => setStep(2)}>Next</Button>
+                </div>
+              </>
+            )}
           </div>
         );
       case 2:
@@ -163,7 +176,7 @@ export function ReviewForm() {
           <div className="">
             <div
               style={{
-                height: `${isMobile ? "25vh" : "80vh"}`,
+                height: `${!isMobile && "88vh"}`,
                 overflowY: "scroll",
                 padding: "12px",
                 // overflowY:'hidden'
@@ -325,39 +338,22 @@ export function ReviewForm() {
     <>
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
-          {/* <div className="text-center mb-12">
-            <div className="flex">
-              <div className="w-full flex">
-                <Button onClick={() => router.push("/home")}>
-                  Back to Home
-                </Button>
-                <h1 className="text-4xl font-bold mb-4 w-full">
-                  Share Your Experience
-                </h1>
-              </div>
-            </div>
-
-            <p className="text-muted-foreground text-lg">
-              Help others by sharing your honest review through video
-            </p>
-          </div> */}
-
           <div className="flex flex-col md:flex-row gap-8">
             <StepIndicator currentStep={step} steps={STEPS} />
-
+            {/* for desktop */}
             <div className="flex-1 flex gap-8">
               {videoUrl && (
                 <div className="hidden md:block w-72">
                   <div className="sticky top-8">
-                    <VideoPreview videoUrl={videoUrl} />
+                    {<VideoPreview videoUrl={videoUrl} />}
                   </div>
                 </div>
               )}
-
+              {/* for mobile ui */}
               <Card className="flex-1 p-2">
                 {videoUrl && (
                   <div className="md:hidden mb-6">
-                    <VideoPreview videoUrl={videoUrl} />
+                    {step === 1 && <VideoPreview videoUrl={videoUrl} />}
                   </div>
                 )}
                 {renderStepContent()}
