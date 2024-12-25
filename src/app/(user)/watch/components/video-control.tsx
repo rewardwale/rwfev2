@@ -8,12 +8,10 @@ import {
   Volume2,
   VolumeX,
   ThumbsUp,
-  ThumbsDown,
   MessageSquare,
   Share2,
-  MoreVertical,
-  Maximize2,
   Bookmark,
+  ArrowLeft,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -56,9 +54,11 @@ export function VideoControls() {
   const [showDislikeAnimation, setShowDislikeAnimation] = useState(false);
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v") || "";
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  // const isMobile = useMediaQuery("(max-width: 768px)");
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const loadVideoDetails = async () => {
@@ -97,7 +97,6 @@ export function VideoControls() {
     }
   };
 
-  console.log("checking isLiked", isLiked);
   const handleunLike = async () => {
     if (!unLiked) {
       await unLikeVideo(videoId);
@@ -114,13 +113,11 @@ export function VideoControls() {
     if (!isBookmarked) {
       await addBookmark(videoId);
       setIsBookmarked(true);
-    }else{
+    } else {
       await removeBookmark(videoId);
       setIsBookmarked(false);
     }
   };
-
-
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -143,6 +140,14 @@ export function VideoControls() {
       );
     }
   };
+
+  function navigateBack(): void {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      console.warn("No history available to navigate back.");
+    }
+  }
 
   return (
     <>
@@ -167,7 +172,7 @@ export function VideoControls() {
       </Button>
 
       {/* Top controls */}
-      <div className="absolute top-4 right-4 flex gap-2">
+      <div className="absolute top-4 right-4 flex">
         <Button
           variant="ghost"
           size="icon"
@@ -180,14 +185,40 @@ export function VideoControls() {
             <Volume2 className="h-6 w-6" />
           )}
         </Button>
-        <Button
+
+        {isMobile && (
+          <div
+            className="absolute top-4"
+            style={{
+              top: 0,
+              right: "21rem",
+              height: "50px",
+              width: "50px",
+            }}
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white"
+              onClick={navigateBack}
+              style={{
+                height: "50px",
+                width: "50px",
+              }}
+            >
+              {/* <MoveLeft size={50} /> */}
+              <ArrowLeft size={40} />
+            </Button>
+          </div>
+        )}
+        {/* <Button
           variant="ghost"
           size="icon"
           className="text-white"
           onClick={toggleFullscreen}
         >
           <Maximize2 className="h-6 w-6" />
-        </Button>
+        </Button> */}
       </div>
 
       {/* Right side controls */}
@@ -195,6 +226,7 @@ export function VideoControls() {
         className="absolute top-3/4 transform -translate-y-1/2 flex flex-col gap-6 items-center"
         style={{
           right: `${!isMobile ? "-5rem" : "1rem"}`,
+          top: "70%",
         }}
       >
         <div className="flex flex-col items-center gap-1">
@@ -216,7 +248,9 @@ export function VideoControls() {
             onClick={handleBookmark}
           >
             {/* <ThumbsDown className={`h-6 w-6 ${unLiked ? "fill-white" : ""}`} /> */}
-            <Bookmark className={`h-6 w-6 ${isBookmarked ? "fill-white" : ""}`} />
+            <Bookmark
+              className={`h-6 w-6 ${isBookmarked ? "fill-white" : ""}`}
+            />
           </Button>
           <span className="text-white text-sm">Bookmark</span>
         </div>
@@ -245,7 +279,12 @@ export function VideoControls() {
       </div>
 
       {/* Bottom info */}
-      <div className="absolute bottom-4 left-4 right-16 text-white">
+      <div
+        className="absolute bottom-4 left-4 right-16 text-white"
+        style={{
+          top: `${isMobile ? "75%" : "85%"}`,
+        }}
+      >
         <div className="flex items-center gap-3 mb-2">
           <Avatar>
             <AvatarImage src={videoDetails?.userDetails?.indPic?.original} />

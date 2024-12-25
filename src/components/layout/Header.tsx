@@ -8,27 +8,21 @@ import { useRouter } from "../../hooks/use-router";
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [loggedIn,setisloggedIn]=useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const router = useRouter();
-  
+
   const checkToken = async () => {
     const token = localStorage.getItem("token");
-  
-    if (token)
-   token.length>0
-        ? setisloggedIn(true)
-        : setisloggedIn(false);
+
+    if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
   };
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      checkToken();
-    }, 10000);
-
-    return () => clearTimeout(timeoutId);
+    checkToken();
   }, []);
 
+  console.log("checking isLoggedIn", isLoggedIn);
 
   return (
     <div>
@@ -51,8 +45,9 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden md:flex space-x-6 ml-10">
-            <a  className="text-gray-600 hover:text-gray-900 cursor-pointer"
-            onClick={() => router.push('/about-us')}
+            <a
+              className="text-gray-600 hover:text-gray-900 cursor-pointer"
+              onClick={() => router.push("/about-us")}
             >
               About
             </a>
@@ -83,7 +78,7 @@ const Navbar = () => {
           </div> */}
 
           {/* Search Icon (Mobile only) */}
-          <div className="md:hidden">
+          {/* <div className="md:hidden">
             <button onClick={() => setIsSearchOpen(!isSearchOpen)}>
               <svg
                 className="w-6 h-6 text-gray-600"
@@ -100,15 +95,17 @@ const Navbar = () => {
                 ></path>
               </svg>
             </button>
-          </div>
+          </div> */}
 
           {/* Login Button */}
           <button
-            onClick={() => {loggedIn ?router.push("/home"):router.push("/login")} }
+            onClick={() => {
+              isLoggedIn ? router.push("/home") : router.push("/login");
+            }}
             // onClick={()=> router.push('/home')}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-          {'Home'}  
+            {isLoggedIn ? "Home" : "Log In"}
           </button>
 
           {/* Hamburger Menu (Mobile only) */}
@@ -135,21 +132,21 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="absolute top-16 left-0 w-full bg-white p-4 shadow-md md:hidden">
+          <div className="absolute top-16 left-0 w-full bg-white p-4 shadow-md md:hidden z-50">
             <a
-              
+              href="/about-us"
               className="block text-gray-600 hover:text-gray-900 mb-2"
             >
               About Us
             </a>
             <a
-              href="#contact"
+              href="/contact-us"
               className="block text-gray-600 hover:text-gray-900 mb-2"
             >
               Contact
             </a>
             <a
-              href="#how-it-works"
+              href="/how-it-works"
               className="block text-gray-600 hover:text-gray-900"
             >
               How it Works
