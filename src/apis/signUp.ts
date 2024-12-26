@@ -297,7 +297,7 @@ export async function signup(value: {
       return { error: "Signup isnt successful" };
     }
   } catch (error: any) {
-    console.log("error::", error.response);
+    console.log("error", error.response );
     return { error: error.response.data.message };
   }
 }

@@ -96,5 +96,5 @@ export const Final = async (values: z.infer<typeof PasswordFormSchema>) => {
     return { error: "userName already exists, try some other" };
   }
 
-  return { success: "All fields validated " };
+  return { success: "Success" };
 };

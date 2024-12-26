@@ -63,5 +63,5 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Login identity doesnt belong to mobile/email/userName" };
   }
 
-  return { error: "Login Failed , try again" };
+  return { error: " Invalid credentials" };
 };

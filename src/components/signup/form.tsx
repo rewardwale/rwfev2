@@ -7,6 +7,10 @@ import { useRouter } from "next/navigation";
 import PersonalInfoForm from "./subFormPersonal";
 import CredentialVerificationForm from "./subFormVerify";
 import FinalProviderForm from "./subFormPassword";
+import { error } from "node:console";
+import Image from "next/image";
+import blackLogo from '../../../public/brand_logo/PNG/RW_Black_Name.png'
+import whiteLogo from '../../../public/brand_logo/PNG/RW_White_Name.png'
 
 export default function SignupForm() {
   const router = useRouter();
@@ -52,7 +56,7 @@ export default function SignupForm() {
       //signupapi
 
       const signUp = await signup(signupForm);
-
+console.log(":::::::=>",signUp)
       if (signUp.success) {
         router.push("/login");
       }
@@ -72,34 +76,37 @@ export default function SignupForm() {
   return (
     <div className="min-h-screen flex flex-1">
       <div className="relative hidden w-0 xl:block xl:flex-1 hue-rotate-30">
-        <img
-          alt="Share your Experiences, Review and Rate"
-          src="/images/iStock-1409730706.jpg"
-          className="absolute h-full w-full"
-          // inset-0 size-full object-cover
-        />
+         <Image
+                   alt="Share your Experiences, Review and Rate"
+                   src="/images/iStock-1409730706.jpg"
+                   className="absolute h-full w-full"
+                   width={10000}
+                   height={10000}
+                   // inset-0 size-full object-cover
+                 />
       </div>
       <div
-        className="flex flex-1 flex-col justify-center w-1/3 px-4 py-12 sm:px-6 xl:flex-none
-          xl:px-20"
-      >
-        <div className="mx-auto w-full lg:w-96 py-4">
-          <div className="flex flex-col items-center">
-            <img
-              alt="Rewardwale"
-              src="/brand_logo/png/RW_White_Name.png"
-              className="w-[220px] hidden dark:inline"
-            />
-            <img
-              alt="Rewardwale"
-              src="/brand_logo/png/RW_Black_Name.png"
-              className="w-[220px] inline dark:hidden"
-            />
-            <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
-              Sign Up
-            </h2>
+          className=" flex-1 flex-col w-1/3 space-y-14
+           px-4 py-12 sm:px-6 xl:flex-none 
+            xl:px-20 min-h-screen  "
+        >
+          <div className="mx-auto  py-4">
+            <div className="flex flex-col items-center">
+              <Image
+                alt="Rewardwale"
+                src={whiteLogo}
+                className="w-[220px] hidden dark:inline"
+              />
+              <Image
+                alt="Rewardwale"
+                src={blackLogo}
+                className="w-[220px] inline dark:hidden"
+              />
+              <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
+                Sign Up
+              </h2>
+            </div>
           </div>
-        </div>
         <div className="w-full">
           {" "}
           {step.stepOne && (
@@ -137,6 +144,7 @@ export default function SignupForm() {
           {step.stepThree && (
             <FinalProviderForm
               // stateChange={handleChangeState}
+              errormsg={message}
               data={(userName: string, password: string) => {
                 signupForm.userName = userName;
                 signupForm.password = password;

@@ -20,6 +20,12 @@ import { useState, useTransition } from "react";
 import { Newlogin } from "@/actions/login";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { EyeClosed } from "lucide-react";
+import { EyeOpenIcon } from "@radix-ui/react-icons";
+import { cn } from '@/lib/utils'
+import blackLogo from '../../../public/brand_logo/PNG/RW_Black_Name.png'
+import whiteLogo from '../../../public/brand_logo/PNG/RW_White_Name.png'
+import Image from "next/image";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -27,6 +33,7 @@ export default function LoginForm() {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const searchParams = useSearchParams();
+  const [showPassword,setShowpassword]=useState<boolean>(true)
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
@@ -59,7 +66,7 @@ export default function LoginForm() {
             router.push("/home");
             localStorage.removeItem("uib");
             localStorage.removeItem("token");
-            localStorage.setItem("UID", JSON.stringify(res.success));
+            localStorage.setItem("uib", JSON.stringify(res.success));
             localStorage.setItem("token", res.success.accessToken);
             setSuccess("successfully logged in");
           }
@@ -75,30 +82,33 @@ export default function LoginForm() {
   };
 
   return (
-    <div>
-      <div className="min-h-screen flex flex-1">
+
+      <div className="min-h-screen flex flex-1 ">
         <div className="relative hidden w-0 xl:block xl:flex-1 hue-rotate-30">
-          <img
+          <Image
             alt="Share your Experiences, Review and Rate"
             src="/images/iStock-1409730706.jpg"
             className="absolute h-full w-full"
+            width={10000}
+            height={10000}
             // inset-0 size-full object-cover
           />
         </div>
         <div
-          className="flex flex-1 flex-col w-1/3 justify-center px-4 py-12 sm:px-6 xl:flex-none
-            xl:px-20"
+          className=" flex-1 flex-col w-1/3 space-y-14
+           px-4 py-12 sm:px-6 xl:flex-none 
+            xl:px-20 min-h-screen  "
         >
-          <div className="mx-auto w-full lg:w-96 py-4">
+          <div className="mx-auto  py-4">
             <div className="flex flex-col items-center">
-              <img
+              <Image
                 alt="Rewardwale"
-                src="/brand_logo/png/RW_White_Name.png"
+                src={whiteLogo}
                 className="w-[220px] hidden dark:inline"
               />
-              <img
+              <Image
                 alt="Rewardwale"
-                src="/brand_logo/png/RW_Black_Name.png"
+                src={blackLogo}
                 className="w-[220px] inline dark:hidden"
               />
               <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
@@ -106,7 +116,9 @@ export default function LoginForm() {
               </h2>
             </div>
           </div>
-          <Form {...form}>
+
+<div>
+<Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-4">
                 <>
@@ -138,12 +150,21 @@ export default function LoginForm() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
+                          <div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
                           <Input
                             {...field}
                             placeholder="********"
-                            type="password"
+                            type={showPassword?"password":"text"}
                             disabled={pending}
+                            className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
+                     
                           />
+                        <Button type="button" variant={"ghost"} className="hover:bg-transparent focus:ring-0"
+                        disabled={field.value.length===0} onClick={()=>setShowpassword(!showPassword)}>{showPassword?<EyeClosed/>:<EyeOpenIcon />}</Button>
+
+                          </div>
+                          
+                      
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -151,7 +172,7 @@ export default function LoginForm() {
                   />
                 </>
                 {/* )} */}
-
+              
                 <Button
                   variant="link"
                   size="sm"
@@ -167,15 +188,16 @@ export default function LoginForm() {
                 {/* {shwoTwoFactor ? "Confirm" : "login"} */}
                 login
               </Button>
-              <div onClick={() => router.push("/signup")}>
-                <span className="cursor-pointer">
-                  Dont have Account ? Create now
-                </span>
-              </div>
+           
+              <Button variant={"link"} className="font-normal w-full hover:text-blue-500" size="sm" asChild>
+      <Link href={"/signup"}>Dont have an account ? </Link>
+    </Button>
             </form>
           </Form>
+</div>
+         
         </div>
       </div>
-    </div>
+
   );
 }
