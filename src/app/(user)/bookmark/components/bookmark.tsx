@@ -19,6 +19,14 @@ export type TypeBookmark = {
       rating: number;
       count: number;
     };
+    userDetails:{
+      indFirstName: string;
+      indLastName: string;
+      indPic:{thumbnail:string;original:string}
+    },
+    avgRating:number;
+    totalRating:number;
+    totalViewCount: number;
     _id: string;
   }[];
 };
@@ -46,7 +54,7 @@ export default function BookMarkComponent() {
       setIsLoading(false);
     }
   };
-
+console.log(":::::::::::::::::::::::::",bookmarks?.data.length)
   const handleBookmarkDelete = async (videoId: string) => {
     try {
       const response = await deleteBookMark(videoId);
@@ -71,14 +79,14 @@ export default function BookMarkComponent() {
       className="overflow-scroll overflow-x-hidden max-lg:h-screen py-2 px-2 lg:px-6
         lg:h-[calc(100vh-80px)] w-full"
     >
-      <div
+      {/* <div
         className="lg:hidden flex gap-1 cursor-pointer items-center text-gray-600
           dark:text-gray-400 my-2"
         onClick={() => handleBackButton()}
       >
         <FaChevronLeft className="size-4" />
         <p>Back</p>
-      </div>
+      </div> */}
       <div className="text-2xl mb-2 text-black dark:text-white">Bookmarked Reviews</div>
       {isLoading && (
         <div className="flex items-center gap-4 text-black dark:text-white">

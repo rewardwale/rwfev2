@@ -110,7 +110,7 @@ export async function signInWithEmail(password: string, email: string) {
       return { status: false, message: response.data };
     }
   } catch (error: any) {
-    // console.error("error", error.response);
+    console.error("error", error.response);
     return { status: false, message: error.response.data.message };
   }
 }

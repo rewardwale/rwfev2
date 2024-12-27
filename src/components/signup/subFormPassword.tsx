@@ -21,20 +21,22 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Final } from "@/actions/signup";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { cn } from "@/lib/utils";
+import { EyeClosed } from "lucide-react";
+import { EyeOpenIcon } from "@radix-ui/react-icons";
 
 interface Props {
   // stateChange: (one: boolean, two: boolean, three: boolean) => void;
   data: (username: string, password: string) => void;
+  errormsg:string;
 }
-export default function FinalProviderForm({ data }: Props) {
+export default function FinalProviderForm({ data,errormsg }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
-  const searchParams = useSearchParams();
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different provider "
-      : "";
+  const [showPassword,setShowpassword]=useState<boolean>(false)
+  const [showPassword_1,setShowpassword_1]=useState<boolean>(false)
+
 
   const form = useForm<z.infer<typeof PasswordFormSchema>>({
     resolver: zodResolver(PasswordFormSchema),
@@ -104,12 +106,26 @@ export default function FinalProviderForm({ data }: Props) {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
+                      {/* <Input
                         {...field}
                         placeholder="********"
                         type="password"
                         disabled={pending}
-                      />
+                      /> */}
+
+<div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
+                          <Input
+                            {...field}
+                            placeholder="********"
+                            type={showPassword_1?"text":"password"}
+                            disabled={pending}
+                            className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
+                     
+                          />
+                        <Button type="button" variant={"ghost"} className="hover:bg-transparent focus:ring-0"
+                        disabled={field.value.length===0} onClick={()=>setShowpassword_1(!showPassword_1)}>{showPassword_1?<EyeOpenIcon />:<EyeClosed/>}</Button>
+
+                          </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -123,12 +139,25 @@ export default function FinalProviderForm({ data }: Props) {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input
+                      {/* <Input
                         {...field}
                         placeholder="********"
                         type="password"
                         disabled={pending}
-                      />
+                      /> */}
+                          <div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
+                          <Input
+                            {...field}
+                            placeholder="********"
+                            type={showPassword?"text":"password"}
+                            disabled={pending}
+                            className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
+                     
+                          />
+                        <Button type="button" variant={"ghost"} className="hover:bg-transparent focus:ring-0"
+                        disabled={field.value.length===0} onClick={()=>setShowpassword(!showPassword)}>{showPassword?<EyeOpenIcon />:<EyeClosed/>}</Button>
+
+                          </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -212,8 +241,8 @@ export default function FinalProviderForm({ data }: Props) {
               </div>
             </>
           </div>
-          {(error || urlError) && <FormError message={error || urlError} />}
-          {success && <FormSuccess message={success} />}
+          {(error || errormsg) && <FormError message={error || errormsg} />}
+          {/* {success && <FormSuccess message={success} />} */}
 
           <div className="flex flex-row justify-center gap-12 w-full">
             <Button className="w-full" type="submit">

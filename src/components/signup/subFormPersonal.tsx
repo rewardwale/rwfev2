@@ -99,13 +99,13 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            <>
-              <div className="flex gap-2">
+         
+              <div className="flex gap-2 w-full">
                 <FormField
                   control={form.control}
                   name="firstname"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>First Name</FormLabel>
                       <FormControl>
                         <Input
@@ -130,7 +130,7 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   control={form.control}
                   name="lastname"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>Last Name</FormLabel>
                       <FormControl>
                         <Input
@@ -190,6 +190,13 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                         type="text"
                         maxLength={10}
                         disabled={pending}
+                        onChange={(e)=>{
+                          const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                          if (value.length <= 10) {
+                            field.onChange(value); 
+                          }
+                        
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -215,12 +222,12 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   </FormItem>
                 )}
               />
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
                 <FormField
                   control={form.control}
                   name="gender"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>gender</FormLabel>
                       <FormControl>
                         {/* <Input
@@ -243,7 +250,7 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   control={form.control}
                   name="dob"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>Date of Birth</FormLabel>
                       <FormControl>
                         <Input
@@ -268,7 +275,7 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   )}
                 />
               </div>
-            </>
+            
           </div>
           {(error || urlError) && <FormError message={error || urlError} />}
           {success && <FormSuccess message={success} />}
@@ -276,9 +283,16 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
             <Button className="w-full" type="submit">
               Next
             </Button>
+
+ 
           </div>
+
+          <Button variant={"link"} className="font-normal w-full hover:text-blue-500" size="sm" asChild>
+      <Link href={"/login"}>Already have an account? </Link>
+    </Button>
         </form>
       </Form>
+    
       {/* </CardWrapper> */}
     </div>
   );
