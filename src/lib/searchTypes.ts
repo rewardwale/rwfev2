@@ -94,7 +94,7 @@ export interface Profile {
     height: number;
     aspectRatio: "portrait";
   }
-  
+
   export interface videoData {
     _id: string;
     videoId: string;
