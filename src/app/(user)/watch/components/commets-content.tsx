@@ -32,7 +32,7 @@ export function CommentsContent({
     totalCount,
     handleLikeComment,
     handleNewComment,
-    handleDeleteComment
+    handleDeleteComment,
   } = useComments(videoId);
 
   console.log("checking for comment update", comments);
@@ -43,9 +43,11 @@ export function CommentsContent({
         <h2 className="text-lg font-semibold">
           Comments {totalCount > 0 && `(${totalCount})`}
         </h2>
-    { !isMobile && <Button variant="ghost" size="icon" onClick={onClose}>
-        <X className="h-4 w-4" />
-      </Button>}
+        {!isMobile && (
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <ScrollArea className="flex-1 px-4">
@@ -67,8 +69,6 @@ export function CommentsContent({
                 comment={comment}
                 onLike={handleLikeComment}
                 onDelete={handleDeleteComment}
-                
-
               />
             ))}
           </div>
@@ -77,10 +77,12 @@ export function CommentsContent({
 
       <div className="p-4 bg-background border-t">
         <div className="flex items-start gap-3">
-          <Avatar>
+
+          {/* commenting for now have to take profile image of the commenter */}
+          {/* <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
+
           <div className="flex-1">
             <Input
               placeholder="Add a comment..."

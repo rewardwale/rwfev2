@@ -52,7 +52,7 @@ export function CommentItem({ comment, onLike, onDelete }: CommentItemProps) {
       </Avatar>
       <div className="flex-1">
         <div className="flex items-center gap-2 justify-between">
-          <div>
+          <div className="flex gap-2">
             <span className="font-semibold text-sm">
               {`${comment.firstName} ${comment.lastName}`}
             </span>
