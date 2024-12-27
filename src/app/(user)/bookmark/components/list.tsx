@@ -33,7 +33,6 @@ interface Props {
 
 const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
   const router = useRouter();
-  console.log("!!!!", videoData);
   return (
     <>
       {/* <div
@@ -71,15 +70,15 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
 
       <Card
         className="group overflow-hidden cursor-pointer"
-        onClick={() => router.push(`/watch?v=${videoData.videoId}`)}
+        onClick={() => router.push(`/watch?v=${videoData?.videoId}`)}
       >
         <CardContent className="p-0">
           <div className="relative">
             {/* 9:16 aspect ratio container */}
             <div className="relative pb-[177.78%]">
               <Image
-                src={videoData.cdnThumbPath[1]}
-                alt={videoData.title}
+                src={videoData?.cdnThumbPath[0]}
+                alt={videoData?.title}
                 height={10000}
                 width={10000}
                 className="absolute inset-0 w-full h-full object-cover transition-transform
@@ -92,7 +91,7 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
             {/* Overlay content */}
             <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
               <h3 className="font-semibold text-sm line-clamp-2 mb-2">
-                {videoData.title}
+                {videoData?.title}
               </h3>
 
               <div className="flex items-center justify-between gap-2">
@@ -106,8 +105,8 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
                   <div className="w-8 h-8 border border-white/20 rounded-full">
                     <Avatar >
                       <AvatarImage
-                        src={videoData.userDetails.indPic.original}
-                        alt={videoData.title}
+                        src={videoData?.userDetails?.indPic?.original}
+                        alt={videoData?.title}
                         className="rounded-full h-full w-full"
                       />
                       <AvatarFallback>
@@ -119,13 +118,13 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">
-                      {videoData.userDetails.indFirstName}{" "}
-                      {videoData.userDetails.indLastName}
+                      {videoData?.userDetails?.indFirstName}{" "}
+                      {videoData?.userDetails?.indLastName}
                     </p>
                     <div className="flex items-center gap-1 text-xs text-white/70">
-                      <span>{videoData.totalViewCount} views</span>
+                      <span>{videoData?.totalViewCount} views</span>
                       <span>•</span>
-                      <span>{videoData.totalRating} ★</span>
+                      <span>{videoData?.totalRating} ★</span>
                     </div>
                   </div>
                  
