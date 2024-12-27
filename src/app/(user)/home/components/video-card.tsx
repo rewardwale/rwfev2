@@ -38,7 +38,7 @@ export function VideoCard({ review }: VideoCardProps) {
           {/* 9:16 aspect ratio container */}
           <div className="relative pb-[177.78%]">
             <img
-              src={review.cdnThumbPath[1]}
+              src={review.cdnThumbPath[0]}
               alt={review.title}
               className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
             />
