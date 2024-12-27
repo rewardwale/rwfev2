@@ -24,8 +24,7 @@ import { Sidebar } from "./sidebar";
 import { useState } from "react";
 import SearchInputContainer from "../../search/_components/search-Input-component";
 
-
-export  function Header(){
+export function Header() {
   const router = useRouter();
 
   return (
@@ -40,11 +39,9 @@ export  function Header(){
         <Sidebar />
       </div>
 
-
-
-<div className="flex justify-center items-center w-full" >
-  <SearchInputContainer/></div>
-
+      <div className="flex justify-normal items-center w-full">
+        <SearchInputContainer />
+      </div>
 
       <div className="flex items-center gap-2">
         {/* <Button variant="ghost" size="icon">
