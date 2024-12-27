@@ -35,15 +35,15 @@ export const PersonalInfo = async (
 
   const validatedEmail = await validateEmail(email);
   const validateMobile = await validatePhone("91", mobile);
-  if (!validatedEmail) {
-    return { error: "Check Your Email , verification Failed" };
+  if (!validatedEmail.status) {
+    return { error:validatedEmail.message };
   }
 
-  if (!validateMobile) {
-    return { error: "Check Your Mobile number , verification Failed" };
+  if (!validateMobile.status) {
+    return { error: validateMobile.message };
   }
   //check if email is already is in use or not- api
-  if (validatedEmail && validateMobile) {
+  if (validatedEmail.status && validateMobile.status) {
     console.log("done!! email");
     return { success: "OTP has been sent to your email id and mobile number" };
   }
@@ -96,5 +96,5 @@ export const Final = async (values: z.infer<typeof PasswordFormSchema>) => {
     return { error: "userName already exists, try some other" };
   }
 
-  return { success: "All fields validated " };
+  return { success: "Success" };
 };

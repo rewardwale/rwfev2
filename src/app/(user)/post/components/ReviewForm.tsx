@@ -111,9 +111,18 @@ export function ReviewForm() {
       console.log("checking data of signed url of signed url", data);
       if (data.isSignedURL) {
         setShowSuccess(true);
-        console.log("checking code execution", data?.videoId);
-        // Trigger onUploadSuccess after receiving a signed URL
-        if (data?.videoId) {
+        console.log("checking code execution", data.location);
+
+        const videoUpload = await axios.put(data?.location, videoFile, {
+          headers: {
+            "Content-Type": videoFile.type,
+          },
+          maxBodyLength: Infinity,
+        });
+        console.log("checking upload api res", videoUpload.status);
+
+        // Trigger onUploadSuccess after receiving 200 status from videoUpload
+        if (videoUpload.status === 200) {
           try {
             const res = await onUploadSuccess(data.videoId);
             console.log("Response from onUploadSuccess:", res);
@@ -129,15 +138,7 @@ export function ReviewForm() {
         }
       }
 
-      // Upload video to signed URL
-      // await axios.put(data.data.location, videoFile, {
-      //   headers: {
-      //     "Content-Type": videoFile.type,
-      //   },
-      //   maxBodyLength: Infinity,
-      // });
-
-      // Upload thumbnail
+     
     } finally {
       setIsLoading(false);
     }

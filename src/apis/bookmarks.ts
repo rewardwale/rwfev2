@@ -5,7 +5,7 @@ export async function getAllBookMarks(skip: number) {
     `bookmarkList?limit=100&skip=${skip}&latestFirst=true`,
     "GET",
   );
-  https: if (response.success && response.data) {
+ if (response.success && response.data) {
     return response.data;
   } else {
     console.error("Failed to fetch landing page data:", response.error);

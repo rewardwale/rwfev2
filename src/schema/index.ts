@@ -113,7 +113,7 @@ export const PersonalInfoFormSchema = z.object({
     })
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
       message:
-        " Must be a valid 10-digit number starting with 6-9 or prefixed with +91.",
+        "Must be a valid 10-digit number.",
     }),
 });
 
