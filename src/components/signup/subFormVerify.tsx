@@ -100,6 +100,12 @@ export default function CredentialVerificationForm({
                         type="number"
                         disabled={pending}
                         maxLength={6}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                          if (value.length <= 6) {
+                            field.onChange(value);
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -119,9 +125,15 @@ export default function CredentialVerificationForm({
                       <Input
                         {...field}
                         placeholder="123456"
-                        type="number"
+                        type="text"
                         disabled={pending}
                         maxLength={6}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                          if (value.length <= 6) {
+                            field.onChange(value);
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

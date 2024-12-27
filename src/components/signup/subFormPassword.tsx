@@ -145,9 +145,7 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                         type="password"
                         disabled={pending}
                       /> */}
-
-
-<div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
+                          <div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
                           <Input
                             {...field}
                             placeholder="********"

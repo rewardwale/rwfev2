@@ -190,6 +190,13 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                         type="text"
                         maxLength={10}
                         disabled={pending}
+                        onChange={(e)=>{
+                          const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                          if (value.length <= 10) {
+                            field.onChange(value); 
+                          }
+                        
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -215,12 +222,12 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   </FormItem>
                 )}
               />
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
                 <FormField
                   control={form.control}
                   name="gender"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>gender</FormLabel>
                       <FormControl>
                         {/* <Input
@@ -243,7 +250,7 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   control={form.control}
                   name="dob"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormLabel>Date of Birth</FormLabel>
                       <FormControl>
                         <Input

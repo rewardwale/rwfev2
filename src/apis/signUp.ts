@@ -5,6 +5,7 @@ import api, { getDeviceFingerprint } from "@/lib/api";
 import { headers } from "next/headers";
 
 export async function checkUserNameAvailability(userName: string) {
+  console.log("checkUserNameAvailability\t",userName)
   try {
     const isLocalStorageAvailable =
       typeof window !== "undefined" && window.localStorage;
@@ -31,6 +32,7 @@ export async function checkUserNameAvailability(userName: string) {
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
+
     if (response.status === 200) {
       if (response.data.data.isAvailable) {
         return true;
@@ -41,13 +43,14 @@ export async function checkUserNameAvailability(userName: string) {
       return false;
     }
   } catch (error: any) {
+    console.log("error\n\t",error)
     console.error("error", error.response);
     return false;
   }
 }
 
 export async function validateEmail(email: string) {
-  console.log("::::::1:::::", email);
+  console.log("validateEmail", email);
   //   const response = await  apiClient(`/validateEmail/${email}`, "GET");
   try {
     // Check for localStorage availability
@@ -78,20 +81,19 @@ export async function validateEmail(email: string) {
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("}}}}", response.status);
     if (response.status === 200) {
-      return true;
+      return {status:true,message:response.data.message};
     } else {
-      return false;
+      return {status:false,message:response.data.message};
     }
   } catch (error: any) {
-    console.error("error", error.response);
-    return false;
+console.log("error\n\t",error)
+    return {status:false,message:error.response.data.message};
   }
 }
 
 export async function validatePhone(countryCode: string, mobile: string) {
-  console.log("::::::2:::::", countryCode, mobile);
+  console.log("validatePhone\t", countryCode, mobile);
   try {
     // Check for localStorage availability
     const isLocalStorageAvailable =
@@ -121,15 +123,14 @@ export async function validatePhone(countryCode: string, mobile: string) {
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("response====>", response.status);
     if (response.status === 200) {
-      return true;
+      return {status:true,message:response.data.message};
     } else {
-      return false;
+      return {status:false,message:response.data.message};
     }
   } catch (error: any) {
-    console.error("error", error.response);
-    return false;
+    console.log("error\n\t",error)
+    return {status:false,message:error.response.data.message};
   }
 }
 
@@ -138,7 +139,7 @@ export async function verifyOTPMobile(
   number: string,
   otp: string,
 ) {
-  console.log("::::::3:::::");
+  console.log("verifyOTPMobile\n");
   try {
     // Check for localStorage availability
     const isLocalStorageAvailable =
@@ -168,20 +169,19 @@ export async function verifyOTPMobile(
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("===>7634==>", response.data);
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {
       return { status: false, message: response.data };
     }
   } catch (error: any) {
-    // console.error("error", error.response);
+    console.error("error\n\t", error);
     return { status: false, message: error.response.data.message };
   }
 }
 
 export async function verifyOTPEmail(otp: string, email: string) {
-  console.log("::::::4:::::");
+  console.log("verifyOTPEmail\n");
   try {
     // Check for localStorage availability
     const isLocalStorageAvailable =
@@ -211,14 +211,13 @@ export async function verifyOTPEmail(otp: string, email: string) {
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("===>7634==>", response.data);
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {
       return { status: false, message: response.data };
     }
   } catch (error: any) {
-    // console.error("error", error.response);
+    console.error("error\n\t",error);
     return { status: false, message: error.response.data.message };
   }
 }
@@ -235,6 +234,7 @@ export async function signup(value: {
   password: string;
 }) {
   try {
+    console.log("Signup\n",value)
     const isLocalStorageAvailable =
       typeof window !== "undefined" && window.localStorage;
 
@@ -290,14 +290,13 @@ export async function signup(value: {
         timeout: 10000,
       },
     );
-    console.log("::::", response.status);
     if (response.status === 200) {
       return { success: "successfully created" };
     } else {
       return { error: "Signup isnt successful" };
     }
   } catch (error: any) {
-    console.log("error", error.response );
+    console.log("error\n\t", error );
     return { error: error.response.data.message };
   }
 }

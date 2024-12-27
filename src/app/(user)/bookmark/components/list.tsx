@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { MdDelete } from "react-icons/md";
@@ -19,7 +20,7 @@ interface Props {
     userDetails: {
       indFirstName: string;
       indLastName: string;
-      indPic: { thumbnail: string };
+      indPic: { thumbnail: string; original: string };
     };
     avgRating: number;
     totalRating: number;
@@ -76,9 +77,11 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
           <div className="relative">
             {/* 9:16 aspect ratio container */}
             <div className="relative pb-[177.78%]">
-              <img
+              <Image
                 src={videoData.cdnThumbPath[1]}
                 alt={videoData.title}
+                height={10000}
+                width={10000}
                 className="absolute inset-0 w-full h-full object-cover transition-transform
                   group-hover:scale-105"
               />
@@ -93,13 +96,27 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
               </h3>
 
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 flex-1 min-w-0 bg-red-600">
-                  <Avatar className="w-8 h-8 border border-white/20 bg-yellow-200">
-                    <AvatarImage src={videoData.userDetails.indPic.thumbnail} />
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  {/* <Avatar className="w-8 h-8 border border-white/20">
+                    <AvatarImage src={videoData.userDetails.indPic.original}  />
                     <AvatarFallback>
                       {videoData?.userDetails?.indFirstName[0]}
                     </AvatarFallback>
-                  </Avatar>
+                  </Avatar> */}
+                  <div className="w-8 h-8 border border-white/20 rounded-full">
+                    <Avatar >
+                      <AvatarImage
+                        src={videoData.userDetails.indPic.original}
+                        alt={videoData.title}
+                        className="rounded-full h-full w-full"
+                      />
+                      <AvatarFallback>
+                        {" "}
+                        {videoData?.userDetails?.indFirstName[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">
                       {videoData.userDetails.indFirstName}{" "}
@@ -110,22 +127,21 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
                       <span>•</span>
                       <span>{videoData.totalRating} ★</span>
                     </div>
-
-                  
                   </div>
-                  <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBookmarkDelete(videoData.videoId);
-                      }}
-                      className="absolute right-2 bottom-2  p-1 text-white rounded-bl-md
-                        hover:text-red-500"
-                    >
-                      <MdDelete className="size-5" />
-                    </button>
+                 
                 </div>
               </div>
             </div>
+
+            <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookmarkDelete(videoData.videoId);
+                    }}
+                    className="absolute right-0 top-0 p-1 text-white rounded-bl-md hover:text-red-500"
+                  >
+                    <MdDelete className="size-5" />
+                  </button>
           </div>
         </CardContent>
       </Card>

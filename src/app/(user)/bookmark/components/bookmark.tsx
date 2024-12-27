@@ -22,7 +22,7 @@ export type TypeBookmark = {
     userDetails:{
       indFirstName: string;
       indLastName: string;
-      indPic:{thumbnail:string;}
+      indPic:{thumbnail:string;original:string}
     },
     avgRating:number;
     totalRating:number;
