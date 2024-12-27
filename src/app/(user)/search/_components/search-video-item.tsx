@@ -2,10 +2,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { videoProps } from "@/lib/searchTypes";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@radix-ui/react-separator";
-import { useState } from "react";
-import { Bookmark } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function VideoCardItem({
@@ -16,12 +12,13 @@ export default function VideoCardItem({
   className,
   ...props
 }: videoProps) {
-  const router=useRouter();
+  const router = useRouter();
   return (
     <div className={cn(" relative", className)} {...props}>
-      <div className="overflow-hidden relative cursor-pointer" 
-      onClick={() => router.push("/watch?v=" + data.videoId)}
->
+      <div
+        className="overflow-hidden relative cursor-pointer"
+        onClick={() => router.push("/watch?v=" + data.videoId)}
+      >
         <Image
           src={data.cdnThumbPath[0]}
           alt={data.title}
@@ -38,8 +35,8 @@ export default function VideoCardItem({
 
         <div className="flex-1 min-w-0 absolute bottom-0 p-2">
           <p
-            className={`font-semibold text-md truncate overflow-hidden 
-              text-pretty  h-6 full  hover:h-auto text-white cursor-pointer`}
+            className={`font-semibold text-md truncate overflow-hidden text-pretty h-6 full hover:h-auto
+              text-white cursor-pointer`}
           >
             {data.title}
           </p>
