@@ -17,12 +17,22 @@ import {
   Upload,
   Settings,
   LogOut,
+  SearchIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
+import { useState } from "react";
 
-export function Header() {
+
+interface searchProps {
+  handleEnterPress: (e: any) => void;
+  handleSearchOnClick: (e: any) => void;
+  handleSearchInput: (value: string) => void;
+}
+
+export function Header({ handleEnterPress, handleSearchOnClick,handleSearchInput }: searchProps) {
   const router = useRouter();
+
   return (
     <header
       className="flex items-center justify-between px-4 h-16 border-b sticky top-0 bg-background
@@ -37,7 +47,18 @@ export function Header() {
 
       <div className="flex items-center flex-1 max-w-2xl mx-4">
         <div className="flex items-center w-full">
-          <div className="relative flex-1">
+          <div className="relative flex-1 flex">
+            {/* <Input
+              type="search"
+              placeholder="Search"
+              className="pr-10"
+              style={{
+                borderRadius: "18px",
+              }}
+              value={search}
+              onChange={(e) => handleSearchResult(e.target.value)}
+            /> */}
+
             <Input
               type="search"
               placeholder="Search"
@@ -45,7 +66,13 @@ export function Header() {
               style={{
                 borderRadius: "18px",
               }}
+              onKeyDown={(e) => handleEnterPress(e)}
+              onChange={(e) => handleSearchInput(e.target.value)}
+              required
             />
+            <SearchIcon className="cursor-pointer"  onClick={(e) => handleSearchOnClick(e)}/>
+
+           
           </div>
           {/* <Button size="icon" className="rounded-r-full px-4">
             <Search className="h-5 w-5" />
@@ -77,7 +104,7 @@ export function Header() {
               onClick={() => {
                 localStorage.removeItem("uib");
                 localStorage.removeItem("token");
-                router.push("/")
+                router.push("/");
               }}
             >
               <LogOut className="mr-2 h-4 w-4" />
