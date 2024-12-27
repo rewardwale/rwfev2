@@ -22,15 +22,10 @@ import {
 import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { useState } from "react";
+import SearchInputContainer from "../../search/_components/search-Input-component";
 
 
-interface searchProps {
-  handleEnterPress: (e: any) => void;
-  handleSearchOnClick: (e: any) => void;
-  handleSearchInput: (value: string) => void;
-}
-
-export function Header({ handleEnterPress, handleSearchOnClick,handleSearchInput }: searchProps) {
+export  function Header(){
   const router = useRouter();
 
   return (
@@ -45,43 +40,11 @@ export function Header({ handleEnterPress, handleSearchOnClick,handleSearchInput
         <Sidebar />
       </div>
 
-      <div className="flex items-center flex-1 max-w-2xl mx-4">
-        <div className="flex items-center w-full">
-          <div className="relative flex-1 flex">
-            {/* <Input
-              type="search"
-              placeholder="Search"
-              className="pr-10"
-              style={{
-                borderRadius: "18px",
-              }}
-              value={search}
-              onChange={(e) => handleSearchResult(e.target.value)}
-            /> */}
 
-            <Input
-              type="search"
-              placeholder="Search"
-              className="pr-10"
-              style={{
-                borderRadius: "18px",
-              }}
-              onKeyDown={(e) => handleEnterPress(e)}
-              onChange={(e) => handleSearchInput(e.target.value)}
-              required
-            />
-            <SearchIcon className="cursor-pointer"  onClick={(e) => handleSearchOnClick(e)}/>
 
-           
-          </div>
-          {/* <Button size="icon" className="rounded-r-full px-4">
-            <Search className="h-5 w-5" />
-          </Button> */}
-          {/* <Button variant="ghost" size="icon" className="ml-2">
-            <Mic className="h-5 w-5" />
-          </Button> */}
-        </div>
-      </div>
+<div className="flex justify-center items-center w-full" >
+  <SearchInputContainer/></div>
+
 
       <div className="flex items-center gap-2">
         {/* <Button variant="ghost" size="icon">

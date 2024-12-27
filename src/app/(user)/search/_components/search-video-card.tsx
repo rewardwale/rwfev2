@@ -9,6 +9,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { Separator } from "@radix-ui/react-separator";
 import { Button } from "@/components/ui/button";
+import { VideoCard } from "../../home/components/video-card";
 
 export default function Video() {
   const [videoData, setvideodata] = useState<videoData[] | []>([]);
@@ -37,17 +38,17 @@ export default function Video() {
       <div className="flex items-center justify-between w-full mb-4">
         <div className="space-y-1 flex justify-between w-full">
           <div>
-          <h2 className="text-2xl font-semibold tracking-tight max-sm:text-sm">
+          <h2 className="sm:text-2xl font-semibold tracking-tight text-sm">
             Reviews
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Top picks for you. Updated daily.
           </p>
           </div>
         
           <Button variant={"link"}>
             <Link
-              href={`/searchNew/result/review?i=${searchWord}`}
+              href={`/search/result/review?i=${searchWord}`}
               className="text-blue-500 max-sm:text-xs"
             >
               See All
@@ -58,17 +59,19 @@ export default function Video() {
 
       <div className="relative">
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex pb-4 gap-1">
+          <div className="flex sm:pb-4 gap-3">
             {videoData.length > 0 || !videoData ? (
               videoData.map((item: videoData, index: number) => (
                 <VideoCardItem
                   data={item}
                   key={index}
-                  height={1000}
-                  width={1000}
-                  className="w-[200px] max-sm:w-[145px]"
+                  height={10000}
+                  width={10000}
+                  className="w-[100px] md:w-[200px] sm:w-[145px]"
                   aspectRatio="portrait"
                 />
+           
+                
               ))
             ) : (
               <div>no data</div>

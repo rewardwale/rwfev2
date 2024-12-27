@@ -33,7 +33,7 @@ export default function PathBreadCrumbs({
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/searchNew/${path2}?i=${word}`}
+              href={`/search/${path2}?i=${word}`}
               className=" max-sm:text-xs "
             >
               {path2}

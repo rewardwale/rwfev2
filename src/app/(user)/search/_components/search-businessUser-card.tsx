@@ -7,6 +7,7 @@ import { searchBusinessUsers } from "@/apis/search";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import MerchantItem from "./search-businessUser-item";
+import { Button } from "@/components/ui/button";
 // import { followUser } from "@/lib/usersApi/userapi";
 
 export default function BusinessUser() {
@@ -48,22 +49,24 @@ export default function BusinessUser() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between w-full mb-4">
-        <div className="space-y-1 flex justify-between w-full">
-          <h2 className="text-base font-semibold tracking-tight max-sm:text-sm">
+      <div className="flex items-center justify-between w-full sm:mb-4 mb-1 ">
+        <div className="gap-1 flex justify-between items-center w-full">
+          <h2 className="text-2xl font-semibold tracking-tight max-sm:text-sm">
             Merchants
           </h2>
-          <Link
-            href={`/searchNew/result/merchant?i=${searchWord}`}
-            className="text-blue-500 max-sm:text-xs"
-          >
-            See All
-          </Link>
+          <Button variant={"link"}>
+            <Link
+              href={`/search/result/merchant?i=${searchWord}`}
+              className="text-blue-600 max-sm:text-xs disabled:text-gray-600/50"
+            >
+              See All
+            </Link>
+          </Button>
         </div>
       </div>
       <div className=" relative">
         <ScrollArea className="w-full   ">
-          <div className="flex space-x-4 pb-4 ">
+          <div className="flex gap-4 pb-4 ">
             {userData.length > 0 || !userData ? (
               userData.map((item: Profile, index: number) => (
                 <MerchantItem
@@ -73,7 +76,7 @@ export default function BusinessUser() {
                 />
               ))
             ) : (
-              <div>no data</div>
+              <div className="max-sm:text-xs w-full text-center">no data</div>
             )}
           </div>
           <ScrollBar orientation="horizontal" />

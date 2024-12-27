@@ -68,7 +68,7 @@ export default function AllVideo() {
         <div className="mb-4">
           <PathBreadCrumbs
             path1="home"
-            path2="dashBoard"
+            path2="dashboard"
             path3="Review"
             word={searchWord}
           />
@@ -90,7 +90,7 @@ export default function AllVideo() {
         ref={scrollContainerRef}
         onScroll={handleScrollEvent}
       >
-        <div className="flex flex-wrap w-full h-full   gap-1">
+        <div className="flex flex-wrap w-full h-full   gap-3">
           {videoData.length > 0 || !videoData ? (
             videoData.map((item: videoData, index: number) => (
               <AllVideoCardItem
@@ -98,7 +98,7 @@ export default function AllVideo() {
                 key={index}
                 height={1000}
                 width={1000}
-                className="w-[200px]"
+  className="w-[105px] sm:w-[140px] lg:w-[200px] "
                 aspectRatio="portrait"
               />
             ))

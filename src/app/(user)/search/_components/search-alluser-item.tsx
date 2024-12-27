@@ -10,13 +10,14 @@ import { Badge } from "@/components/ui/badge";
 
 export default function AllUserItem({ data, handleFollow }: userProps) {
   let router = useRouter();
+  console.log("data",data)
   useEffect(() => {}, [data]);
   return (
     <Card
       className="  px-4 py-2 w-full space-y-3 my-3
     rounded-md flex border-none shadow-none  items-center justify-between"
     >
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2" onClick={()=>router.push("/profile/"+data?.userName)}>
         <Avatar className="w-12 h-12 object-cover">
           <AvatarImage
             src={data?.indPic?.thumbnail ?? avatar}
@@ -37,10 +38,10 @@ export default function AllUserItem({ data, handleFollow }: userProps) {
         </div>
       </div>
 
-      {!data?.isFollow ? (
+      {/* {!data?.isFollow ? (
         <Button
           className="bg-blue-400 max-sm:text-xs"
-          onClick={() => handleFollow(data._id)}
+          onClick={() => handleFollow(data?.individualId || "")}
         >
           Follow
         </Button>
@@ -51,7 +52,7 @@ export default function AllUserItem({ data, handleFollow }: userProps) {
         >
           Following
         </Badge>
-      )}
+      )} */}
     </Card>
   );
 }

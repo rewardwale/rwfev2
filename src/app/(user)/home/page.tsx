@@ -71,9 +71,6 @@ export default function HomePage() {
 
       <div className="flex-1 overflow-hidden">
         <Header
-          handleEnterPress={handleEnterPress}
-          handleSearchOnClick={handleSearchOnClick}
-          handleSearchInput={(value: string) => setinput(value)}
         />
         <CategoryFilter />
         <Suspense fallback={<div>Loading...</div>}>

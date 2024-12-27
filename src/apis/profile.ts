@@ -27,3 +27,16 @@ export async function fetchProfilePosts(id: string) {
     return null;
   }
 }
+
+
+export const followUser = async (id: string) => {
+console.log(":::::::::::::::::::",id)
+    const response = await apiClient(`user/follow/${id}`,"PUT");
+
+    if (response.success && response.data) {
+      return response.data;
+    } else {
+      console.error("Failed to fetch landing page data:", response.error);
+      return null;
+    }
+};

@@ -1,12 +1,15 @@
 import { Suspense } from "react";
 import { Sidebar } from "../home/components/sidebar";
 import BookMarkComponent from "./components/bookmark";
+import SearchInputContainer from "../search/_components/search-Input-component";
+import { Header } from "../home/components/header";
 
 export default function BookMark() {
   return (
     <div className="flex h-screen bg-background">
       <Sidebar />
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden justify-center">
+        <Header />
         <Suspense fallback={<div>Loading...</div>}>
           <main className="min-h-screen bg-gradient-to-b from-background to-secondary p-8">
             <div className="max-w-7xl mx-auto">

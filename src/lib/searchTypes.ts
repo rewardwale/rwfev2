@@ -24,6 +24,7 @@ export interface Profile {
     shortCompositeId: string;
     isFollow: boolean;
     location?: string;
+    individualId?:string;
   }
   
   export interface IndPic {
@@ -94,7 +95,6 @@ export interface Profile {
     height: number;
     aspectRatio: "portrait";
   }
-
   export interface videoData {
     _id: string;
     videoId: string;

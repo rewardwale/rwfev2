@@ -14,12 +14,12 @@ export default function MerchantItem({ data, handleFollow }: userProps) {
 
   useEffect(() => {}, [data]);
   return (
-    <Card className=" p-4 w-36 max-sm:w-32  space-y-2 rounded-md">
+    <div className="gap-2 flex flex-col">
       <div
         className="flex justify-center
-     items-center relative"
+     items-center relative"  onClick={() => router.push("/profile/" + data?.userName)}
       >
-        <Avatar className="w-16 h-16 max-sm:w-12 max-sm:h-12 object-cover ">
+        <Avatar className="w-16 h-16 max-sm:w-12 max-sm:h-12 object-cover border-2">
           <AvatarImage
             src={data?.indPic?.thumbnail ?? null}
             width={100}
@@ -41,60 +41,19 @@ export default function MerchantItem({ data, handleFollow }: userProps) {
         </div>
       </div>
 
-      <div
-        onClick={() => router.push("/profile/" + data?.userName)}
-        className="flex justify-center items-center "
-      >
-        <div className="text-center space-y-1">
-          <p className="text-sm max-sm:text-xs font-medium leading-none w-24 overflow-hidden truncate">
+    
+        <div className="text-center ">
+          <p className="text-sm max-sm:text-[10px] font-medium leading-none w-24 overflow-hidden truncate">
             {" "}
-            {data?.indFirstName}
+            {data?.indFirstName} {data?.indLastName}
           </p>
-          <p className="text-sm max-sm:text-xs text-muted-foreground w-24 overflow-hidden truncate">
+          {/* <p className="text-sm max-sm:text-xs text-muted-foreground w-24 overflow-hidden truncate">
             {data?.indLastName}
-          </p>
+          </p> */}
         </div>
       </div>
 
-      <div className="flex justify-between items-center gap-1 max-sm:text-xs ">
-        <span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="red"
-            className="bi bi-geo-fill"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.3 1.3 0 0 0-.37.265.3.3 0 0 0-.057.09V14l.002.008.016.033a.6.6 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.6.6 0 0 0 .146-.15l.015-.033L12 14v-.004a.3.3 0 0 0-.057-.09 1.3 1.3 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465s-2.462-.172-3.34-.465c-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411"
-            />
-          </svg>
-        </span>
-        <span className="text-xs text-blue-700 w-24 overflow-hidden truncate ">
-          {location}
-        </span>
-      </div>
 
-      <div className="flex justify-center items-center ">
-        {!data?.isFollow ? (
-          <Button
-            className="bg-blue-400 text-sm max-sm:text-[10px]
-             hover:bg-blue-800"
-            onClick={() => handleFollow(data._id)}
-          >
-            Follow
-          </Button>
-        ) : (
-          <Badge
-            className="p-1.5 text-sm max-sm:text-[10px] max-sm:p-0.5 max-sm:px-1 bg-yellow-100 text-slate-400 font-thin "
-            variant="outline"
-          >
-            Following
-          </Badge>
-        )}
-      </div>
-    </Card>
+ 
   );
 }

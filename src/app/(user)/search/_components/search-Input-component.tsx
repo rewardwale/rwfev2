@@ -15,14 +15,14 @@ export default function SearchInputContainer() {
     if (e.key === "Enter") {
       e.preventDefault();
       // router.push("/search?i=" + input);
-      location.href = "/searchNew/dashBoard?i=" + input;
+      location.href = "/search/dashboard?i=" + input;
     }
   };
 
   const handleSearchOnClick = (e: any) => {
     e.preventDefault();
     // router.push("/search?i=" + input);
-    location.href = "/searchNew/dashBoard?i=" + input;
+    location.href = "/search/dashboard?i=" + input;
   };
 
   return (

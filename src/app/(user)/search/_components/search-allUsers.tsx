@@ -7,7 +7,7 @@ import AllUserItem from "./search-alluser-item";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import PathBreadCrumbs from "./search-breadCrums";
-// import { followUser } from "@/lib/usersApi/userapi";
+import { followUser } from "@/apis/profile";
 
 export default function AllUser() {
   let router = useRouter();
@@ -68,7 +68,7 @@ export default function AllUser() {
 
   const handleFollowMerchants = async (id: string) => {
     try {
-      // const request = await followUser(id);
+      const request = await followUser(id);
       const index = userData.findIndex((item: Profile) => item._id === id);
       const newData = userData;
       newData[index] = {
@@ -87,7 +87,7 @@ export default function AllUser() {
         <div className="mb-4">
           <PathBreadCrumbs
             path1="home"
-            path2="dashBoard"
+            path2="dashboard"
             path3="Users"
             word={searchWord}
           />

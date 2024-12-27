@@ -5,6 +5,8 @@ import { videoProps } from "@/lib/searchTypes";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@radix-ui/react-separator";
 import { useState } from "react";
+import { Bookmark } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function VideoCardItem({
   data,
@@ -14,28 +16,41 @@ export default function VideoCardItem({
   className,
   ...props
 }: videoProps) {
-  const [brief,setBrief]=useState<boolean>(false);
+  const router=useRouter();
   return (
     <div className={cn(" relative", className)} {...props}>
-      <div className="overflow-hidden relative">
+      <div className="overflow-hidden relative cursor-pointer" 
+      onClick={() => router.push("/watch?v=" + data.videoId)}
+>
         <Image
           src={data.cdnThumbPath[0]}
           alt={data.title}
           width={width}
           height={height}
-          className={cn(
-            "h-auto w-auto object-cover transition-all hover:scale-105 rounded-t-md",
-            aspectRatio === "portrait" ? "aspect-[3/4]" : "aspect-square",
-          )}
+          className={
+            "h-auto w-auto object-cover transition-all hover:scale-105 rounded-md"
+          }
         />
-        <p
-          className={`absolute px-1 bottom-0 text-sm text-ellipsis overflow-hidden whitespace-nowrap
-            text-pretty w-full h-5 hover:h-auto text-white bg-black/20` }
-        >
-          {data.title}
-        </p>
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/90
+            rounded-md"
+        />
+
+        <div className="flex-1 min-w-0 absolute bottom-0 p-2">
+          <p
+            className={`font-semibold text-md truncate overflow-hidden 
+              text-pretty  h-6 full  hover:h-auto text-white cursor-pointer`}
+          >
+            {data.title}
+          </p>
+
+          <div className="flex items-center gap-1 text-xs text-white/70">
+            <span>{data.totalViewCount.toLocaleString()} views</span>
+            <span>•</span>
+            <span>{data.avgRating} ★</span>
+          </div>
+        </div>
       </div>
-      <div className="h-20 bg-slate-700/50 rounded-b-md p-1 overflow-hidden"></div>
     </div>
   );
 }

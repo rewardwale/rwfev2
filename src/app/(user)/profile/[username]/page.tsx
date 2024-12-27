@@ -7,6 +7,7 @@ import { fetchProfileData, fetchProfilePosts } from "@/apis/profile";
 import { Header } from "../../home/components/header";
 import { Sidebar } from "../../home/components/sidebar";
 import { Footer } from "@/components/layout";
+import SearchInputContainer from "../../search/_components/search-Input-component";
 
 export default function HomePage() {
   const [data, setData] = useState<any>(null);
@@ -44,6 +45,7 @@ export default function HomePage() {
       <Sidebar />
       <div className="flex-1">
         <Header />
+        {/* <div className="flex justify-center w-full"><SearchInputContainer/></div> */}
         <Suspense fallback={<div>Loading...</div>}>
           <ProfilePage profileData={data} />
         </Suspense>
