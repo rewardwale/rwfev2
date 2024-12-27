@@ -19,6 +19,14 @@ export type TypeBookmark = {
       rating: number;
       count: number;
     };
+    userDetails:{
+      indFirstName: string;
+      indLastName: string;
+      indPic:{thumbnail:string;}
+    },
+    avgRating:number;
+    totalRating:number;
+    totalViewCount: number;
     _id: string;
   }[];
 };
@@ -46,7 +54,7 @@ export default function BookMarkComponent() {
       setIsLoading(false);
     }
   };
-
+console.log(":::::::::::::::::::::::::",bookmarks?.data.length)
   const handleBookmarkDelete = async (videoId: string) => {
     try {
       const response = await deleteBookMark(videoId);
