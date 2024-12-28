@@ -17,12 +17,18 @@ import {
   Upload,
   Settings,
   LogOut,
+  SearchIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
+import { useState } from "react";
+import SearchInputContainer from "../../search/components/search-Input-component";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function Header() {
+  const isMobile = useIsMobile();
   const router = useRouter();
+
   return (
     <header
       className="flex items-center justify-between px-4 h-16 border-b sticky top-0 bg-background
@@ -35,25 +41,10 @@ export function Header() {
         <Sidebar />
       </div>
 
-      <div className="flex items-center flex-1 max-w-2xl mx-4">
-        <div className="flex items-center w-full">
-          <div className="relative flex-1">
-            <Input
-              type="search"
-              placeholder="Search"
-              className="pr-10"
-              style={{
-                borderRadius: "18px",
-              }}
-            />
-          </div>
-          {/* <Button size="icon" className="rounded-r-full px-4">
-            <Search className="h-5 w-5" />
-          </Button> */}
-          {/* <Button variant="ghost" size="icon" className="ml-2">
-            <Mic className="h-5 w-5" />
-          </Button> */}
-        </div>
+      <div
+        className={`flex items-center w-full ${isMobile ? "justify-center" : "justify-normal"}`}
+      >
+        <SearchInputContainer />
       </div>
 
       <div className="flex items-center gap-2">
@@ -77,7 +68,7 @@ export function Header() {
               onClick={() => {
                 localStorage.removeItem("uib");
                 localStorage.removeItem("token");
-                router.push("/")
+                router.push("/");
               }}
             >
               <LogOut className="mr-2 h-4 w-4" />
