@@ -16,12 +16,13 @@ export default function VideoCardItem({
   className,
   ...props
 }: videoProps) {
-  const router=useRouter();
+  const router = useRouter();
   return (
     <div className={cn(" relative", className)} {...props}>
-      <div className="overflow-hidden relative cursor-pointer" 
-      onClick={() => router.push("/watch?v=" + data.videoId)}
->
+      <div
+        className="overflow-hidden relative cursor-pointer"
+        onClick={() => router.push("/watch?v=" + data.videoId)}
+      >
         <Image
           src={data.cdnThumbPath[0]}
           alt={data.title}
@@ -38,8 +39,8 @@ export default function VideoCardItem({
 
         <div className="flex-1 min-w-0 absolute bottom-0 p-2">
           <p
-            className={`font-semibold text-md truncate overflow-hidden 
-              text-pretty  h-6 full  hover:h-auto text-white cursor-pointer`}
+            className={`font-semibold text-md truncate overflow-hidden text-pretty h-6 full hover:h-auto
+              text-white cursor-pointer`}
           >
             {data.title}
           </p>

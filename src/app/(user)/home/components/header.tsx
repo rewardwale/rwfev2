@@ -23,9 +23,10 @@ import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { useState } from "react";
 import SearchInputContainer from "../../search/components/search-Input-component";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-
-export  function Header(){
+export function Header() {
+  const isMobile = useIsMobile();
   const router = useRouter();
 
   return (
@@ -40,11 +41,11 @@ export  function Header(){
         <Sidebar />
       </div>
 
-
-
-<div className="flex justify-center items-center w-full" >
-  <SearchInputContainer/></div>
-
+      <div
+        className={`flex items-center w-full ${isMobile ? "justify-center" : "justify-normal"}`}
+      >
+        <SearchInputContainer />
+      </div>
 
       <div className="flex items-center gap-2">
         {/* <Button variant="ghost" size="icon">
