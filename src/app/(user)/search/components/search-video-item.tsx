@@ -2,10 +2,10 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { videoProps } from "@/lib/searchTypes";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@radix-ui/react-separator";
-import { useState } from "react";
-import { Bookmark } from "lucide-react";
+// import { Badge } from "@/components/ui/badge";
+// import { Separator } from "@radix-ui/react-separator";
+// import { useState } from "react";
+// import { Bookmark } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function VideoCardItem({

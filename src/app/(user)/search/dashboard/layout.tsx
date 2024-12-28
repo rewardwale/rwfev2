@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import SearchInputContainer from "../_components/search-Input-component";
+import SearchInputContainer from "../components/search-Input-component";
 
 interface Layout {
   Review: ReactNode;

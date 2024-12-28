@@ -1,4 +1,4 @@
-import AllBusinessUser from "../../_components/search-allMerchant";
+import AllBusinessUser from "../../components/search-allMerchant";
 
 export default function MerchantSection() {
   return (

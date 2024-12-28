@@ -5,8 +5,8 @@ import { userProps } from "@/lib/searchTypes";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+// import { Button } from "@/components/ui/button";
+// import { Badge } from "@/components/ui/badge";
 
 export default function AllUserItem({ data, handleFollow }: userProps) {
   let router = useRouter();

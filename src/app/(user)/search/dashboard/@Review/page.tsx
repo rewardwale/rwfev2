@@ -1,4 +1,4 @@
-import Video from "../../_components/search-video-card";
+import Video from "../../components/search-video-card";
 
 export default function ReviewSection() {
   return (

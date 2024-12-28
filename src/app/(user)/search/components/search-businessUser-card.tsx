@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Profile } from "@/lib/searchTypes";
 import { useRouter } from "next/navigation";
-import UserItem from "./search-user-item";
+// import UserItem from "./search-user-item";
 import { searchBusinessUsers } from "@/apis/search";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";

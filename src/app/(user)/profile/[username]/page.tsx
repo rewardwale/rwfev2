@@ -7,7 +7,7 @@ import { fetchProfileData, fetchProfilePosts } from "@/apis/profile";
 import { Header } from "../../home/components/header";
 import { Sidebar } from "../../home/components/sidebar";
 import { Footer } from "@/components/layout";
-import SearchInputContainer from "../../search/_components/search-Input-component";
+import SearchInputContainer from "../../search/components/search-Input-component";
 
 export default function HomePage() {
   const [data, setData] = useState<any>(null);

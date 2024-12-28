@@ -22,7 +22,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { useState } from "react";
-import SearchInputContainer from "../../search/_components/search-Input-component";
+import SearchInputContainer from "../../search/components/search-Input-component";
 
 
 export  function Header(){

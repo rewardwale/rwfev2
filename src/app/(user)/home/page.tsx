@@ -47,22 +47,7 @@ interface SearchResult {
 }
 
 export default function HomePage() {
-  const [input, setinput] = useState("");
-  const router = useRouter()
 
-  const handleEnterPress = (e: any) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      router.push("/search/dashboard?i=" + input);
-      // location.href = "/search/dashboard?i=" + input;
-    }
-  };
-
-  const handleSearchOnClick = (e: any) => {
-    e.preventDefault();
-    router.push("/search/dashboard?i=" + input);
-    // location.href = "/search/dashboard?i=" + input;
-  };
 
   const isMobile = useIsMobile();
   return (

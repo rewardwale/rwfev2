@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Sidebar } from "../home/components/sidebar";
 import BookMarkComponent from "./components/bookmark";
-import SearchInputContainer from "../search/_components/search-Input-component";
+import SearchInputContainer from "../search/components/search-Input-component";
 import { Header } from "../home/components/header";
 
 export default function BookMark() {

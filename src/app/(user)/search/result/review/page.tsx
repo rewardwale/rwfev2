@@ -1,4 +1,4 @@
-import AllVideo from "../../_components/search-allReview";
+import AllVideo from "../../components/search-allReview";
 
 export default function ReviewSection() {
   return (

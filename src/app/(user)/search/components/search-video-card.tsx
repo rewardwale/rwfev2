@@ -2,14 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { DashboardCategory, Profile, videoData } from "@/lib/searchTypes";
 import { useRouter } from "next/navigation";
-import UserItem from "./search-user-item";
+// import UserItem from "./search-user-item";
 import { searchReviews } from "@/apis/search";
 import VideoCardItem from "./search-video-item";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
-import { Separator } from "@radix-ui/react-separator";
+// import { Separator } from "@radix-ui/react-separator";
 import { Button } from "@/components/ui/button";
-import { VideoCard } from "../../home/components/video-card";
+// import { VideoCard } from "../../home/components/video-card";
 
 export default function Video() {
   const [videoData, setvideodata] = useState<videoData[] | []>([]);

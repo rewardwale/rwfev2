@@ -1,4 +1,4 @@
-import AllUser from "../../_components/search-allUsers";
+import AllUser from "../../components/search-allUsers";
 
 export default function UserSection() {
   return (

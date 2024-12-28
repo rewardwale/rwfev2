@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Suspense } from "react";
 import { Sidebar } from "../home/components/sidebar";
-import SearchInputContainer from "./_components/search-Input-component";
+import SearchInputContainer from "./components/search-Input-component";
 
 export default function SearchLayout({ children }: { children: ReactNode }) {
   return (

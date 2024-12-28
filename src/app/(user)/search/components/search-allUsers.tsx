@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Profile } from "@/lib/searchTypes";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { searchNonBusinessUsers } from "@/apis/search";
 import AllUserItem from "./search-alluser-item";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +10,7 @@ import PathBreadCrumbs from "./search-breadCrums";
 import { followUser } from "@/apis/profile";
 
 export default function AllUser() {
-  let router = useRouter();
+  // let router = useRouter();
   const [userData, setuserData] = useState<Profile[]>([]);
   const [count, setCount] = useState<number>(0);
   const [searchWord, setSearchWord] = useState<string | null>("");
