@@ -24,6 +24,7 @@ import { Sidebar } from "./sidebar";
 import { useState } from "react";
 import SearchInputContainer from "../../search/components/search-Input-component";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { logout } from "@/apis/home";
 
 export function Header() {
   const isMobile = useIsMobile();
@@ -65,7 +66,8 @@ export function Header() {
               Settings
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => {
+              onClick={async () => {
+                await logout();
                 localStorage.removeItem("uib");
                 localStorage.removeItem("token");
                 router.push("/");

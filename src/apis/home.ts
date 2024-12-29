@@ -27,3 +27,13 @@ export async function fetchHomePageData() {
   }
 }
 
+export async function logout() {
+  const response = await apiClient(`/logout-all`, "POST");
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+}
+

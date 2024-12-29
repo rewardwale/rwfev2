@@ -41,7 +41,7 @@ export default function AllVideoCardItem({
             {data.title}
           </p>
 
-          <div className="flex items-center gap-1 text-xs text-white/70">
+          <div className="flex items-center gap-1 sm:text-xs text-[8px] text-white/70">
             <span>{data.totalViewCount.toLocaleString()} views</span>
             <span>•</span>
             <span>{data.avgRating} ★</span>

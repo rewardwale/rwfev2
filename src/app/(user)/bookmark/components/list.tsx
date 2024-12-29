@@ -121,7 +121,8 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
                       {videoData?.userDetails?.indFirstName}{" "}
                       {videoData?.userDetails?.indLastName}
                     </p>
-                    <div className="flex items-center gap-1 text-xs text-white/70">
+                    <div className="flex items-center gap-1  sm:text-xs text-[8px] 
+                     text-white/70">
                       <span>{videoData?.totalViewCount} views</span>
                       <span>•</span>
                       <span>{videoData?.totalRating} ★</span>

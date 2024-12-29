@@ -7,7 +7,7 @@ import { Header } from "../home/components/header";
 export default function BookMark() {
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar />
+      <div className="max-lg:hidden"><Sidebar /></div>
       <div className="flex-1 overflow-hidden justify-center">
         <Header />
         <Suspense fallback={<div>Loading...</div>}>

@@ -68,7 +68,7 @@ export default function LoginForm() {
             localStorage.removeItem("token");
             localStorage.setItem("uib", JSON.stringify(res.success));
             localStorage.setItem("token", res.success.accessToken);
-            setSuccess("successfully logged in");
+            setSuccess("Logging In.....");
           }
 
           // if (res?.twoFactor) {
