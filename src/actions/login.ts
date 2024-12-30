@@ -7,7 +7,7 @@ import {
 import { LoginSchema } from "@/schema";
 import * as z from "zod";
 
-export const Newlogin = async (values: z.infer<typeof LoginSchema>) => {
+export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:string) => {
   const validatedFields = LoginSchema.safeParse(values);
   console.log("STEP 2:", values);
   if (!validatedFields.success) {
@@ -32,7 +32,7 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   if (identity === "Email") {
-    const email = await signInWithEmail(password, userIdentity);
+    const email = await signInWithEmail(password, userIdentity,fingerPrint);
     if (email.status) {
       // window.localStorage.setItem("UID", email.message.data.indDetail);
       return { success: email.message.data.indDetail };
@@ -40,7 +40,7 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   if (identity === "Phone Number") {
-    const mobile = await signInWithMobile(password, "91", userIdentity);
+    const mobile = await signInWithMobile(password, "91", userIdentity,fingerPrint);
     if (mobile.status) {
       // window.localStorage.setItem("UID", mobile.message.data.indDetail);
       return { success: mobile.message.data.indDetail };
@@ -48,7 +48,7 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   if (identity === "Username") {
-    const username = await signInWithUserName(password, userIdentity);
+    const username = await signInWithUserName(password, userIdentity,fingerPrint);
     if (username.status) {
       // window.localStorage.setItem(
       //   "UID",

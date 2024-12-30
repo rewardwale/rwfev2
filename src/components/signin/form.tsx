@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils'
 import blackLogo from '../../../public/brand_logo/PNG/RW_Black_Name.png'
 import whiteLogo from '../../../public/brand_logo/PNG/RW_White_Name.png'
 import Image from "next/image";
+import { getDeviceFingerprint } from "@/lib/fingerPrint";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -53,7 +54,8 @@ export default function LoginForm() {
     setError("");
     setSuccess("");
     startTransition(() => {
-      Newlogin(values)
+      const fingerPrint=  getDeviceFingerprint()
+      Newlogin(values,fingerPrint)
         .then((res) => {
           console.log("===res===", res);
           if (res?.error) {
@@ -68,7 +70,7 @@ export default function LoginForm() {
             localStorage.removeItem("token");
             localStorage.setItem("uib", JSON.stringify(res.success));
             localStorage.setItem("token", res.success.accessToken);
-            setSuccess("Logging In.....");
+            setSuccess("logging In.....");
           }
 
           // if (res?.twoFactor) {
