@@ -26,8 +26,8 @@ interface VideoControlsProviderProps {
 
 export function VideoControlsProvider({ children }: VideoControlsProviderProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);  // Allow null here
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -36,6 +36,12 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleVolumeChange = () => setIsMuted(video.muted);
+
+      // Try to autoplay when component mounts
+      video.play().catch((error) => {
+        console.error('Autoplay failed:', error);
+        setIsPlaying(false);
+      });
 
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
@@ -58,7 +64,7 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
       } else {
         video.pause();
       }
-      setIsPlaying(!video.paused);
+      // setIsPlaying(!video.paused);
     } catch (error) {
       console.error('Error toggling play state:', error);
     }

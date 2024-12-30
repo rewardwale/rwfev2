@@ -14,6 +14,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useVideoContext } from "../providers/video-control-provider";
@@ -44,19 +45,23 @@ interface VideoDetails {
   isBookmarked: boolean;
 }
 
-export function VideoControls() {
+interface VideoControlsProps {
+  video?: VideoDetails;
+}
+
+export function VideoControls({ video }: VideoControlsProps) {
   const { isPlaying, isMuted, togglePlay, toggleMute, toggleFullscreen } =
     useVideoContext();
   const [showComments, setShowComments] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(video?.isLiked || false);
   const [unLiked, setIsUnLiked] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showDislikeAnimation, setShowDislikeAnimation] = useState(false);
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v") || "";
-  // const isMobile = useMediaQuery("(max-width: 768px)");
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
 
