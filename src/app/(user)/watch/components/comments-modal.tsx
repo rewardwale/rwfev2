@@ -8,15 +8,16 @@ import { CommentsContent } from "./commets-content";
 interface CommentsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  ownerName: string;
 }
 
 export function CommentsModal({
   isOpen,
   onClose,
+  ownerName,
 }: CommentsModalProps) {
   const [newComment, setNewComment] = useState("");
   const isMobile = useMediaQuery("(max-width: 768px)");
-
 
   useEffect(() => {
     const videoContainer = document.getElementById("video-container");
@@ -34,6 +35,7 @@ export function CommentsModal({
       <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent side="bottom" className="h-[80vh] rounded-t-xl p-0">
           <CommentsContent
+            ownerName={ownerName}
             onClose={onClose}
             newComment={newComment}
             setNewComment={setNewComment}
@@ -48,16 +50,15 @@ export function CommentsModal({
       <div
         style={{
           translate: "150%",
-          border:'1px solid #979797',
-          borderRadius:'18px'
+          border: "1px solid #979797",
+          borderRadius: "18px",
         }}
-        className={`hidden md:block fixed top-4 right-0 w-[450px] h-[calc(88vh-64px)] bg-background border-l transform transition-transform duration-700 ease-in-out
-
-
-      `}
+        className={`hidden md:block fixed top-4 right-0 w-[450px] h-[calc(88vh-64px)] bg-background
+          border-l transform transition-transform duration-700 ease-in-out `}
       >
         <CommentsContent
           // totalComments={totalComments}
+          ownerName={ownerName}
           onClose={onClose}
           newComment={newComment}
           setNewComment={setNewComment}

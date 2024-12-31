@@ -1,20 +1,9 @@
 "use server";
 import axios, { AxiosError } from "axios";
 
-export async function checkUserNameAvailability(userName: string) {
+export async function checkUserNameAvailability(userName: string,latitude:string,longitude:string) {
   console.log("checkUserNameAvailability\t",userName)
   try {
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
-
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?isBusinessUser=false`,
       {
@@ -45,22 +34,10 @@ export async function checkUserNameAvailability(userName: string) {
   }
 }
 
-export async function validateEmail(email: string,  fingerPrints:string) {
+export async function validateEmail(email: string,  fingerPrints:string,latitude:string,longitude:string) {
   console.log("validateEmail", email);
   //   const response = await  apiClient(`/validateEmail/${email}`, "GET");
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
-
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validateEmail/${email}?isBusinessUser=false`,
     );
@@ -88,21 +65,9 @@ console.log("error\n\t",error)
   }
 }
 
-export async function validatePhone(countryCode: string, mobile: string,  fingerPrints:string) {
+export async function validatePhone(countryCode: string, mobile: string,  fingerPrints:string,latitude:string,longitude:string) {
   console.log("validatePhone\t", countryCode, mobile);
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
-
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validatePhoneNumber/${countryCode}/${mobile}?isBusinessUser=false`,
     );
@@ -134,21 +99,13 @@ export async function verifyOTPMobile(
   code: string,
   number: string,
   otp: string,
-  fingerPrints:string
+  fingerPrints:string,
+  latitude:string,
+  longitude:string
 ) {
   console.log("verifyOTPMobile\n");
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
 
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
  
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?countryCode=${code}&phoneNumber=${number}&otp=${otp}`,
@@ -177,21 +134,9 @@ export async function verifyOTPMobile(
   }
 }
 
-export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:string) {
+export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:string,latitude:string,longitude:string) {
   console.log("verifyOTPEmail\n");
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
-
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?otp=${otp}&emailId=${email}`,
     );
@@ -230,20 +175,11 @@ export async function signup(value: {
   userName: string;
   password: string;
   fingerPrints:string;
+  latitude:string;
+  longitude:string;
 }) {
   try {
     console.log("Signup\n",value)
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
-
     console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`);
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`,
@@ -281,8 +217,8 @@ export async function signup(value: {
         headers: {
           "Content-Type": "application/json",
           fingerprint: value.fingerPrints,
-          latitude: latitude,
-          longitude: longitude,
+          latitude: value.latitude,
+          longitude: value.longitude,
           lan: "en",
         },
         timeout: 10000,

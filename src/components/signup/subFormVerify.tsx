@@ -54,7 +54,15 @@ export default function CredentialVerificationForm({
     setSuccess("");
     startTransition(() => {
       const fingerPrints = getDeviceFingerprint();
-      Verification(values, "91", mobile, email,fingerPrints)
+      const isLocalStorageAvailable = localStorage;
+      // Safely access location data from localStorage
+      const latitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lat") ?? "90")
+        : "90";
+      const longitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lng") ?? "90")
+        : "90";
+      Verification(values, "91", mobile, email,fingerPrints,latitude,longitude)
         .then((res) => {
           //console.log("===res===", res);
           if (res?.error) {

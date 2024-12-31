@@ -7,41 +7,55 @@ import { Comment } from "../types/comments";
 import { TrashIcon } from "@radix-ui/react-icons";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { deleteComment } from "@/apis/watch";
+import { useEffect, useState } from "react";
 
 interface CommentItemProps {
   comment: Comment;
   onLike: (commentId: string, isLiked: boolean) => Promise<void>;
   onDelete: (commentId: string) => Promise<void>;
+  ownerName:string;
 }
 
-export function CommentItem({ comment, onLike, onDelete }: CommentItemProps) {
+export function CommentItem({ comment, onLike, onDelete ,ownerName}: CommentItemProps) {
+  const [myProfile, setMyProfile] = useState<boolean>(false);
+  useEffect(() => {
+    const data = localStorage.getItem("uib");
+    const username = JSON.parse(data || "").userName;
+    if (username === comment.userName || username === ownerName) {
+      setMyProfile(true);
+    }
+  }, []);
   const DeleteButton = () => {
     return (
-      <Tooltip.Provider>
-        <Tooltip.Root>
-          <Tooltip.Trigger asChild>
-            <span
-              className="cursor-pointer"
-              style={{
-                paddingTop: "5px",
-              }}
-              onClick={() => onDelete(comment._id)}
-            >
-              <TrashIcon />
-            </span>
-          </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Content
-              className="rounded bg-black text-white px-2 py-1 text-xs shadow-md"
-              side="top"
-              sideOffset={5}
-            >
-              Delete Comment
-              <Tooltip.Arrow className="fill-black" />
-            </Tooltip.Content>
-          </Tooltip.Portal>
-        </Tooltip.Root>
-      </Tooltip.Provider>
+      <>
+        {myProfile && (
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <span
+                  className="cursor-pointer"
+                  style={{
+                    paddingTop: "5px",
+                  }}
+                  onClick={() => onDelete(comment._id)}
+                >
+                  <TrashIcon />
+                </span>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="rounded bg-black text-white px-2 py-1 text-xs shadow-md"
+                  side="top"
+                  sideOffset={5}
+                >
+                  Delete Comment
+                  <Tooltip.Arrow className="fill-black" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+        )}
+      </>
     );
   };
   return (
