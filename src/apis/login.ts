@@ -1,10 +1,10 @@
-import { getDeviceFingerprint } from "@/lib/api";
 import axios from "axios";
 
 export async function signInWithMobile(
   password: string,
   code: string,
   mobile: string,
+  fingerPrint:string
 ) {
   console.log("::::::login mobile:::::");
   try {
@@ -19,7 +19,7 @@ export async function signInWithMobile(
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
       {
@@ -42,7 +42,7 @@ export async function signInWithMobile(
       {
         headers: {
           "Content-Type": "application/json",
-          fingerprint: fingerPrints,
+          fingerprint: fingerPrint,
           latitude: latitude,
           longitude: longitude,
           lan: "en",
@@ -57,11 +57,11 @@ export async function signInWithMobile(
     }
   } catch (error: any) {
     // console.error("error", error.response);
-    return { status: false, message: error.response.data.message };
+    return { status: false, message: error.message };
   }
 }
 
-export async function signInWithEmail(password: string, email: string) {
+export async function signInWithEmail(password: string, email: string,  fingerPrint:string) {
   console.log("::::::login email:::::");
   try {
     // Check for localStorage availability
@@ -75,7 +75,7 @@ export async function signInWithEmail(password: string, email: string) {
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
       {
@@ -96,7 +96,7 @@ export async function signInWithEmail(password: string, email: string) {
       {
         headers: {
           "Content-Type": "application/json",
-          fingerprint: fingerPrints,
+          fingerprint: fingerPrint,
           latitude: latitude,
           longitude: longitude,
           lan: "en",
@@ -110,12 +110,12 @@ export async function signInWithEmail(password: string, email: string) {
       return { status: false, message: response.data };
     }
   } catch (error: any) {
-    console.error("error", error.response);
-    return { status: false, message: error.response.data.message };
+    console.error("error", error);
+    return { status: false, message: error.message };
   }
 }
 
-export async function signInWithUserName(password: string, userName: string) {
+export async function signInWithUserName(password: string, userName: string,  fingerPrint:string) {
   console.log("::::::login userName:::::");
   try {
     // Check for localStorage availability
@@ -129,7 +129,7 @@ export async function signInWithUserName(password: string, userName: string) {
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
       {
@@ -150,7 +150,7 @@ export async function signInWithUserName(password: string, userName: string) {
       {
         headers: {
           "Content-Type": "application/json",
-          fingerprint: fingerPrints,
+          fingerprint: fingerPrint,
           latitude: latitude,
           longitude: longitude,
           lan: "en",
@@ -165,6 +165,6 @@ export async function signInWithUserName(password: string, userName: string) {
     }
   } catch (error: any) {
     // console.error("error", error.response);
-    return { status: false, message: error.response.data.message };
+    return { status: false, message: error.message };
   }
 }

@@ -19,6 +19,7 @@ import FormSuccess from "./form-success";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Verification } from "@/actions/signup";
+import { getDeviceFingerprint } from "@/lib/fingerPrint";
 
 interface Props {
   stateChange: (one: boolean, two: boolean, three: boolean) => void;
@@ -52,7 +53,8 @@ export default function CredentialVerificationForm({
     setError("");
     setSuccess("");
     startTransition(() => {
-      Verification(values, "91", mobile, email)
+      const fingerPrints = getDeviceFingerprint();
+      Verification(values, "91", mobile, email,fingerPrints)
         .then((res) => {
           //console.log("===res===", res);
           if (res?.error) {
@@ -92,6 +94,7 @@ export default function CredentialVerificationForm({
                   <FormItem>
                     <FormLabel>
                       Please Enter OTP From Your Email <b>{email}</b>
+                      <span className="text-red-600"> *</span>
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -120,6 +123,7 @@ export default function CredentialVerificationForm({
                   <FormItem>
                     <FormLabel>
                       Please Enter OTP From Your Mobile <b>{mobile}</b>
+                      <span className="text-red-600"> *</span>
                     </FormLabel>
                     <FormControl>
                       <Input

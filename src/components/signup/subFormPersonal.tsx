@@ -23,6 +23,8 @@ import { PersonalInfo } from "@/actions/signup";
 import { json } from "node:stream/consumers";
 import { SelectGender } from "./Gender-dropDown";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { LocationInput } from "./locationFiled";
+import { getDeviceFingerprint } from "@/lib/fingerPrint";
 
 interface Props {
   stateChange: (one: boolean, two: boolean, three: boolean) => void;
@@ -65,7 +67,8 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
     setError("");
     setSuccess("");
     startTransition(() => {
-      PersonalInfo(values)
+      const fingerPrints=getDeviceFingerprint();
+      PersonalInfo(values,fingerPrints)
         .then((res) => {
           //console.log("===res===", res);
           if (res?.error) {
@@ -106,12 +109,14 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   name="firstname"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>First Name<span className="text-red-600"> *</span></FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           placeholder="Jhon"
                           type="text"
+                          maxLength={30}
+                          minLength={3}
                           disabled={pending}
                           onBlur={(e) => {
                             const value = e.target.value;
@@ -131,12 +136,14 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   name="lastname"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>Last Name<span className="text-red-600"> *</span></FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           placeholder="Doe"
                           type="text"
+                          maxLength={30}
+                          minLength={3}
                           disabled={pending}
                           onBlur={(e) => {
                             const value = e.target.value;
@@ -157,7 +164,7 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email<span className="text-red-600"> *</span></FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -182,11 +189,11 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                 name="mobile"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Mobile</FormLabel>
+                    <FormLabel>Phone Number<span className="text-red-600"> *</span></FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="9999999999"
+                        placeholder="1234567890"
                         type="text"
                         maxLength={10}
                         disabled={pending}
@@ -209,14 +216,15 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Location</FormLabel>
+                    <FormLabel>Location<span className="text-red-600"> *</span></FormLabel>
                     <FormControl>
-                      <Input
+                      {/* <Input
                         {...field}
                         placeholder="India"
                         type="text"
                         disabled={pending}
-                      />
+                      /> */}
+                      <LocationInput value={field.value} onChange={field.onChange} disabled={pending}/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -228,7 +236,7 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   name="gender"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>gender</FormLabel>
+                      <FormLabel>gender<span className="text-red-600"> *</span></FormLabel>
                       <FormControl>
                         {/* <Input
                           {...field}
@@ -251,7 +259,7 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   name="dob"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Date of Birth</FormLabel>
+                      <FormLabel>Date of Birth<span className="text-red-600"> *</span></FormLabel>
                       <FormControl>
                         <Input
                           {...field}

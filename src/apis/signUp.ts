@@ -1,8 +1,5 @@
 "use server";
-import { apiClient } from "@/lib/apiClient";
 import axios, { AxiosError } from "axios";
-import api, { getDeviceFingerprint } from "@/lib/api";
-import { headers } from "next/headers";
 
 export async function checkUserNameAvailability(userName: string) {
   console.log("checkUserNameAvailability\t",userName)
@@ -17,7 +14,6 @@ export async function checkUserNameAvailability(userName: string) {
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
 
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?isBusinessUser=false`,
@@ -49,7 +45,7 @@ export async function checkUserNameAvailability(userName: string) {
   }
 }
 
-export async function validateEmail(email: string) {
+export async function validateEmail(email: string,  fingerPrints:string) {
   console.log("validateEmail", email);
   //   const response = await  apiClient(`/validateEmail/${email}`, "GET");
   try {
@@ -64,7 +60,7 @@ export async function validateEmail(email: string) {
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validateEmail/${email}?isBusinessUser=false`,
     );
@@ -92,7 +88,7 @@ console.log("error\n\t",error)
   }
 }
 
-export async function validatePhone(countryCode: string, mobile: string) {
+export async function validatePhone(countryCode: string, mobile: string,  fingerPrints:string) {
   console.log("validatePhone\t", countryCode, mobile);
   try {
     // Check for localStorage availability
@@ -106,7 +102,7 @@ export async function validatePhone(countryCode: string, mobile: string) {
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validatePhoneNumber/${countryCode}/${mobile}?isBusinessUser=false`,
     );
@@ -138,6 +134,7 @@ export async function verifyOTPMobile(
   code: string,
   number: string,
   otp: string,
+  fingerPrints:string
 ) {
   console.log("verifyOTPMobile\n");
   try {
@@ -152,7 +149,7 @@ export async function verifyOTPMobile(
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+ 
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?countryCode=${code}&phoneNumber=${number}&otp=${otp}`,
     );
@@ -180,7 +177,7 @@ export async function verifyOTPMobile(
   }
 }
 
-export async function verifyOTPEmail(otp: string, email: string) {
+export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:string) {
   console.log("verifyOTPEmail\n");
   try {
     // Check for localStorage availability
@@ -194,7 +191,7 @@ export async function verifyOTPEmail(otp: string, email: string) {
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?otp=${otp}&emailId=${email}`,
     );
@@ -232,6 +229,7 @@ export async function signup(value: {
   mobile: string;
   userName: string;
   password: string;
+  fingerPrints:string;
 }) {
   try {
     console.log("Signup\n",value)
@@ -245,7 +243,7 @@ export async function signup(value: {
     const longitude = isLocalStorageAvailable
       ? (localStorage.getItem("loc-lng") ?? "90")
       : "90";
-    const fingerPrints = getDeviceFingerprint();
+
     console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`);
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`,
@@ -270,7 +268,7 @@ export async function signup(value: {
         indWhatsappNotify: true,
         // categoryPref: ["string78wh36sfyeh8012347"],
         notificationObj: {
-          endpoint: "string",
+          endpoint: "/signup",
           expirationTime: "string",
           keys: {
             p256dh: "string",
@@ -282,7 +280,7 @@ export async function signup(value: {
       {
         headers: {
           "Content-Type": "application/json",
-          fingerprint: fingerPrints,
+          fingerprint: value.fingerPrints,
           latitude: latitude,
           longitude: longitude,
           lan: "en",

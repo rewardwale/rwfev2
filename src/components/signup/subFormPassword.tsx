@@ -63,7 +63,7 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
 
           if (res?.success) {
             // passwordForm.reset();
-            setSuccess(res?.success);
+            setSuccess("Registration Successful! Welcome aboard.");
             data(values.userName, values.password);
             // stateChange(false, false, false);
           }
@@ -86,12 +86,14 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                 name="userName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User Name</FormLabel>
+                    <FormLabel>User Name<span className="text-red-600"> *</span></FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         placeholder="user name"
                         disabled={pending}
+                        minLength={3}
+                        maxLength={30}
                       />
                     </FormControl>
                     <FormMessage />
@@ -104,7 +106,7 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Password<span className="text-red-600"> *</span></FormLabel>
                     <FormControl>
                       {/* <Input
                         {...field}
@@ -120,7 +122,8 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                             type={showPassword_1?"text":"password"}
                             disabled={pending}
                             className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
-                     
+                            maxLength={12}
+                            minLength={8}
                           />
                         <Button type="button" variant={"ghost"} className="hover:bg-transparent focus:ring-0"
                         disabled={field.value.length===0} onClick={()=>setShowpassword_1(!showPassword_1)}>{showPassword_1?<EyeOpenIcon />:<EyeClosed/>}</Button>
@@ -137,7 +140,7 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>Confirm Password<span className="text-red-600"> *</span></FormLabel>
                     <FormControl>
                       {/* <Input
                         {...field}
@@ -151,6 +154,8 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                             placeholder="********"
                             type={showPassword?"text":"password"}
                             disabled={pending}
+                            maxLength={12}
+                            minLength={8}
                             className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
                      
                           />

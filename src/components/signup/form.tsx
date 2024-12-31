@@ -9,8 +9,9 @@ import CredentialVerificationForm from "./subFormVerify";
 import FinalProviderForm from "./subFormPassword";
 import { error } from "node:console";
 import Image from "next/image";
-import blackLogo from '../../../public/brand_logo/PNG/RW_Black_Name.png'
-import whiteLogo from '../../../public/brand_logo/PNG/RW_White_Name.png'
+import blackLogo from "../../../public/brand_logo/PNG/RW_Black_Name.png";
+import whiteLogo from "../../../public/brand_logo/PNG/RW_White_Name.png";
+import { getDeviceFingerprint } from "@/lib/fingerPrint";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function SignupForm() {
     mobile: string;
     userName: string;
     password: string;
+    fingerPrints:string;
   }>({
     firstName: "",
     lastName: "",
@@ -35,6 +37,7 @@ export default function SignupForm() {
     mobile: "",
     userName: "",
     password: "",
+    fingerPrints:""
   });
   const [step, setStep] = useState<{
     stepOne: boolean;
@@ -54,9 +57,9 @@ export default function SignupForm() {
     console.log("SIGNUP API ==>", signupForm);
     if (!one && !two && !three) {
       //signupapi
-
+      signupForm.fingerPrints = getDeviceFingerprint();
       const signUp = await signup(signupForm);
-console.log(":::::::=>",signUp)
+      console.log(":::::::=>", signUp);
       if (signUp.success) {
         router.push("/login");
       }
@@ -76,37 +79,36 @@ console.log(":::::::=>",signUp)
   return (
     <div className="min-h-screen flex flex-1">
       <div className="relative hidden w-0 xl:block xl:flex-1 hue-rotate-30">
-         <Image
-                   alt="Share your Experiences, Review and Rate"
-                   src="/images/iStock-1409730706.jpg"
-                   className="absolute h-full w-full"
-                   width={10000}
-                   height={10000}
-                   // inset-0 size-full object-cover
-                 />
+        <Image
+          alt="Share your Experiences, Review and Rate"
+          src="/images/iStock-1409730706.jpg"
+          className="absolute h-full w-full"
+          width={10000}
+          height={10000}
+          // inset-0 size-full object-cover
+        />
       </div>
       <div
-          className=" flex-1 flex-col w-1/3 space-y-14
-           px-4 py-12 sm:px-6 xl:flex-none 
-            xl:px-20 min-h-screen  "
-        >
-          <div className="mx-auto  py-4">
-            <div className="flex flex-col items-center">
-              <Image
-                alt="Rewardwale"
-                src={whiteLogo}
-                className="w-[220px] hidden dark:inline"
-              />
-              <Image
-                alt="Rewardwale"
-                src={blackLogo}
-                className="w-[220px] inline dark:hidden"
-              />
-              <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
-                Sign Up
-              </h2>
-            </div>
+        className="flex-1 flex-col w-1/3 space-y-14 px-4 py-12 sm:px-6 xl:flex-none xl:px-20
+          min-h-screen"
+      >
+        <div className="mx-auto py-4">
+          <div className="flex flex-col items-center">
+            <Image
+              alt="Rewardwale"
+              src={whiteLogo}
+              className="w-[220px] hidden dark:inline"
+            />
+            <Image
+              alt="Rewardwale"
+              src={blackLogo}
+              className="w-[220px] inline dark:hidden"
+            />
+            <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
+              Sign Up
+            </h2>
           </div>
+        </div>
         <div className="w-full">
           {" "}
           {step.stepOne && (
