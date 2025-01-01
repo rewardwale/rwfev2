@@ -25,9 +25,9 @@ export default function HomePage() {
     getData();
 
     const getPostdata = async () => {
-      const postData = await fetchProfilePosts(userId);
+      const postData = await fetchProfilePosts(userId,10);
       if (postData) {
-        setPostData(postData);
+        setPostData(postData?.data);
       }
     };
 

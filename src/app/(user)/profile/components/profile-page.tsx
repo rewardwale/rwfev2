@@ -1,11 +1,15 @@
 "use client";
 import { fetchProfilePosts } from "@/apis/profile";
+import { ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Bookmark, Grip, Star, Tag } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import ProfileItem from "./profileItem";
 
 interface SocialUrls {
   whatsapp: string;
@@ -69,7 +73,88 @@ export async function generateMetadata({
   };
 }
 
+export interface videoData {
+  _id: string;
+  userDetails: {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+  };
+  videoId: string;
+  hashtags: string[];
+  title: string;
+  desc: string;
+  cdnVideoPath: string;
+  cdnThumbPath: string[];
+  totalViewCount: number;
+  totalShareCount: number;
+  totalLikes: number;
+  totalComments: number;
+  isCommentingAllowed: boolean;
+  avgRating: number;
+  status: string;
+  uploadedAt: string;
+  videoLocation: {
+    type: string;
+    coordinates: number[];
+  };
+  locationName: string;
+  isSponsored: boolean;
+  isAdvertisement: boolean;
+  categoryId: string;
+  categoryName: string;
+}
+
 const ProfilePage = ({ profileData }: ProfilePageProps) => {
+  const [videoData, setvideodata] = useState<videoData[] | []>([]);
+  const [count, setCount] = useState<number>(0);
+  const router = useRouter();
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  const init = async () => {
+    try {
+      const data = localStorage.getItem("uib");
+      const userId = JSON.parse(data || "")._id;
+      console.log("----->",userId)
+      const responseData = await fetchProfilePosts(userId, count);
+      setvideodata(responseData?.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getMoreData = async () => {
+    try {
+      setCount(count + 10);
+      const data = localStorage.getItem("uib");
+      const userId = JSON.parse(data || "")._id;
+      const responseData = await fetchProfilePosts(userId, count + 10);
+
+      let newData = responseData?.data;
+      if (newData.length > 0) {
+        setvideodata(videoData.concat(newData));
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  async function handleScrollEvent(e: React.UIEvent<HTMLDivElement>) {
+    if (
+      e.currentTarget.clientHeight + e.currentTarget.scrollTop + 1 >=
+      e.currentTarget.scrollHeight
+    ) {
+      // setCount(count + 10);
+      await getMoreData();
+    }
+  }
   return (
     profileData && (
       <div className="min-h-screen p-4">
@@ -211,7 +296,33 @@ const ProfilePage = ({ profileData }: ProfilePageProps) => {
         {/* Posts Section */}
         <div className="py-6">
           <div className="flex w-full justify-center">
-            <div>No Posts Available, start posting to see!!!</div>
+            {/* <div>No Posts Available, start posting to see!!!</div>
+             */}
+
+            <ScrollArea
+              className="h-full w-full pb-36"
+              ref={scrollContainerRef}
+              onScroll={handleScrollEvent}
+            >
+              <div className="flex flex-wrap w-full h-full gap-3">
+                {videoData.length > 0 || !videoData ? (
+                  videoData.map((item: videoData, index: number) => (
+                    <ProfileItem
+                      data={item}
+                      key={index}
+                      height={1000}
+                      width={1000}
+                      className="w-[100px] h-[200px] sm:w-[140px] sm:h-[300px] lg:w-[190px] lg:h-[380px]"
+                      aspectRatio="portrait"
+                    />
+                  ))
+                ) : (
+                  <div className="w-full text-center">no data</div>
+                )}
+              </div>
+
+              <ScrollBar orientation="vertical" />
+            </ScrollArea>
           </div>
         </div>
       </div>

@@ -95,8 +95,8 @@ export const Final = async (values: z.infer<typeof PasswordFormSchema>,latitude:
   const { userName, password, confirmPassword } = validatedFields.data;
 
   const verifyUserName = await checkUserNameAvailability(userName,latitude,longitude);
-  if (!verifyUserName) {
-    return { error: "userName already exists, try some other" };
+  if (!verifyUserName?.status) {
+    return { error:verifyUserName?.message };
   }
 
   return { success: "Success" };

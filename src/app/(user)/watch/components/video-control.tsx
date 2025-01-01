@@ -25,6 +25,7 @@ import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
+import { useRouter } from "next/navigation";
 import { followUser } from "@/apis/profile";
 
 interface VideoDetails {
@@ -60,6 +61,7 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showDislikeAnimation, setShowDislikeAnimation] = useState(false);
   const searchParams = useSearchParams();
+  const router =useRouter();
   const videoId = searchParams.get("v") || "";
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -321,7 +323,7 @@ export function VideoControls({ video }: VideoControlsProps) {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <h3 className="font-semibold">
+            <h3 className="font-semibold"  onClick={()=>router.push("/profile/"+videoDetails?.userDetails.userName)}>
               {videoDetails?.userDetails?.indFirstName}{" "}
               {videoDetails?.userDetails?.indLastName}
             </h3>
