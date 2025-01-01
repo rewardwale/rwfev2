@@ -58,7 +58,15 @@ export default function SignupForm() {
     if (!one && !two && !three) {
       //signupapi
       signupForm.fingerPrints = getDeviceFingerprint();
-      const signUp = await signup(signupForm);
+      const isLocalStorageAvailable = localStorage;
+      // Safely access location data from localStorage
+      const latitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lat") ?? "90")
+        : "90";
+      const longitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lng") ?? "90")
+        : "90";
+      const signUp = await signup(signupForm,latitude,longitude);
       console.log(":::::::=>", signUp);
       if (signUp.success) {
         router.push("/login");
