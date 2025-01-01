@@ -1,75 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useVideoContext } from "../providers/video-control-provider";
-import { RatingModal } from "./rating-modal";
-import { fetchVideoDetails } from "@/apis/watch";
 
-export function VideoPlayer() {
-  const searchParams = useSearchParams();
-  const videoId = searchParams.get("v");
-  const { videoRef, isPlaying, isMuted, togglePlay } = useVideoContext();
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [showRating, setShowRating] = useState(false);
+interface VideoPlayerProps {
+  videoUrl?: string;
+}
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !videoId) return;
+export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
+  const { videoRef, isMuted } = useVideoContext();
 
-    const handleVideoEnd = () => {
-      setShowRating(true);
-    };
-
-    video.addEventListener("ended", handleVideoEnd);
-    return () => {
-      video.removeEventListener("ended", handleVideoEnd);
-    };
-  }, [videoId, videoRef]);
+  console.log("checking videourl in videoplayer", videoUrl);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !videoUrl) return;
 
-    if (isPlaying) {
-      video.play().catch((error) => {
-        console.error("Autoplay prevented:", error);
-      });
-    } else {
-      video.pause();
-    }
-  }, [isPlaying, videoUrl, videoRef]);
+    // Reset video when URL changes
+    video.load();
 
-  useEffect(() => {
-    const getData = async () => {
-      if (videoId) {
-        const watchdata = await fetchVideoDetails(videoId);
-        if (watchdata) {
-          setVideoUrl(watchdata?.data?.cdnVideoPath);
-          
-        }
-      }
-    };
-
-    getData();
-  }, [videoId]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video && videoUrl && !isPlaying) {
-      video.play().catch((error) => {
+    // Try to autoplay
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
         console.error("Autoplay prevented:", error);
       });
     }
-  }, [videoUrl, videoRef, isPlaying]);
+  }, [videoUrl, videoRef]);
 
-  const handleRatingSubmit = (rating: number) => {
-    // TODO: Implement API call to submit rating
-    console.log(`Submitted rating: ${rating}`);
-    setShowRating(false);
-  };
-
-  if (!videoId) {
+  if (!videoUrl) {
     return (
       <div className="w-full h-full flex items-center justify-center text-white">
         No video URL provided
@@ -79,21 +38,14 @@ export function VideoPlayer() {
 
   return (
     <div className="relative w-full h-full bg-black">
-      {videoUrl && (
-        <video
-          ref={videoRef}
-          src={videoUrl}
-          className="w-full h-full object-contain"
-          onClick={togglePlay}
-          playsInline
-          muted={isMuted}
-          autoPlay
-        />
-      )}
-      <RatingModal
-        isOpen={showRating}
-        onClose={() => setShowRating(false)}
-        onSubmit={handleRatingSubmit}
+      <video
+        ref={videoRef}
+        src={videoUrl}
+        className="w-full h-full object-contain"
+        controls={false}
+        loop
+        playsInline
+        muted={isMuted}
       />
     </div>
   );
