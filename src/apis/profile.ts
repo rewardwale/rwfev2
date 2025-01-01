@@ -16,7 +16,7 @@ export async function fetchProfilePosts(id: string) {
     limit: "10",
     skip: "0",
     flag: "1",
-    userId: id
+    userId: id,
   }).toString();
   const response = await apiClient(`/uploadedVideos?${queryParams}`, "GET");
 
@@ -28,15 +28,25 @@ export async function fetchProfilePosts(id: string) {
   }
 }
 
-
 export const followUser = async (id: string) => {
-console.log(":::::::::::::::::::",id)
-    const response = await apiClient(`user/follow/${id}`,"PUT");
+  console.log(":::::::::::::::::::", id);
+  const response = await apiClient(`user/follow/${id}`, "PUT");
 
-    if (response.success && response.data) {
-      return response.data;
-    } else {
-      console.error("Failed to fetch landing page data:", response.error);
-      return null;
-    }
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+};
+
+export const unFollowUser = async (id: string) => {
+  const response = await apiClient(`user/unfollow/${id}`, "PUT");
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
 };

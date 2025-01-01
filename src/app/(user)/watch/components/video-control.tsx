@@ -25,10 +25,13 @@ import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
-import { followUser } from "@/apis/profile";
+import { followUser, unFollowUser } from "@/apis/profile";
+import { useAuth } from "../../../../context/AuthContext";
+import AuthModal from "@/components/ui/AuthModal";
 
 interface VideoDetails {
   _id: string;
+  userId: string;
   userDetails: {
     indFirstName: string;
     indLastName: string;
@@ -43,7 +46,7 @@ interface VideoDetails {
   totalLikes: number;
   totalComments: number;
   isLiked: boolean;
-  // isFollowed: boolean;
+  isFollowed: boolean;
   isBookmarked: boolean;
 }
 
@@ -63,12 +66,24 @@ export function VideoControls({ video }: VideoControlsProps) {
   const videoId = searchParams.get("v") || "";
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isFollowed, setIsFollowed] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(video?.isFollowed);
   const [showPlayIcon, setShowPlayIcon] = useState(!isPlaying);
   const [userId, setUserId] = useState("");
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
+
+  const checkToken = async () => {
+    const token = localStorage.getItem("token");
+
+    if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   useEffect(() => {
     const loadVideoDetails = async () => {
@@ -77,6 +92,8 @@ export function VideoControls({ video }: VideoControlsProps) {
         setVideoDetails(response?.data);
         setIsLiked(response?.data?.isLiked);
         setIsBookmarked(response?.data?.isBookmarked);
+        setUserId(response?.data?.userId);
+        setIsFollowed(response?.data?.isFollowed);
       } catch (error) {
         console.error("Error loading video details:", error);
       }
@@ -86,6 +103,14 @@ export function VideoControls({ video }: VideoControlsProps) {
       loadVideoDetails();
     }
   }, [videoId]);
+
+  const handleAuthAction = (action: () => Promise<void>) => {
+    if (!isLoggedIn) {
+      setShowAuthModal(true);
+      return;
+    }
+    action();
+  };
 
   const handleLike = async () => {
     try {
@@ -104,6 +129,11 @@ export function VideoControls({ video }: VideoControlsProps) {
     } catch (error) {
       console.error("Error liking video:", error);
     }
+  };
+
+  const handleShowComments = async () => {
+    setShowComments(true);
+    return Promise.resolve();
   };
 
   const handleunLike = async () => {
@@ -151,22 +181,29 @@ export function VideoControls({ video }: VideoControlsProps) {
   };
 
   const handleFollow = async () => {
-    const storedData = localStorage.getItem("uib"); // 'uib' is the key in localStorage
-
-    // Check if data exists
-    if (storedData) {
-      // Parse the JSON string into a JavaScript object
-      const parsedData = JSON.parse(storedData);
-
-      // Log the _id to the console
-      console.log(parsedData._id, "checking for user id");
-      setUserId(parsedData._id);
-    } else {
-      console.log('No data found in localStorage for the key "uib".');
+    try {
+      if (!isFollowed) {
+        let res = await followUser(userId);
+        if (res) {
+          setIsFollowed(!isFollowed);
+        } else {
+          // console.log("checking res of follow", res);
+          setIsFollowed(false);
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
-    let res = await followUser(userId);
-    if (res) {
-      setIsFollowed(!isFollowed);
+  };
+
+  const handleUnfollow = async () => {
+    try {
+      if (isFollowed) {
+        await unFollowUser(userId); // Call the API to unfollow the user
+        setIsFollowed(false); // Update the state to reflect that the user is no longer followed
+      }
+    } catch (error) {
+      console.error("Error unfollowing user:", error); // Handle any errors
     }
   };
 
@@ -184,6 +221,12 @@ export function VideoControls({ video }: VideoControlsProps) {
       {/* Like/Dislike Animations */}
       <LikeAnimation isLike={true} show={showLikeAnimation} />
       <LikeAnimation isLike={false} show={showDislikeAnimation} />
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
 
       {/* Center play/pause button */}
       <Button
@@ -259,42 +302,52 @@ export function VideoControls({ video }: VideoControlsProps) {
           top: "70%",
         }}
       >
-        <div className="flex flex-col items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`text-white transition-transform ${isLiked ? "scale-125" : ""}`}
-            onClick={isLiked ? handleunLike : handleLike}
-          >
-            <ThumbsUp className={`h-6 w-6 ${isLiked ? "fill-white" : ""}`} />
-          </Button>
-          <span className="text-white text-sm">Like</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`text-white transition-transform ${isBookmarked ? "scale-125" : ""}`}
-            onClick={handleBookmark}
-          >
-            {/* <ThumbsDown className={`h-6 w-6 ${unLiked ? "fill-white" : ""}`} /> */}
-            <Bookmark
-              className={`h-6 w-6 ${isBookmarked ? "fill-white" : ""}`}
-            />
-          </Button>
-          <span className="text-white text-sm">Bookmark</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white"
-            onClick={() => setShowComments(true)}
-          >
-            <MessageSquare className="h-6 w-6" />
-          </Button>
-          <span className="text-white text-sm">Comment</span>
-        </div>
+        {
+          <>
+            <div className="flex flex-col items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`text-white transition-transform ${isLiked ? "scale-125" : ""}`}
+                onClick={() =>
+                  isLiked
+                    ? handleAuthAction(handleunLike)
+                    : handleAuthAction(handleLike)
+                }
+              >
+                <ThumbsUp
+                  className={`h-6 w-6 ${isLiked ? "fill-white" : ""}`}
+                />
+              </Button>
+              <span className="text-white text-sm">Like</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`text-white transition-transform ${isBookmarked ? "scale-125" : ""}`}
+                onClick={() => handleAuthAction(handleBookmark)}
+              >
+                {/* <ThumbsDown className={`h-6 w-6 ${unLiked ? "fill-white" : ""}`} /> */}
+                <Bookmark
+                  className={`h-6 w-6 ${isBookmarked ? "fill-white" : ""}`}
+                />
+              </Button>
+              <span className="text-white text-sm">Bookmark</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white"
+                onClick={() => handleAuthAction(handleShowComments)}
+              >
+                <MessageSquare className="h-6 w-6" />
+              </Button>
+              <span className="text-white text-sm">Comment</span>
+            </div>
+          </>
+        }
         <div className="flex flex-col items-center gap-1">
           <Button
             variant="ghost"
@@ -327,20 +380,22 @@ export function VideoControls({ video }: VideoControlsProps) {
             </h3>
             <p className="text-sm text-white/80">{videoDetails?.title}</p>
           </div>
-          <div
-            className="flex justify-end"
-            style={{
-              width: "60px",
-            }}
-          >
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => handleFollow()}
+          {
+            <div
+              className="flex justify-end"
+              style={{
+                width: "60px",
+              }}
             >
-              {isFollowed ? "Following" : "Follow"}
-            </Button>
-          </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={isFollowed ? handleUnfollow : handleFollow}
+              >
+                {isFollowed ? "Following" : "Follow"}
+              </Button>
+            </div>
+          }
         </div>
         <div className="flex gap-2">
           {videoDetails?.hashtags?.map(

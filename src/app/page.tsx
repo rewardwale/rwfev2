@@ -18,7 +18,10 @@ export default function Home() {
     getData();
   }, []);
 
-  console.log("checking for data", data);
+  const localData = localStorage.getItem("ubi")
+  // const parsedData = JSON.parse(localData)
+
+  console.log("checking for data", localData);
 
   return (
     <div className="!scroll-smooth">

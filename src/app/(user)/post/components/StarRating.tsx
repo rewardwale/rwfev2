@@ -6,9 +6,10 @@ import { useState } from "react";
 interface StarRatingProps {
   onChange: (rating: number) => void;
   value?: number;
+  type?: "interactive" | "static";
 }
 
-export function StarRating({ onChange, value }: StarRatingProps) {
+export function StarRating({ onChange, value, type = "interactive" }: StarRatingProps) {
   const [hoverRating, setHoverRating] = useState(0);
 
   return (
@@ -17,10 +18,11 @@ export function StarRating({ onChange, value }: StarRatingProps) {
         <button
           key={star}
           type="button"
-          className="transition-transform hover:scale-110"
-          onMouseEnter={() => setHoverRating(star)}
-          onMouseLeave={() => setHoverRating(0)}
-          onClick={() => onChange(star)}
+          className={`transition-transform ${type === "interactive" ? "hover:scale-110" : ""}`}
+          onMouseEnter={() => type === "interactive" && setHoverRating(star)}
+          onMouseLeave={() => type === "interactive" && setHoverRating(0)}
+          onClick={() => type === "interactive" && onChange(star)}
+          disabled={type !== "interactive"}
         >
           <Star
             className={`h-8 w-8 ${

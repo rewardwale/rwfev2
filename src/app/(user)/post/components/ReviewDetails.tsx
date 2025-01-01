@@ -1,3 +1,4 @@
+"use client";
 import { Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 interface ReviewDetailsProps {
   title: string;
@@ -58,8 +60,19 @@ export function ReviewDetails({
       category,
       description,
       location,
+      thumbnailUrl: "",
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      title,
+      category,
+      description,
+      location,
+      thumbnailUrl: thumbnailUrl || "",
+    });
+  }, [title, category, description, location, thumbnailUrl, form]);
 
   const handleThumbnailUpload = (file: File) => {
     const reader = new FileReader();
@@ -70,11 +83,22 @@ export function ReviewDetails({
   };
 
   const onSubmit = (data: ReviewFormData) => {
+    console.log("Submitting data:", data);
+    console.log("Form errors:", form.formState.errors); // Log errors
+
+    if (!data.thumbnailUrl) {
+      form.setError("thumbnailUrl", {
+        type: "manual",
+        message: "Thumbnail is required.",
+      });
+      return;
+    }
+
     onTitleChange(data.title);
     onCategoryChange(data.category);
     onDescriptionChange(data.description);
     onLocationChange(data.location);
-    onNext();
+    onNext(); // Proceed only if no errors exist
   };
 
   return (
@@ -87,7 +111,14 @@ export function ReviewDetails({
             <FormItem>
               <Label htmlFor="title">Video Title</Label>
               <FormControl>
-                <Input {...field} placeholder="Enter a title for your review" />
+                <Input
+                  {...field}
+                  placeholder="Enter a title for your review"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    form.trigger("title"); // Trigger validation on input change
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -128,6 +159,10 @@ export function ReviewDetails({
                   {...field}
                   placeholder="Describe your experience"
                   className="min-h-[100px]"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    form.trigger("description"); // Trigger validation on input change
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -168,7 +203,53 @@ export function ReviewDetails({
               </div>
             )}
           </div>
+          <FormMessage>
+            {form.formState.errors.thumbnailUrl?.message}
+          </FormMessage>
         </div>
+        {/* <FormField
+          control={form.control}
+          name="thumbnailUrl"
+          render={({ field }) => (
+            <FormItem>
+              <Label>Cover Photo</Label>
+              <FormControl>
+                <div
+                  className="border-2 border-dashed rounded-lg p-4 hover:bg-secondary/50 transition-colors
+                    cursor-pointer"
+                  onClick={() => {
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = "image/*";
+                    input.onchange = (e) => {
+                      const file = (e.target as HTMLInputElement).files?.[0];
+                      if (file) handleThumbnailUpload(file);
+                    };
+                    input.click();
+                  }}
+                >
+                  {thumbnailUrl ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt="Thumbnail"
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 py-4">
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">
+                        Click to upload a cover photo
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </FormControl>
+              <FormMessage>
+                {form.formState.errors.thumbnailUrl?.message}
+              </FormMessage>
+            </FormItem>
+          )}
+        /> */}
 
         <FormField
           control={form.control}
