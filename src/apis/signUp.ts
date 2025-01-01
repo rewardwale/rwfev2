@@ -17,21 +17,20 @@ export async function checkUserNameAvailability(userName: string,latitude:string
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-
+console.log("response:::",response)
     if (response.status === 200) {
       if (response.data.data.isAvailable) {
-        return true;
+        return {status:true,message:response.data.message};
       } else if (!response.data.data.isAvailable) {
-        return false;
+        return {status:false,message:"User Name already exists!,try new"};
       }
     } else {
-      return false;
+      return {status:false,message:response.data.message};
     }
   } catch (error: any) {
     console.log("error\n\t",error)
     console.error("error", error.response);
-    return false;
-  }
+    return {status:false,message:error.message};  }
 }
 
 export async function validateEmail(email: string,  fingerPrints:string,latitude:string,longitude:string) {
@@ -61,8 +60,7 @@ export async function validateEmail(email: string,  fingerPrints:string,latitude
     }
   } catch (error: any) {
 console.log("error\n\t",error)
-    return {status:false,message:error.response.data.message};
-  }
+return {status:false,message:error.message};  }
 }
 
 export async function validatePhone(countryCode: string, mobile: string,  fingerPrints:string,latitude:string,longitude:string) {
@@ -91,8 +89,7 @@ export async function validatePhone(countryCode: string, mobile: string,  finger
     }
   } catch (error: any) {
     console.log("error\n\t",error)
-    return {status:false,message:error.response.data.message};
-  }
+    return {status:false,message:error.message};  }
 }
 
 export async function verifyOTPMobile(
@@ -130,8 +127,7 @@ export async function verifyOTPMobile(
     }
   } catch (error: any) {
     console.error("error\n\t", error);
-    return { status: false, message: error.response.data.message };
-  }
+    return {status:false,message:error.message};  }
 }
 
 export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:string,latitude:string,longitude:string) {
@@ -160,8 +156,7 @@ export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:s
     }
   } catch (error: any) {
     console.error("error\n\t",error);
-    return { status: false, message: error.response.data.message };
-  }
+    return {status:false,message:error.message};  }
 }
 
 export async function signup(value: {
@@ -231,6 +226,5 @@ longitude:string) {
     }
   } catch (error: any) {
     console.log("error\n\t", error );
-    return { error: error.response.data.message };
-  }
+    return {status:false,message:error.message};  }
 }

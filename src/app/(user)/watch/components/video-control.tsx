@@ -20,13 +20,12 @@ import { Badge } from "@/components/ui/badge";
 import { useVideoContext } from "../providers/video-control-provider";
 import { CommentsModal } from "./comments-modal";
 import { LikeAnimation } from "./like-animation";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
 import { followUser, unFollowUser } from "@/apis/profile";
-import { useAuth } from "../../../../context/AuthContext";
 import AuthModal from "@/components/ui/AuthModal";
 
 interface VideoDetails {
@@ -63,6 +62,7 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showDislikeAnimation, setShowDislikeAnimation] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const videoId = searchParams.get("v") || "";
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -374,7 +374,7 @@ export function VideoControls({ video }: VideoControlsProps) {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <h3 className="font-semibold">
+            <h3 className="font-semibold"  onClick={()=>router.push("/profile/"+videoDetails?.userDetails.userName)}>
               {videoDetails?.userDetails?.indFirstName}{" "}
               {videoDetails?.userDetails?.indLastName}
             </h3>
