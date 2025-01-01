@@ -305,6 +305,7 @@ export function ReviewForm() {
                       <p className="font-medium">{question.text}</p>
                       <div className="flex items-center gap-2">
                         <StarRating
+                          type="static"
                           value={question.rating}
                           onChange={() => {}}
                         />

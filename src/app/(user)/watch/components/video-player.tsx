@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useVideoContext } from "../providers/video-control-provider";
+
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -9,8 +10,18 @@ interface VideoPlayerProps {
 
 export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const { videoRef, isMuted } = useVideoContext();
+  // const { viewCount, incrementViewCount } = useVideoViews();
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
-  console.log("checking videourl in videoplayer", videoUrl);
+
+  // const handleVideoEnd = (id: any) => {
+  //   incrementViewCount(id);
+  //   console.log("checking videourl in videoplayer", viewCount);
+
+  //   if (!isLoggedIn && viewCount >= 2) {
+  //     setShowAuthPrompt(true);
+  //   }
+  // };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -46,6 +57,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         loop
         playsInline
         muted={isMuted}
+        // onEnded={() => handleVideoEnd(videoId)}
       />
     </div>
   );

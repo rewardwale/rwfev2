@@ -2,6 +2,7 @@
 
 export interface Video {
   _id: string;
+  userId:string;
   videoId: string;
   title: string;
   cdnVideoPath: string;
@@ -23,4 +24,5 @@ export interface Video {
   isBookmarked: boolean;
   categoryId: string;
   totalComments: number;
+  isFollowed:boolean;
 }
