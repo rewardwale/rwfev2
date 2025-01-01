@@ -65,6 +65,7 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
   const [showPlayIcon, setShowPlayIcon] = useState(!isPlaying);
+  const [userId, setUserId] = useState("");
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
@@ -85,8 +86,6 @@ export function VideoControls({ video }: VideoControlsProps) {
       loadVideoDetails();
     }
   }, [videoId]);
-  
-
 
   const handleLike = async () => {
     try {
@@ -151,11 +150,24 @@ export function VideoControls({ video }: VideoControlsProps) {
     }
   };
 
-  const handleFollow = async (id: any) => {
-    // let res = await followUser(id);
-    // if (res) {
-    setIsFollowed(!isFollowed);
-    // }
+  const handleFollow = async () => {
+    const storedData = localStorage.getItem("uib"); // 'uib' is the key in localStorage
+
+    // Check if data exists
+    if (storedData) {
+      // Parse the JSON string into a JavaScript object
+      const parsedData = JSON.parse(storedData);
+
+      // Log the _id to the console
+      console.log(parsedData._id, "checking for user id");
+      setUserId(parsedData._id);
+    } else {
+      console.log('No data found in localStorage for the key "uib".');
+    }
+    let res = await followUser(userId);
+    if (res) {
+      setIsFollowed(!isFollowed);
+    }
   };
 
   function navigateBack(): void {
@@ -324,7 +336,7 @@ export function VideoControls({ video }: VideoControlsProps) {
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => handleFollow(videoDetails?._id)}
+              onClick={() => handleFollow()}
             >
               {isFollowed ? "Following" : "Follow"}
             </Button>
