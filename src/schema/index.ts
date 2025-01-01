@@ -57,10 +57,10 @@ export const PersonalInfoFormSchema = z.object({
       message: "First name cannot be empty.",
     })
     .min(3, {
-      message: "First Name must be at least 3 characters.",
+      message: "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .max(30, {
-      message: "First Name must not be longer than 30 characters.",
+      message: "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "First name can only contain alphabets.",
@@ -71,10 +71,10 @@ export const PersonalInfoFormSchema = z.object({
       message: "Last Name cannot be empty.",
     })
     .min(1, {
-      message: "Last Name must be at least 1 characters.",
+      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .max(30, {
-      message: "Last Name must not be longer than 30 characters.",
+      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "Last name can only contain alphabets.",
@@ -144,7 +144,7 @@ export const PasswordFormSchema = z
       .max(30, { message: "Username must not be longer than 30 characters." })
       .regex(/^(?![_.]+$)[a-zA-Z0-9._]+$/, {
         message:
-          "Username can only contain letters, numbers,period and underscores, but not underscore alone.",
+          "Username can only contain letters, numbers, and underscores, dot, but not underscore or dot alone." 
       }),
 
     TnC: z.boolean().refine((val) => val === true, {

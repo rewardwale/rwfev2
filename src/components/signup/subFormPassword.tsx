@@ -28,15 +28,14 @@ import { EyeOpenIcon } from "@radix-ui/react-icons";
 interface Props {
   // stateChange: (one: boolean, two: boolean, three: boolean) => void;
   data: (username: string, password: string) => void;
-  errormsg:string;
+  errormsg: string;
 }
-export default function FinalProviderForm({ data,errormsg }: Props) {
+export default function FinalProviderForm({ data, errormsg }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
-  const [showPassword,setShowpassword]=useState<boolean>(false)
-  const [showPassword_1,setShowpassword_1]=useState<boolean>(false)
-
+  const [showPassword, setShowpassword] = useState<boolean>(false);
+  const [showPassword_1, setShowpassword_1] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof PasswordFormSchema>>({
     resolver: zodResolver(PasswordFormSchema),
@@ -53,7 +52,15 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
     setError("");
     setSuccess("");
     startTransition(() => {
-      Final(values)
+      const isLocalStorageAvailable = localStorage;
+      // Safely access location data from localStorage
+      const latitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lat") ?? "90")
+        : "90";
+      const longitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lng") ?? "90")
+        : "90";
+      Final(values, latitude, longitude)
         .then((res) => {
           console.log("===res===", res, values);
           if (res?.error) {
@@ -86,7 +93,9 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                 name="userName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User Name<span className="text-red-600"> *</span></FormLabel>
+                    <FormLabel>
+                      User Name<span className="text-red-600"> *</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -106,7 +115,9 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password<span className="text-red-600"> *</span></FormLabel>
+                    <FormLabel>
+                      Password<span className="text-red-600"> *</span>
+                    </FormLabel>
                     <FormControl>
                       {/* <Input
                         {...field}
@@ -115,20 +126,33 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                         disabled={pending}
                       /> */}
 
-<div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
-                          <Input
-                            {...field}
-                            placeholder="********"
-                            type={showPassword_1?"text":"password"}
-                            disabled={pending}
-                            className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
-                            maxLength={12}
-                            minLength={8}
-                          />
-                        <Button type="button" variant={"ghost"} className="hover:bg-transparent focus:ring-0"
-                        disabled={field.value.length===0} onClick={()=>setShowpassword_1(!showPassword_1)}>{showPassword_1?<EyeOpenIcon />:<EyeClosed/>}</Button>
-
-                          </div>
+                      <div
+                        className={
+                          "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
+                        }
+                      >
+                        <Input
+                          {...field}
+                          placeholder="********"
+                          type={showPassword_1 ? "text" : "password"}
+                          disabled={pending}
+                          className={cn(
+                            " focus:border-none focus-visible:outline-none focus-visible:ring-0",
+                            "border-none",
+                          )}
+                          maxLength={12}
+                          minLength={8}
+                        />
+                        <Button
+                          type="button"
+                          variant={"ghost"}
+                          className="hover:bg-transparent focus:ring-0"
+                          disabled={field.value.length === 0}
+                          onClick={() => setShowpassword_1(!showPassword_1)}
+                        >
+                          {showPassword_1 ? <EyeOpenIcon /> : <EyeClosed />}
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -140,7 +164,9 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password<span className="text-red-600"> *</span></FormLabel>
+                    <FormLabel>
+                      Confirm Password<span className="text-red-600"> *</span>
+                    </FormLabel>
                     <FormControl>
                       {/* <Input
                         {...field}
@@ -148,21 +174,33 @@ export default function FinalProviderForm({ data,errormsg }: Props) {
                         type="password"
                         disabled={pending}
                       /> */}
-                          <div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
-                          <Input
-                            {...field}
-                            placeholder="********"
-                            type={showPassword?"text":"password"}
-                            disabled={pending}
-                            maxLength={12}
-                            minLength={8}
-                            className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
-                     
-                          />
-                        <Button type="button" variant={"ghost"} className="hover:bg-transparent focus:ring-0"
-                        disabled={field.value.length===0} onClick={()=>setShowpassword(!showPassword)}>{showPassword?<EyeOpenIcon />:<EyeClosed/>}</Button>
-
-                          </div>
+                      <div
+                        className={
+                          "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
+                        }
+                      >
+                        <Input
+                          {...field}
+                          placeholder="********"
+                          type={showPassword ? "text" : "password"}
+                          disabled={pending}
+                          maxLength={12}
+                          minLength={8}
+                          className={cn(
+                            " focus:border-none focus-visible:outline-none focus-visible:ring-0",
+                            "border-none",
+                          )}
+                        />
+                        <Button
+                          type="button"
+                          variant={"ghost"}
+                          className="hover:bg-transparent focus:ring-0"
+                          disabled={field.value.length === 0}
+                          onClick={() => setShowpassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOpenIcon /> : <EyeClosed />}
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -55,7 +55,7 @@ export function LocationInput({ value, onChange ,disabled}: LocationInputProps) 
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="location">Location</Label>
+      {/* <Label htmlFor="location">Location</Label> */}
       <div className="relative">
         <Input
           ref={inputRef}
