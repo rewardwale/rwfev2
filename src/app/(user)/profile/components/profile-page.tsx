@@ -133,7 +133,7 @@ const ProfilePage = ({ profileData }: ProfilePageProps) => {
             <Link href={profileData.data.socialUrls.whatsapp}>
               {" "}
               <Image
-                className="mb-2 mr-5"
+                className="mr-5"
                 src="/whatsApp-logo.png"
                 alt="social-icon"
                 height={50}

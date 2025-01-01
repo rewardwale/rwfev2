@@ -11,6 +11,8 @@ export async function fetchProfileData() {
   }
 }
 
+//get post data for my profile
+
 export async function fetchProfilePosts(id: string) {
   const queryParams = new URLSearchParams({
     limit: "10",
