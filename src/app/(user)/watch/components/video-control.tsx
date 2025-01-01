@@ -12,6 +12,7 @@ import {
   Share2,
   Bookmark,
   ArrowLeft,
+  AwardIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,6 +26,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
 import { useRouter } from "next/navigation";
+import { followUser } from "@/apis/profile";
 
 interface VideoDetails {
   _id: string;
@@ -42,23 +44,31 @@ interface VideoDetails {
   totalLikes: number;
   totalComments: number;
   isLiked: boolean;
+  // isFollowed: boolean;
   isBookmarked: boolean;
 }
 
-export function VideoControls() {
+interface VideoControlsProps {
+  video?: VideoDetails;
+}
+
+export function VideoControls({ video }: VideoControlsProps) {
   const { isPlaying, isMuted, togglePlay, toggleMute, toggleFullscreen } =
     useVideoContext();
   const [showComments, setShowComments] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(video?.isLiked || false);
   const [unLiked, setIsUnLiked] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showDislikeAnimation, setShowDislikeAnimation] = useState(false);
   const searchParams = useSearchParams();
   const router =useRouter();
   const videoId = searchParams.get("v") || "";
-  // const isMobile = useMediaQuery("(max-width: 768px)");
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [showPlayIcon, setShowPlayIcon] = useState(!isPlaying);
+  const [userId, setUserId] = useState("");
+  // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
 
@@ -66,7 +76,6 @@ export function VideoControls() {
     const loadVideoDetails = async () => {
       try {
         const response = await fetchVideoDetails(videoId);
-        console.log("checking res of videoDetails", response.data);
         setVideoDetails(response?.data);
         setIsLiked(response?.data?.isLiked);
         setIsBookmarked(response?.data?.isBookmarked);
@@ -143,6 +152,26 @@ export function VideoControls() {
     }
   };
 
+  const handleFollow = async () => {
+    const storedData = localStorage.getItem("uib"); // 'uib' is the key in localStorage
+
+    // Check if data exists
+    if (storedData) {
+      // Parse the JSON string into a JavaScript object
+      const parsedData = JSON.parse(storedData);
+
+      // Log the _id to the console
+      console.log(parsedData._id, "checking for user id");
+      setUserId(parsedData._id);
+    } else {
+      console.log('No data found in localStorage for the key "uib".');
+    }
+    let res = await followUser(userId);
+    if (res) {
+      setIsFollowed(!isFollowed);
+    }
+  };
+
   function navigateBack(): void {
     if (window.history.length > 1) {
       window.history.back();
@@ -151,6 +180,7 @@ export function VideoControls() {
     }
   }
 
+  console.log("checking isPlaying", isPlaying);
   return (
     <>
       {/* Like/Dislike Animations */}
@@ -299,9 +329,20 @@ export function VideoControls() {
             </h3>
             <p className="text-sm text-white/80">{videoDetails?.title}</p>
           </div>
-          {/* <Button variant="secondary" size="sm">
-            Follow
-          </Button> */}
+          <div
+            className="flex justify-end"
+            style={{
+              width: "60px",
+            }}
+          >
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => handleFollow()}
+            >
+              {isFollowed ? "Following" : "Follow"}
+            </Button>
+          </div>
         </div>
         <div className="flex gap-2">
           {videoDetails?.hashtags?.map(
@@ -318,7 +359,7 @@ export function VideoControls() {
       {/* Comments Modal */}
       <CommentsModal
         isOpen={showComments}
-        ownerName={videoDetails?.userDetails.userName||""}
+        ownerName={videoDetails?.userDetails.userName || ""}
         onClose={() => setShowComments(false)}
       />
     </>

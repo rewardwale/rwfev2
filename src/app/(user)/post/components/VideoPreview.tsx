@@ -13,7 +13,7 @@ export function VideoPreview({ videoUrl, className = "" }: VideoPreviewProps) {
       <video
         src={videoUrl}
         className="w-full h-full object-cover"
-        controls
+        controls={false}
         playsInline
         autoPlay
         muted
