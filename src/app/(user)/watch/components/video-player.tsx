@@ -6,10 +6,9 @@ import { useVideoContext } from "../providers/video-control-provider";
 
 interface VideoPlayerProps {
   videoUrl?: string;
-  videoId?: string;
 }
 
-export function VideoPlayer({ videoUrl, videoId }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const { videoRef, isMuted } = useVideoContext();
   // const { viewCount, incrementViewCount } = useVideoViews();
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);

@@ -8,11 +8,14 @@ import { Header } from "../../home/components/header";
 import { Sidebar } from "../../home/components/sidebar";
 import { Footer } from "@/components/layout";
 import SearchInputContainer from "../../search/components/search-Input-component";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function HomePage() {
   const [data, setData] = useState<any>(null);
   const [userId, setUserId] = useState<any>(null);
   const [postData, setPostData] = useState([]);
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const getData = async () => {
@@ -42,7 +45,7 @@ export default function HomePage() {
 
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar />
+    {!isMobile &&  <Sidebar />}
       <div className="flex-1">
         <Header />
         {/* <div className="flex justify-center w-full"><SearchInputContainer/></div> */}

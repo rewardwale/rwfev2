@@ -365,16 +365,21 @@ export function VideoControls({ video }: VideoControlsProps) {
       <div
         className="absolute bottom-4 left-4 right-16 text-white"
         style={{
-          top: `${isMobile ? "75%" : "85%"}`,
+          top: `${isMobile ? "75%" : "82%"}`,
         }}
       >
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center gap-3 mb-2 cursor-pointer">
           <Avatar>
             <AvatarImage src={videoDetails?.userDetails?.indPic?.original} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="flex-1">
-            <h3 className="font-semibold"  onClick={()=>router.push("/profile/"+videoDetails?.userDetails.userName)}>
+          <div
+            className="flex-1"
+            onClick={() =>
+              router.push("/profile/" + videoDetails?.userDetails.userName)
+            }
+          >
+            <h3 className="font-semibold cursor-pointer">
               {videoDetails?.userDetails?.indFirstName}{" "}
               {videoDetails?.userDetails?.indLastName}
             </h3>
