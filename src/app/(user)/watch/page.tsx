@@ -148,7 +148,6 @@ export default function WatchPage() {
                 <VideoPlayer
                   key={currentVideo?._id}
                   videoUrl={currentVideo?.cdnVideoPath}
-                  videoId = {currentVideo?.videoId}
                 />
                 <VideoControls video={currentVideo} />
               </VideoControlsProvider>
