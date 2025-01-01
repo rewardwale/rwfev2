@@ -142,9 +142,9 @@ export const PasswordFormSchema = z
       })
       .min(3, { message: "Username must be at least 3 characters." })
       .max(30, { message: "Username must not be longer than 30 characters." })
-      .regex(/^(?![_.]+$)[a-zA-Z0-9._]+$/, {
+      .regex(/^(?![._-])(?!.*[._-]{2})[a-zA-Z0-9._-]+$/, {
         message:
-          "Username can only contain letters, numbers, and underscores, dot, but not underscore or dot alone." 
+          "Username can only contain letters, numbers, underscores, dots, and hyphens.\n It cannot start with special characters or \nhave consecutive special characters.",
       }),
 
     TnC: z.boolean().refine((val) => val === true, {

@@ -24,6 +24,7 @@ import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
+import { useRouter } from "next/navigation";
 
 interface VideoDetails {
   _id: string;
@@ -53,6 +54,7 @@ export function VideoControls() {
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showDislikeAnimation, setShowDislikeAnimation] = useState(false);
   const searchParams = useSearchParams();
+  const router =useRouter();
   const videoId = searchParams.get("v") || "";
   // const isMobile = useMediaQuery("(max-width: 768px)");
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
@@ -291,7 +293,7 @@ export function VideoControls() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <h3 className="font-semibold">
+            <h3 className="font-semibold"  onClick={()=>router.push("/profile/"+videoDetails?.userDetails.userName)}>
               {videoDetails?.userDetails?.indFirstName}{" "}
               {videoDetails?.userDetails?.indLastName}
             </h3>

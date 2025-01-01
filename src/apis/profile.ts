@@ -11,19 +11,19 @@ export async function fetchProfileData() {
   }
 }
 
-export async function fetchProfilePosts(id: string) {
+export async function fetchProfilePosts(id: string,count:number) {
   const queryParams = new URLSearchParams({
     limit: "10",
-    skip: "0",
+    skip:JSON.stringify(count),
     flag: "1",
     userId: id
   }).toString();
   const response = await apiClient(`/uploadedVideos?${queryParams}`, "GET");
-
+console.log("fetchProfilePosts::",response)
   if (response.success && response.data) {
-    return response.data;
+    return response.data.data;
   } else {
-    console.error("Failed to fetch landing page data:", response.error);
+    console.error("Failed to fetch fetchProfilePosts data:", response.error);
     return null;
   }
 }

@@ -48,8 +48,7 @@ export async function signInWithMobile(
     }
   } catch (error: any) {
     // console.error("error", error.response);
-    return { status: false, message: error.message };
-  }
+    return {status:false,message:error.message};  }
 }
 
 export async function signInWithEmail(password: string, email: string,  fingerPrint:string,latitude:string,longitude:string) {
@@ -90,8 +89,7 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
     }
   } catch (error: any) {
     console.error("error", error);
-    return { status: false, message: error.message };
-  }
+    return {status:false,message:error.message};  }
 }
 
 export async function signInWithUserName(password: string, userName: string,  fingerPrint:string,latitude:string,longitude:string) {
@@ -132,6 +130,6 @@ export async function signInWithUserName(password: string, userName: string,  fi
     }
   } catch (error: any) {
     // console.error("error", error.response);
-    return { status: false, message: error.message };
+    return {status:false,message:error.message};
   }
 }
