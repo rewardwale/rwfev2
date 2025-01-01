@@ -22,10 +22,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { EyeClosed } from "lucide-react";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
-import { cn } from '@/lib/utils'
-import blackLogo from '../../../public/brand_logo/PNG/RW_Black_Name.png'
-import whiteLogo from '../../../public/brand_logo/PNG/RW_White_Name.png'
+import { cn } from "@/lib/utils";
+import blackLogo from "../../../public/brand_logo/PNG/RW_Black_Name.png";
+import whiteLogo from "../../../public/brand_logo/PNG/RW_White_Name.png";
 import Image from "next/image";
+import { getDeviceFingerprint } from "@/lib/fingerPrint";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function LoginForm() {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const searchParams = useSearchParams();
-  const [showPassword,setShowpassword]=useState<boolean>(true)
+  const [showPassword, setShowpassword] = useState<boolean>(true);
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
@@ -53,7 +54,16 @@ export default function LoginForm() {
     setError("");
     setSuccess("");
     startTransition(() => {
-      Newlogin(values)
+      const fingerPrint = getDeviceFingerprint();
+      const isLocalStorageAvailable = localStorage;
+      // Safely access location data from localStorage
+      const latitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lat") ?? "90")
+        : "90";
+      const longitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lng") ?? "90")
+        : "90";
+      Newlogin(values, fingerPrint, latitude, longitude)
         .then((res) => {
           console.log("===res===", res);
           if (res?.error) {
@@ -68,7 +78,7 @@ export default function LoginForm() {
             localStorage.removeItem("token");
             localStorage.setItem("uib", JSON.stringify(res.success));
             localStorage.setItem("token", res.success.accessToken);
-            setSuccess("successfully logged in");
+            setSuccess("logging In.....");
           }
 
           // if (res?.twoFactor) {
@@ -82,43 +92,41 @@ export default function LoginForm() {
   };
 
   return (
-
-      <div className="min-h-screen flex flex-1 ">
-        <div className="relative hidden w-0 xl:block xl:flex-1 hue-rotate-30">
-          <Image
-            alt="Share your Experiences, Review and Rate"
-            src="/images/iStock-1409730706.jpg"
-            className="absolute h-full w-full"
-            width={10000}
-            height={10000}
-            // inset-0 size-full object-cover
-          />
-        </div>
-        <div
-          className=" flex-1 flex-col w-1/3 space-y-14
-           px-4 py-12 sm:px-6 xl:flex-none 
-            xl:px-20 min-h-screen  "
-        >
-          <div className="mx-auto  py-4">
-            <div className="flex flex-col items-center">
-              <Image
-                alt="Rewardwale"
-                src={whiteLogo}
-                className="w-[220px] hidden dark:inline"
-              />
-              <Image
-                alt="Rewardwale"
-                src={blackLogo}
-                className="w-[220px] inline dark:hidden"
-              />
-              <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
-                Sign In
-              </h2>
-            </div>
+    <div className="min-h-screen flex flex-1">
+      <div className="relative hidden w-0 xl:block xl:flex-1 hue-rotate-30">
+        <Image
+          alt="Share your Experiences, Review and Rate"
+          src="/images/iStock-1409730706.jpg"
+          className="absolute h-full w-full"
+          width={10000}
+          height={10000}
+          // inset-0 size-full object-cover
+        />
+      </div>
+      <div
+        className="flex-1 flex-col w-1/3 space-y-14 px-4 py-12 sm:px-6 xl:flex-none xl:px-20
+          min-h-screen"
+      >
+        <div className="mx-auto py-4">
+          <div className="flex flex-col items-center">
+            <Image
+              alt="Rewardwale"
+              src={whiteLogo}
+              className="w-[220px] hidden dark:inline"
+            />
+            <Image
+              alt="Rewardwale"
+              src={blackLogo}
+              className="w-[220px] inline dark:hidden"
+            />
+            <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
+              Sign In
+            </h2>
           </div>
+        </div>
 
-<div>
-<Form {...form}>
+        <div>
+          <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-4">
                 <>
@@ -150,21 +158,31 @@ export default function LoginForm() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <div className={`flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm `}>
-                          <Input
-                            {...field}
-                            placeholder="********"
-                            type={showPassword?"password":"text"}
-                            disabled={pending}
-                            className={cn(' focus:border-none focus-visible:outline-none focus-visible:ring-0', "border-none")}
-                     
-                          />
-                        <Button type="button" variant={"ghost"} className="hover:bg-transparent focus:ring-0"
-                        disabled={field.value.length===0} onClick={()=>setShowpassword(!showPassword)}>{showPassword?<EyeClosed/>:<EyeOpenIcon />}</Button>
-
+                          <div
+                            className={
+                              "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
+                            }
+                          >
+                            <Input
+                              {...field}
+                              placeholder="********"
+                              type={showPassword ? "password" : "text"}
+                              disabled={pending}
+                              className={cn(
+                                " focus:border-none focus-visible:outline-none focus-visible:ring-0",
+                                "border-none",
+                              )}
+                            />
+                            <Button
+                              type="button"
+                              variant={"ghost"}
+                              className="hover:bg-transparent focus:ring-0"
+                              disabled={field.value.length === 0}
+                              onClick={() => setShowpassword(!showPassword)}
+                            >
+                              {showPassword ? <EyeClosed /> : <EyeOpenIcon />}
+                            </Button>
                           </div>
-                          
-                      
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -172,7 +190,7 @@ export default function LoginForm() {
                   />
                 </>
                 {/* )} */}
-              
+
                 <Button
                   variant="link"
                   size="sm"
@@ -188,16 +206,19 @@ export default function LoginForm() {
                 {/* {shwoTwoFactor ? "Confirm" : "login"} */}
                 login
               </Button>
-           
-              <Button variant={"link"} className="font-normal w-full hover:text-blue-500" size="sm" asChild>
-      <Link href={"/signup"}>Dont have an account ? </Link>
-    </Button>
+
+              <Button
+                variant={"link"}
+                className="font-normal w-full hover:text-blue-500"
+                size="sm"
+                asChild
+              >
+                <Link href={"/signup"}>Dont have an account ? </Link>
+              </Button>
             </form>
           </Form>
-</div>
-         
         </div>
       </div>
-
+    </div>
   );
 }

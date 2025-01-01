@@ -321,6 +321,7 @@ export function VideoControls({ video }: VideoControlsProps) {
       {/* Comments Modal */}
       <CommentsModal
         isOpen={showComments}
+        ownerName={videoDetails?.userDetails.userName||""}
         onClose={() => setShowComments(false)}
       />
     </>
