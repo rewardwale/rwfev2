@@ -38,17 +38,26 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
     const handlePause = () => setIsPlaying(false);
     const handleEnded = () => setIsPlaying(false);
     const handleVolumeChange = () => setIsMuted(video.muted);
+    const handleError = () => {
+      console.error('Video playback error');
+      setIsPlaying(false);
+    };
 
     video.addEventListener('play', handlePlay);
+    video.addEventListener('playing', handlePlay);
     video.addEventListener('pause', handlePause);
     video.addEventListener('ended', handleEnded);
+    video.addEventListener('error', handleError);
     video.addEventListener('volumechange', handleVolumeChange);
 
-    // Try to autoplay when component mounts
+    // Attempt autoplay
     const attemptAutoplay = async () => {
       try {
-        await video.play();
-        setIsPlaying(true);
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          await playPromise;
+          setIsPlaying(true);
+        }
       } catch (error) {
         console.error('Autoplay failed:', error);
         setIsPlaying(false);
@@ -59,8 +68,10 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
 
     return () => {
       video.removeEventListener('play', handlePlay);
+      video.removeEventListener('playing', handlePlay);
       video.removeEventListener('pause', handlePause);
       video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('error', handleError);
       video.removeEventListener('volumechange', handleVolumeChange);
     };
   }, []);
@@ -71,8 +82,11 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
 
     try {
       if (video.paused) {
-        await video.play();
-        setIsPlaying(true);
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          await playPromise;
+          setIsPlaying(true);
+        }
       } else {
         video.pause();
         setIsPlaying(false);

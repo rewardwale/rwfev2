@@ -64,6 +64,7 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
+  const [showPlayIcon, setShowPlayIcon] = useState(!isPlaying);
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
@@ -84,8 +85,8 @@ export function VideoControls({ video }: VideoControlsProps) {
       loadVideoDetails();
     }
   }, [videoId]);
+  
 
-  console.log("checking res of videoDetails", videoDetails?._id);
 
   const handleLike = async () => {
     try {

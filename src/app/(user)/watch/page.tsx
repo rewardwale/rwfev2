@@ -114,8 +114,23 @@ export default function WatchPage() {
 
   return (
     <div className="flex flex-col h-screen bg-black">
+      {!isMobile && (
+        <div
+          onClick={() => router.back()}
+          className="absolute"
+          style={{
+            top: "5%",
+            left: "2%",
+            cursor: "pointer",
+            fontSize: "24px",
+            fontWeight: "600",
+            zIndex: "9999",
+          }}
+        >
+          <span>Back</span>
+        </div>
+      )}
       <main className="flex-1 relative">
-
         <div className="absolute inset-0 flex items-center justify-center">
           <div
             className="relative w-full max-w-[400px] md:max-w-fit transition-all duration-400
