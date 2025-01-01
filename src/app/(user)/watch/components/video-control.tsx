@@ -12,8 +12,8 @@ import {
   Share2,
   Bookmark,
   ArrowLeft,
+  AwardIcon,
 } from "lucide-react";
-
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
+import { followUser } from "@/apis/profile";
 
 interface VideoDetails {
   _id: string;
@@ -42,6 +43,7 @@ interface VideoDetails {
   totalLikes: number;
   totalComments: number;
   isLiked: boolean;
+  // isFollowed: boolean;
   isBookmarked: boolean;
 }
 
@@ -61,6 +63,7 @@ export function VideoControls({ video }: VideoControlsProps) {
   const videoId = searchParams.get("v") || "";
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
@@ -69,7 +72,6 @@ export function VideoControls({ video }: VideoControlsProps) {
     const loadVideoDetails = async () => {
       try {
         const response = await fetchVideoDetails(videoId);
-        console.log("checking res of videoDetails", response.data);
         setVideoDetails(response?.data);
         setIsLiked(response?.data?.isLiked);
         setIsBookmarked(response?.data?.isBookmarked);
@@ -82,6 +84,8 @@ export function VideoControls({ video }: VideoControlsProps) {
       loadVideoDetails();
     }
   }, [videoId]);
+
+  console.log("checking res of videoDetails", videoDetails?._id);
 
   const handleLike = async () => {
     try {
@@ -146,6 +150,13 @@ export function VideoControls({ video }: VideoControlsProps) {
     }
   };
 
+  const handleFollow = async (id: any) => {
+    // let res = await followUser(id);
+    // if (res) {
+    setIsFollowed(!isFollowed);
+    // }
+  };
+
   function navigateBack(): void {
     if (window.history.length > 1) {
       window.history.back();
@@ -154,6 +165,7 @@ export function VideoControls({ video }: VideoControlsProps) {
     }
   }
 
+  console.log("checking isPlaying", isPlaying);
   return (
     <>
       {/* Like/Dislike Animations */}
@@ -302,9 +314,20 @@ export function VideoControls({ video }: VideoControlsProps) {
             </h3>
             <p className="text-sm text-white/80">{videoDetails?.title}</p>
           </div>
-          {/* <Button variant="secondary" size="sm">
-            Follow
-          </Button> */}
+          <div
+            className="flex justify-end"
+            style={{
+              width: "60px",
+            }}
+          >
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => handleFollow(videoDetails?._id)}
+            >
+              {isFollowed ? "Following" : "Follow"}
+            </Button>
+          </div>
         </div>
         <div className="flex gap-2">
           {videoDetails?.hashtags?.map(
@@ -321,7 +344,7 @@ export function VideoControls({ video }: VideoControlsProps) {
       {/* Comments Modal */}
       <CommentsModal
         isOpen={showComments}
-        ownerName={videoDetails?.userDetails.userName||""}
+        ownerName={videoDetails?.userDetails.userName || ""}
         onClose={() => setShowComments(false)}
       />
     </>

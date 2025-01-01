@@ -1,8 +1,9 @@
-'use client'
+"use client";
+
 import { createContext, useContext, useRef, useState, useEffect, ReactNode } from 'react';
 
 interface VideoContextType {
-  videoRef: React.RefObject<HTMLVideoElement | null>;  // Allow null here
+  videoRef: React.RefObject<HTMLVideoElement | null>;
   isPlaying: boolean;
   isMuted: boolean;
   togglePlay: () => void;
@@ -25,8 +26,8 @@ interface VideoControlsProviderProps {
 }
 
 export function VideoControlsProvider({ children }: VideoControlsProviderProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);  // Allow null here
-  const [isPlaying, setIsPlaying] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
@@ -35,21 +36,31 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
 
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => setIsPlaying(false);
     const handleVolumeChange = () => setIsMuted(video.muted);
-
-      // Try to autoplay when component mounts
-      video.play().catch((error) => {
-        console.error('Autoplay failed:', error);
-        setIsPlaying(false);
-      });
 
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
+    video.addEventListener('ended', handleEnded);
     video.addEventListener('volumechange', handleVolumeChange);
+
+    // Try to autoplay when component mounts
+    const attemptAutoplay = async () => {
+      try {
+        await video.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Autoplay failed:', error);
+        setIsPlaying(false);
+      }
+    };
+
+    attemptAutoplay();
 
     return () => {
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
+      video.removeEventListener('ended', handleEnded);
       video.removeEventListener('volumechange', handleVolumeChange);
     };
   }, []);
@@ -61,12 +72,14 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
     try {
       if (video.paused) {
         await video.play();
+        setIsPlaying(true);
       } else {
         video.pause();
+        setIsPlaying(false);
       }
-      // setIsPlaying(!video.paused);
     } catch (error) {
       console.error('Error toggling play state:', error);
+      setIsPlaying(false);
     }
   };
 
@@ -96,7 +109,7 @@ export function VideoControlsProvider({ children }: VideoControlsProviderProps) 
   return (
     <VideoContext.Provider 
       value={{ 
-        videoRef, 
+        videoRef,
         isPlaying,
         isMuted,
         togglePlay,
