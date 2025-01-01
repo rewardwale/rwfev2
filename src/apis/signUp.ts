@@ -175,9 +175,9 @@ export async function signup(value: {
   userName: string;
   password: string;
   fingerPrints:string;
-  latitude:string;
-  longitude:string;
-}) {
+
+},  latitude:string,
+longitude:string) {
   try {
     console.log("Signup\n",value)
     console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`);
@@ -217,8 +217,8 @@ export async function signup(value: {
         headers: {
           "Content-Type": "application/json",
           fingerprint: value.fingerPrints,
-          latitude: value.latitude,
-          longitude: value.longitude,
+          latitude: latitude,
+          longitude: longitude,
           lan: "en",
         },
         timeout: 10000,
