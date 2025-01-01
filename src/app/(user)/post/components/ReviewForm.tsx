@@ -137,8 +137,6 @@ export function ReviewForm() {
           }
         }
       }
-
-     
     } finally {
       setIsLoading(false);
     }
@@ -199,15 +197,17 @@ export function ReviewForm() {
                   setThumbnailUrl(url);
                   setThumbnailFile(file);
                 }}
+                onNext={() => setStep(3)}
+                setStep={setStep}
               />
-              <div className="flex justify-end gap-4">
+              {/* <div className="flex justify-end gap-4">
                 <Button variant="outline" onClick={() => setStep(1)}>
                   Back
                 </Button>
                 <Button onClick={() => setStep(3)} disabled={!isStepTwoValid}>
                   Next
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         );
