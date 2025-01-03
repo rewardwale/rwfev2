@@ -4,10 +4,9 @@ import { Metadata } from "next";
 import React, { useEffect, useRef } from "react";
 import { BrandHeader } from "./components/BrandPageBanner";
 import { brandInfo, dummyCategoryData, posts, reviews } from "./data/mockdata";
-import { ReviewCard } from "./components/review-card";
-import { PostCard } from "./components/post-card";
+
 import { Footer } from "@/components/layout";
-import SingleCategoryShorts from "./components/postSection";
+// import SingleCategoryShorts from "./components/postSection";
 
 export default function BrandPage({ params }: { params: any }) {
   const resolvedParams = React.useMemo(() => params, [params]);
@@ -30,9 +29,9 @@ export default function BrandPage({ params }: { params: any }) {
       <BrandHeader info={brandInfo} />
 
       {/* product review section */}
-      <div className="container">
+      {/* <div className="container">
         <SingleCategoryShorts categoryData={dummyCategoryData} />
-      </div>
+      </div> */}
 
       {/* post section */}
 
