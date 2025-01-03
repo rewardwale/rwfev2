@@ -67,8 +67,16 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
     setError("");
     setSuccess("");
     startTransition(() => {
-      const fingerPrints=getDeviceFingerprint();
-      PersonalInfo(values,fingerPrints)
+      const fingerPrints = getDeviceFingerprint();
+      const isLocalStorageAvailable = localStorage;
+      // Safely access location data from localStorage
+      const latitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lat") ?? "90")
+        : "90";
+      const longitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lng") ?? "90")
+        : "90";
+      PersonalInfo(values, fingerPrints,latitude,longitude)
         .then((res) => {
           //console.log("===res===", res);
           if (res?.error) {
@@ -102,81 +110,28 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-         
-              <div className="flex gap-2 w-full">
-                <FormField
-                  control={form.control}
-                  name="firstname"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>First Name<span className="text-red-600"> *</span></FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Jhon"
-                          type="text"
-                          maxLength={30}
-                          minLength={3}
-                          disabled={pending}
-                          onBlur={(e) => {
-                            const value = e.target.value;
-                            const capitalizedValue =
-                              value.charAt(0).toUpperCase() + value.slice(1);
-                            field.onChange(capitalizedValue);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="lastname"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>Last Name<span className="text-red-600"> *</span></FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Doe"
-                          type="text"
-                          maxLength={30}
-                          minLength={3}
-                          disabled={pending}
-                          onBlur={(e) => {
-                            const value = e.target.value;
-                            const capitalizedValue =
-                              value.charAt(0).toUpperCase() + value.slice(1);
-                            field.onChange(capitalizedValue);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
+            <div className="flex gap-2 w-full">
               <FormField
                 control={form.control}
-                name="email"
+                name="firstname"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email<span className="text-red-600"> *</span></FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel>
+                      First Name<span className="text-red-600"> *</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="name@domain.com"
-                        type="email"
+                        placeholder="Jhon"
+                        type="text"
+                        maxLength={30}
+                        minLength={3}
                         disabled={pending}
                         onBlur={(e) => {
                           const value = e.target.value;
-
-                          const lowerCase = value.toLocaleLowerCase();
-
-                          field.onChange(lowerCase);
+                          const capitalizedValue =
+                            value.charAt(0).toUpperCase() + value.slice(1);
+                          field.onChange(capitalizedValue);
                         }}
                       />
                     </FormControl>
@@ -184,25 +139,28 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
-                name="mobile"
+                name="lastname"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number<span className="text-red-600"> *</span></FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel>
+                      Last Name<span className="text-red-600"> *</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="1234567890"
+                        placeholder="Doe"
                         type="text"
-                        maxLength={10}
+                        maxLength={30}
+                        minLength={3}
                         disabled={pending}
-                        onChange={(e)=>{
-                          const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-                          if (value.length <= 10) {
-                            field.onChange(value); 
-                          }
-                        
+                        onBlur={(e) => {
+                          const value = e.target.value;
+                          const capitalizedValue =
+                            value.charAt(0).toUpperCase() + value.slice(1);
+                          field.onChange(capitalizedValue);
                         }}
                       />
                     </FormControl>
@@ -210,80 +168,145 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
                   </FormItem>
                 )}
               />
+            </div>
 
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Location<span className="text-red-600"> *</span></FormLabel>
-                    <FormControl>
-                      {/* <Input
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Email<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="name@domain.com"
+                      type="email"
+                      disabled={pending}
+                      onBlur={(e) => {
+                        const value = e.target.value;
+
+                        const lowerCase = value.toLocaleLowerCase();
+
+                        field.onChange(lowerCase);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="mobile"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Phone Number<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="1234567890"
+                      type="text"
+                      maxLength={10}
+                      disabled={pending}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                        if (value.length <= 10) {
+                          field.onChange(value);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Location<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    {/* <Input
                         {...field}
                         placeholder="India"
                         type="text"
                         disabled={pending}
                       /> */}
-                      <LocationInput value={field.value} onChange={field.onChange} disabled={pending}/>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex gap-2 w-full">
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>gender<span className="text-red-600"> *</span></FormLabel>
-                      <FormControl>
-                        {/* <Input
+                    <LocationInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={pending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex gap-2 w-full">
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>
+                      gender<span className="text-red-600"> *</span>
+                    </FormLabel>
+                    <FormControl>
+                      {/* <Input
                           {...field}
                           placeholder="********"
                           type="text"
                           disabled={pending}
                           /> */}
-                        <SelectGender
-                          {...field}
-                          error={form.formState.errors.mobile?.message}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      <SelectGender
+                        {...field}
+                        error={form.formState.errors.mobile?.message}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="dob"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>Date of Birth<span className="text-red-600"> *</span></FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="date"
-                          disabled={pending}
-                          value={
-                            field.value
-                              ? field.value.toISOString().split("T")[0]
-                              : ""
-                          } // Convert Date to string
-                          onChange={(e) => {
-                            const dateValue = e.target.value
-                              ? new Date(e.target.value)
-                              : undefined;
-                            field.onChange(dateValue); // Convert string to Date before passing it to react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            
+              <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>
+                      Date of Birth<span className="text-red-600"> *</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="date"
+                        disabled={pending}
+                        value={
+                          field.value
+                            ? field.value.toISOString().split("T")[0]
+                            : ""
+                        } // Convert Date to string
+                        onChange={(e) => {
+                          const dateValue = e.target.value
+                            ? new Date(e.target.value)
+                            : undefined;
+                          field.onChange(dateValue); // Convert string to Date before passing it to react-hook-form
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           {(error || urlError) && <FormError message={error || urlError} />}
           {success && <FormSuccess message={success} />}
@@ -291,16 +314,19 @@ export default function PersonalInfoForm({ stateChange, data }: Props) {
             <Button className="w-full" type="submit">
               Next
             </Button>
-
- 
           </div>
 
-          <Button variant={"link"} className="font-normal w-full hover:text-blue-500" size="sm" asChild>
-      <Link href={"/login"}>Already have an account? </Link>
-    </Button>
+          <Button
+            variant={"link"}
+            className="font-normal w-full hover:text-blue-500"
+            size="sm"
+            asChild
+          >
+            <Link href={"/login"}>Already have an account? </Link>
+          </Button>
         </form>
       </Form>
-    
+
       {/* </CardWrapper> */}
     </div>
   );

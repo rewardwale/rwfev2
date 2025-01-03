@@ -59,7 +59,7 @@ export default function Video() {
 
       <div className="relative">
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex sm:pb-4 gap-3">
+          <div className="flex sm:pb-4 gap-4">
             {videoData.length > 0 || !videoData ? (
               videoData.map((item: videoData, index: number) => (
                 <VideoCardItem
@@ -67,7 +67,7 @@ export default function Video() {
                   key={index}
                   height={10000}
                   width={10000}
-                  className="w-[100px] md:w-[200px] sm:w-[145px]"
+                  className="w-[130px] md:w-[200px] sm:w-[145px]"
                   aspectRatio="portrait"
                 />
            

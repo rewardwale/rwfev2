@@ -15,12 +15,14 @@ interface CommentsContentProps {
   onClose: () => void;
   newComment: string;
   setNewComment: (comment: string) => void;
+  ownerName:string;
 }
 
 export function CommentsContent({
   onClose,
   newComment,
   setNewComment,
+  ownerName
 }: CommentsContentProps) {
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v") || "";
@@ -66,6 +68,7 @@ export function CommentsContent({
             {comments.map((comment) => (
               <CommentItem
                 key={comment._id}
+                ownerName={ownerName}
                 comment={comment}
                 onLike={handleLikeComment}
                 onDelete={handleDeleteComment}

@@ -40,11 +40,11 @@ export function Header() {
         {/* <Button variant="ghost" size="icon">
           <Menu className="h-5 w-5" />
         </Button> */}
-        <Sidebar />
+        {/* <Sidebar /> */}
       </div>
 
       <div
-        className={`flex items-center w-full ${isMobile ? "justify-center" : "justify-normal"}`}
+        className={"flex items-center w-full justify-center"}
       >
         <SearchInputContainer />
       </div>

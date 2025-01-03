@@ -22,7 +22,7 @@ export const NewSignUp = async (values: z.infer<typeof combinedSchema>) => {
 };
 
 export const PersonalInfo = async (
-  values: z.infer<typeof PersonalInfoFormSchema>,fingerPrints:string
+  values: z.infer<typeof PersonalInfoFormSchema>,fingerPrints:string,latitude:string,longitude:string
 ) => {
   const validatedFields = PersonalInfoFormSchema.safeParse(values);
 
@@ -33,8 +33,8 @@ export const PersonalInfo = async (
   const { email, mobile, firstname, lastname, city, dob } =
     validatedFields.data;
 
-  const validatedEmail = await validateEmail(email,fingerPrints);
-  const validateMobile = await validatePhone("91", mobile,fingerPrints);
+  const validatedEmail = await validateEmail(email,fingerPrints,latitude,longitude);
+  const validateMobile = await validatePhone("91", mobile,fingerPrints,latitude,longitude);
   if (!validatedEmail.status) {
     return { error:validatedEmail.message };
   }
@@ -54,7 +54,9 @@ export const Verification = async (
   code: string,
   number: string,
   email: string,
-  fingerPrints:string
+  fingerPrints:string,
+  latitude:string,
+  longitude:string
 ) => {
   const validatedFields = OTPFormSchema.safeParse(values);
 
@@ -64,8 +66,8 @@ export const Verification = async (
   }
   const { verifyEmail, verifyMobileNumber } = validatedFields.data;
 
-  const getMobileOtp = await verifyOTPMobile(code, number, verifyMobileNumber,fingerPrints);
-  const getEmailOtp = await verifyOTPEmail(verifyEmail, email,fingerPrints);
+  const getMobileOtp = await verifyOTPMobile(code, number, verifyMobileNumber,fingerPrints,latitude,longitude);
+  const getEmailOtp = await verifyOTPEmail(verifyEmail, email,fingerPrints,latitude,longitude);
   console.log(":::11::", getEmailOtp);
   console.log(":::21::", getMobileOtp);
   // if (getEmailOtp?.status) {
@@ -83,7 +85,7 @@ export const Verification = async (
   }
 };
 
-export const Final = async (values: z.infer<typeof PasswordFormSchema>) => {
+export const Final = async (values: z.infer<typeof PasswordFormSchema>,latitude:string,longitude:string) => {
   const validatedFields = PasswordFormSchema.safeParse(values);
 
   console.log(":::::::::", validatedFields);
@@ -92,10 +94,13 @@ export const Final = async (values: z.infer<typeof PasswordFormSchema>) => {
   }
   const { userName, password, confirmPassword } = validatedFields.data;
 
-  const verifyUserName = await checkUserNameAvailability(userName);
-  if (!verifyUserName) {
-    return { error: "userName already exists, try some other" };
+  const verifyUserName = await checkUserNameAvailability(userName,latitude,longitude);
+  if (!verifyUserName?.status) {
+    return { error:verifyUserName?.message };
   }
 
   return { success: "Success" };
 };
+
+
+

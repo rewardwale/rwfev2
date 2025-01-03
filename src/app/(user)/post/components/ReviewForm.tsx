@@ -61,7 +61,7 @@ export function ReviewForm() {
     questions.reduce((acc, q) => acc + q.rating, 0) / questions.length;
   const isStepTwoValid =
     title && category && description && location && thumbnailUrl;
-  // const isStepThreeValid = questions.every((q) => q.rating > 0 && q.feedback.trim().length > 0);
+  const isStepThreeValid = questions.every((q) => q.rating > 0);
 
   const updateQuestion = (index: number, updates: Partial<Question>) => {
     setQuestions(
@@ -137,8 +137,6 @@ export function ReviewForm() {
           }
         }
       }
-
-     
     } finally {
       setIsLoading(false);
     }
@@ -199,15 +197,17 @@ export function ReviewForm() {
                   setThumbnailUrl(url);
                   setThumbnailFile(file);
                 }}
+                onNext={() => setStep(3)}
+                setStep={setStep}
               />
-              <div className="flex justify-end gap-4">
+              {/* <div className="flex justify-end gap-4">
                 <Button variant="outline" onClick={() => setStep(1)}>
                   Back
                 </Button>
                 <Button onClick={() => setStep(3)} disabled={!isStepTwoValid}>
                   Next
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         );
@@ -244,10 +244,7 @@ export function ReviewForm() {
               <Button variant="outline" onClick={() => setStep(2)}>
                 Back
               </Button>
-              <Button
-                onClick={() => setStep(4)}
-                // disabled={!isStepThreeValid}
-              >
+              <Button onClick={() => setStep(4)} disabled={!isStepThreeValid}>
                 Next
               </Button>
             </div>
@@ -305,6 +302,7 @@ export function ReviewForm() {
                       <p className="font-medium">{question.text}</p>
                       <div className="flex items-center gap-2">
                         <StarRating
+                          type="static"
                           value={question.rating}
                           onChange={() => {}}
                         />

@@ -12,6 +12,7 @@ import {
   Share2,
   Bookmark,
   ArrowLeft,
+  AwardIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,14 +20,17 @@ import { Badge } from "@/components/ui/badge";
 import { useVideoContext } from "../providers/video-control-provider";
 import { CommentsModal } from "./comments-modal";
 import { LikeAnimation } from "./like-animation";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
+import { followUser, unFollowUser } from "@/apis/profile";
+import AuthModal from "@/components/ui/AuthModal";
 
 interface VideoDetails {
   _id: string;
+  userId: string;
   userDetails: {
     indFirstName: string;
     indLastName: string;
@@ -41,33 +45,55 @@ interface VideoDetails {
   totalLikes: number;
   totalComments: number;
   isLiked: boolean;
+  isFollowed: boolean;
   isBookmarked: boolean;
 }
 
-export function VideoControls() {
+interface VideoControlsProps {
+  video?: VideoDetails;
+}
+
+export function VideoControls({ video }: VideoControlsProps) {
   const { isPlaying, isMuted, togglePlay, toggleMute, toggleFullscreen } =
     useVideoContext();
   const [showComments, setShowComments] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(video?.isLiked || false);
   const [unLiked, setIsUnLiked] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showDislikeAnimation, setShowDislikeAnimation] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const videoId = searchParams.get("v") || "";
-  // const isMobile = useMediaQuery("(max-width: 768px)");
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(video?.isFollowed);
+  const [showPlayIcon, setShowPlayIcon] = useState(!isPlaying);
+  const [userId, setUserId] = useState("");
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
+
+  const checkToken = async () => {
+    const token = localStorage.getItem("token");
+
+    if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   useEffect(() => {
     const loadVideoDetails = async () => {
       try {
         const response = await fetchVideoDetails(videoId);
-        console.log("checking res of videoDetails", response.data);
         setVideoDetails(response?.data);
         setIsLiked(response?.data?.isLiked);
         setIsBookmarked(response?.data?.isBookmarked);
+        setUserId(response?.data?.userId);
+        setIsFollowed(response?.data?.isFollowed);
       } catch (error) {
         console.error("Error loading video details:", error);
       }
@@ -77,6 +103,14 @@ export function VideoControls() {
       loadVideoDetails();
     }
   }, [videoId]);
+
+  const handleAuthAction = (action: () => Promise<void>) => {
+    if (!isLoggedIn) {
+      setShowAuthModal(true);
+      return;
+    }
+    action();
+  };
 
   const handleLike = async () => {
     try {
@@ -95,6 +129,11 @@ export function VideoControls() {
     } catch (error) {
       console.error("Error liking video:", error);
     }
+  };
+
+  const handleShowComments = async () => {
+    setShowComments(true);
+    return Promise.resolve();
   };
 
   const handleunLike = async () => {
@@ -141,6 +180,33 @@ export function VideoControls() {
     }
   };
 
+  const handleFollow = async () => {
+    try {
+      if (!isFollowed) {
+        let res = await followUser(userId);
+        if (res) {
+          setIsFollowed(!isFollowed);
+        } else {
+          // console.log("checking res of follow", res);
+          setIsFollowed(false);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    try {
+      if (isFollowed) {
+        await unFollowUser(userId); // Call the API to unfollow the user
+        setIsFollowed(false); // Update the state to reflect that the user is no longer followed
+      }
+    } catch (error) {
+      console.error("Error unfollowing user:", error); // Handle any errors
+    }
+  };
+
   function navigateBack(): void {
     if (window.history.length > 1) {
       window.history.back();
@@ -149,35 +215,45 @@ export function VideoControls() {
     }
   }
 
+  console.log("checking isPlaying", isPlaying);
   return (
     <>
       {/* Like/Dislike Animations */}
       <LikeAnimation isLike={true} show={showLikeAnimation} />
       <LikeAnimation isLike={false} show={showDislikeAnimation} />
 
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
+
       {/* Center play/pause button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-          text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full w-16
-          h-16"
-        onClick={togglePlay}
+      {/* <div
+        className={`absolute inset-0 flex items-center justify-center transition-opacity
+          duration-300 ${isPlaying && "group-hover:opacity-100 opacity-0"} ${ !isPlaying
+          && "opacity-100" }`}
       >
-        {isPlaying ? (
-          <Pause className="h-8 w-8" />
-        ) : (
-          <Play className="h-8 w-8" />
-        )}
-      </Button>
+        <div className="bg-black/30 rounded-full p-4">
+          {isPlaying ? (
+            <Pause className="w-12 h-12 text-white" />
+          ) : (
+            <Play className="w-12 h-12 text-white" />
+          )}
+        </div>
+      </div> */}
 
       {/* Top controls */}
-      <div className="absolute top-4 right-4 flex">
+
+      {/* <div className="absolute top-4 right-4 flex gap-2">
         <Button
           variant="ghost"
           size="icon"
-          className="text-white"
-          onClick={toggleMute}
+          className="text-white hover:bg-black/30"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent video play/pause
+            toggleMute();
+          }}
         >
           {isMuted ? (
             <VolumeX className="h-6 w-6" />
@@ -185,33 +261,34 @@ export function VideoControls() {
             <Volume2 className="h-6 w-6" />
           )}
         </Button>
+      </div> */}
 
-        {isMobile && (
-          <div
-            className="absolute top-4"
+      {isMobile && (
+        <div
+          className="absolute top-4"
+          style={{
+            top: '2%',
+            right: "21rem",
+            height: "50px",
+            width: "50px",
+          }}
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white"
+            onClick={navigateBack}
             style={{
-              top: 0,
-              right: "21rem",
               height: "50px",
               width: "50px",
             }}
           >
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white"
-              onClick={navigateBack}
-              style={{
-                height: "50px",
-                width: "50px",
-              }}
-            >
-              {/* <MoveLeft size={50} /> */}
-              <ArrowLeft size={40} />
-            </Button>
-          </div>
-        )}
-        {/* <Button
+            {/* <MoveLeft size={50} /> */}
+            <ArrowLeft size={40} />
+          </Button>
+        </div>
+      )}
+      {/* <Button
           variant="ghost"
           size="icon"
           className="text-white"
@@ -219,7 +296,6 @@ export function VideoControls() {
         >
           <Maximize2 className="h-6 w-6" />
         </Button> */}
-      </div>
 
       {/* Right side controls */}
       <div
@@ -229,42 +305,52 @@ export function VideoControls() {
           top: "70%",
         }}
       >
-        <div className="flex flex-col items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`text-white transition-transform ${isLiked ? "scale-125" : ""}`}
-            onClick={isLiked ? handleunLike : handleLike}
-          >
-            <ThumbsUp className={`h-6 w-6 ${isLiked ? "fill-white" : ""}`} />
-          </Button>
-          <span className="text-white text-sm">Like</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`text-white transition-transform ${isBookmarked ? "scale-125" : ""}`}
-            onClick={handleBookmark}
-          >
-            {/* <ThumbsDown className={`h-6 w-6 ${unLiked ? "fill-white" : ""}`} /> */}
-            <Bookmark
-              className={`h-6 w-6 ${isBookmarked ? "fill-white" : ""}`}
-            />
-          </Button>
-          <span className="text-white text-sm">Bookmark</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white"
-            onClick={() => setShowComments(true)}
-          >
-            <MessageSquare className="h-6 w-6" />
-          </Button>
-          <span className="text-white text-sm">Comment</span>
-        </div>
+        {
+          <>
+            <div className="flex flex-col items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`text-white transition-transform ${isLiked ? "scale-125" : ""}`}
+                onClick={() =>
+                  isLiked
+                    ? handleAuthAction(handleunLike)
+                    : handleAuthAction(handleLike)
+                }
+              >
+                <ThumbsUp
+                  className={`h-6 w-6 ${isLiked ? "fill-white" : ""}`}
+                />
+              </Button>
+              <span className="text-white text-sm">Like</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`text-white transition-transform ${isBookmarked ? "scale-125" : ""}`}
+                onClick={() => handleAuthAction(handleBookmark)}
+              >
+                {/* <ThumbsDown className={`h-6 w-6 ${unLiked ? "fill-white" : ""}`} /> */}
+                <Bookmark
+                  className={`h-6 w-6 ${isBookmarked ? "fill-white" : ""}`}
+                />
+              </Button>
+              <span className="text-white text-sm">Bookmark</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white"
+                onClick={() => handleAuthAction(handleShowComments)}
+              >
+                <MessageSquare className="h-6 w-6" />
+              </Button>
+              <span className="text-white text-sm">Comment</span>
+            </div>
+          </>
+        }
         <div className="flex flex-col items-center gap-1">
           <Button
             variant="ghost"
@@ -282,24 +368,42 @@ export function VideoControls() {
       <div
         className="absolute bottom-4 left-4 right-16 text-white"
         style={{
-          top: `${isMobile ? "75%" : "85%"}`,
+          top: `${isMobile ? "85%" : "82%"}`,
         }}
       >
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center gap-3 mb-2 cursor-pointer">
           <Avatar>
             <AvatarImage src={videoDetails?.userDetails?.indPic?.original} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="flex-1">
-            <h3 className="font-semibold">
+          <div
+            className="flex-1"
+            onClick={() =>
+              router.push("/profile/" + videoDetails?.userDetails.userName)
+            }
+          >
+            <h3 className="font-semibold cursor-pointer">
               {videoDetails?.userDetails?.indFirstName}{" "}
               {videoDetails?.userDetails?.indLastName}
             </h3>
             <p className="text-sm text-white/80">{videoDetails?.title}</p>
           </div>
-          {/* <Button variant="secondary" size="sm">
-            Follow
-          </Button> */}
+          {
+            <div
+              className="flex justify-end"
+              style={{
+                width: "60px",
+              }}
+            >
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={isFollowed ? handleUnfollow : handleFollow}
+              >
+                {isFollowed ? "Following" : "Follow"}
+              </Button>
+            </div>
+          }
         </div>
         <div className="flex gap-2">
           {videoDetails?.hashtags?.map(
@@ -316,6 +420,7 @@ export function VideoControls() {
       {/* Comments Modal */}
       <CommentsModal
         isOpen={showComments}
+        ownerName={videoDetails?.userDetails.userName || ""}
         onClose={() => setShowComments(false)}
       />
     </>

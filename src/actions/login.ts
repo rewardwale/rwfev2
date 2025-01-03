@@ -7,7 +7,7 @@ import {
 import { LoginSchema } from "@/schema";
 import * as z from "zod";
 
-export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:string) => {
+export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:string,latitude:string,longitude:string) => {
   const validatedFields = LoginSchema.safeParse(values);
   console.log("STEP 2:", values);
   if (!validatedFields.success) {
@@ -32,7 +32,7 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
   }
 
   if (identity === "Email") {
-    const email = await signInWithEmail(password, userIdentity,fingerPrint);
+    const email = await signInWithEmail(password, userIdentity,fingerPrint,latitude,longitude);
     if (email.status) {
       // window.localStorage.setItem("UID", email.message.data.indDetail);
       return { success: email.message.data.indDetail };
@@ -40,7 +40,7 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
   }
 
   if (identity === "Phone Number") {
-    const mobile = await signInWithMobile(password, "91", userIdentity,fingerPrint);
+    const mobile = await signInWithMobile(password, "91", userIdentity,fingerPrint,latitude,longitude);
     if (mobile.status) {
       // window.localStorage.setItem("UID", mobile.message.data.indDetail);
       return { success: mobile.message.data.indDetail };
@@ -48,7 +48,7 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
   }
 
   if (identity === "Username") {
-    const username = await signInWithUserName(password, userIdentity,fingerPrint);
+    const username = await signInWithUserName(password, userIdentity,fingerPrint,latitude,longitude);
     if (username.status) {
       // window.localStorage.setItem(
       //   "UID",
@@ -65,3 +65,4 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
 
   return { error: " Invalid credentials" };
 };
+

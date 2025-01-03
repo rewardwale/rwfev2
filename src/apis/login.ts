@@ -5,20 +5,11 @@ export async function signInWithMobile(
   code: string,
   mobile: string,
   fingerPrint:string
+  ,latitude:string,longitude:string
 ) {
   console.log("::::::login mobile:::::");
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
 
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
 
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
@@ -57,25 +48,12 @@ export async function signInWithMobile(
     }
   } catch (error: any) {
     // console.error("error", error.response);
-    return { status: false, message: error.message };
-  }
+    return {status:false,message:error.message};  }
 }
 
-export async function signInWithEmail(password: string, email: string,  fingerPrint:string) {
+export async function signInWithEmail(password: string, email: string,  fingerPrint:string,latitude:string,longitude:string) {
   console.log("::::::login email:::::");
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
-
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
       {
@@ -111,26 +89,13 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
     }
   } catch (error: any) {
     console.error("error", error);
-    return { status: false, message: error.message };
-  }
+    return {status:false,message:error.message};  }
 }
 
-export async function signInWithUserName(password: string, userName: string,  fingerPrint:string) {
+export async function signInWithUserName(password: string, userName: string,  fingerPrint:string,latitude:string,longitude:string) {
   console.log("::::::login userName:::::");
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
-    // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
-
-    const response = await axios.put(
+     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
       {
         indPwd: password,
@@ -165,6 +130,6 @@ export async function signInWithUserName(password: string, userName: string,  fi
     }
   } catch (error: any) {
     // console.error("error", error.response);
-    return { status: false, message: error.message };
+    return {status:false,message:error.message};
   }
 }
