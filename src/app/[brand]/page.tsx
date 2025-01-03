@@ -3,7 +3,7 @@ import { animateCards } from "@/lib/animation";
 import { Metadata } from "next";
 import React, { useEffect, useRef } from "react";
 import { BrandHeader } from "./components/BrandPageBanner";
-import { brandInfo, dummyCategoryData, posts, reviews } from "./data/mockdata";
+import { brandInfo, posts, reviews } from "./data/mockdata";
 
 import { Footer } from "@/components/layout";
 // import SingleCategoryShorts from "./components/postSection";
