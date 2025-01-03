@@ -12,17 +12,43 @@ export async function fetchHomeCategories() {
   }
 }
 
-export async function fetchHomePageData() {
+// export async function  fetchHomePageData() {
+//   const queryParams = new URLSearchParams({
+//     limit: "10",
+//     skip: "0",
+//     flag: "0",
+//   }).toString();
+//   const response = await apiClient(`/homepageData?${queryParams}`, "GET");
+//   if (response.success && response.data) {
+//     return response.data;
+//   } else {
+//     console.error("Failed to fetch landing page data:", response.error);
+//     return null;
+//   }
+// }
+
+export async function fetchHomePageData(selectedCategories?: string[]) {
   const queryParams = new URLSearchParams({
     limit: "10",
     skip: "0",
     flag: "0",
-  }).toString();
-  const response = await apiClient(`/homepageData?${queryParams}`, "GET");
-  if (response.success && response.data) {
-    return response.data;
-  } else {
-    console.error("Failed to fetch landing page data:", response.error);
+  });
+
+  // Add selected categories to query params if provided
+  if (selectedCategories?.length) {
+    queryParams.append('categories', selectedCategories.join(','));
+  }
+
+  try {
+    const response = await apiClient(`/homepageData?${queryParams.toString()}`, "GET");
+    if (response.success && response.data) {
+      return response;
+    } else {
+      console.error("Failed to fetch landing page data:", response.error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching home page data:", error);
     return null;
   }
 }

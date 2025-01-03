@@ -61,7 +61,7 @@ export function ReviewForm() {
     questions.reduce((acc, q) => acc + q.rating, 0) / questions.length;
   const isStepTwoValid =
     title && category && description && location && thumbnailUrl;
-  // const isStepThreeValid = questions.every((q) => q.rating > 0 && q.feedback.trim().length > 0);
+  const isStepThreeValid = questions.every((q) => q.rating > 0);
 
   const updateQuestion = (index: number, updates: Partial<Question>) => {
     setQuestions(
@@ -244,10 +244,7 @@ export function ReviewForm() {
               <Button variant="outline" onClick={() => setStep(2)}>
                 Back
               </Button>
-              <Button
-                onClick={() => setStep(4)}
-                // disabled={!isStepThreeValid}
-              >
+              <Button onClick={() => setStep(4)} disabled={!isStepThreeValid}>
                 Next
               </Button>
             </div>
