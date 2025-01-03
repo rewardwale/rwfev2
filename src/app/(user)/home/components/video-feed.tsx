@@ -6,19 +6,26 @@ import { VideoCard } from "./video-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Category } from "../types/video";
 import { fetchHomePageData } from "@/apis/home";
+interface VideoFeedProps {
+  selectedCategories: string[];
+}
 
 
-
-export function VideoFeed() {
+export function VideoFeed({ selectedCategories }: VideoFeedProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+
   useEffect(() => {
     const loadHomePageData = async () => {
       try {
-        const data = await fetchHomePageData();
-        setCategories(data.data);
+        const data = await fetchHomePageData(selectedCategories);
+  console.log("checking res of getCategories", data)
+
+        if (data) {
+          setCategories(data.data.data);
+        }
         setLoading(false);
       } catch (err) {
         setError("Failed to load content. Please try again later.");
@@ -27,7 +34,7 @@ export function VideoFeed() {
     };
 
     loadHomePageData();
-  }, []);
+  }, [selectedCategories]);
 
   if (loading) {
     return (
@@ -63,13 +70,14 @@ export function VideoFeed() {
     <ScrollArea className="h-[calc(100vh-8.5rem)]">
       {categories.map((category) => (
         category.reviews.length > 0 && (
-          <div key={category.categoryId} className="mb-8 mt-6">
+          <div key={category.categoryId} className="mb-8">
             <h2 className="text-2xl font-semibold px-4 mb-4">
               {category.categoryName}
+              <span className="text-sm text-muted-foreground ml-2">
+                {/* ({category.totalReviews} reviews) */}
+              </span>
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 px-4"
-         
-            >
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 px-4">
               {category.reviews.map((review) => (
                 <VideoCard key={review._id} review={review} />
               ))}
