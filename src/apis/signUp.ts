@@ -228,3 +228,71 @@ longitude:string) {
     console.log("error\n\t", error );
     return {status:false,message:error.message};  }
 }
+
+
+export async function resendOTPEmail( email: string,  fingerPrints:string,latitude:string,longitude:string) {
+  console.log("resendOTPEmail\n",email,fingerPrints,latitude,longitude);
+  try {
+    console.log(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?emailId=${email}`,
+    );
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?emailId=${email}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          fingerprint: fingerPrints,
+          latitude: latitude,
+          longitude: longitude,
+          lan: "en",
+        },
+        timeout: 10000, // Include timeout as part of the Axios config
+      },
+    );
+    if (response.status === 200) {
+      return { status: true, message: response.data.message };
+    } else {
+      return { status: false, message: response.data.message };
+    }
+  } catch (error: any) {
+    console.error("error\n\t",error, error.response.data);
+    return {status:false,message:error.response.data.message};  }
+}
+
+
+export async function resendOTPMobile(
+  code: string,
+  number: string,
+  fingerPrints:string,
+  latitude:string,
+  longitude:string
+) {
+  console.log("resendOTPMobile\n");
+  try {
+
+ 
+    console.log(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?countryCode=${code}&phoneNumber=${number}`,
+    );
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?countryCode=${code}&phoneNumber=${number}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          fingerprint: fingerPrints,
+          latitude: latitude,
+          longitude: longitude,
+          lan: "en",
+        },
+        timeout: 10000, // Include timeout as part of the Axios config
+      },
+    );
+    if (response.status === 200) {
+      return { status: true, message: response.data.message };
+    } else {
+      return { status: false, message: response.data.message };
+    }
+  } catch (error: any) {
+    console.error("error\n\t", error,error.response.data);
+    return {status:false,message:error.response.data.message};  }
+}

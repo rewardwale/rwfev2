@@ -1,5 +1,5 @@
 "use client";
-import { fetchProfilePosts } from "@/apis/profile";
+import { fetchProfilePosts, fetchTaggedVideos } from "@/apis/profile";
 import { ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
@@ -10,119 +10,80 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ProfileItem from "./profileItem";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { FollowersList } from "./followers";
+import { ProfileDataProps, VideoData } from "./dataTypes";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SocialMedia from "./SocialMedia";
+import EditProfile from "./edit-profile";
 
-interface SocialUrls {
-  whatsapp: string;
-  linkedin: string;
-  facebook: string;
-  instagram: string;
-  twitter: string;
-}
-
-interface IndPic {
-  original: string;
-  thumbnail: string;
-}
-
-interface ProfileData {
-  _id: string;
-  indFirstName: string;
-  indLastName: string;
-  businessName: string;
-  userName: string;
-  desc: string;
-  indDob: string;
-  interest: string;
-  socialUrls: SocialUrls;
-  isMobileVerified: boolean;
-  isEmailVerified: boolean;
-  isBusinessUser: boolean;
-  indEmailNotify: boolean;
-  indMobileNotify: boolean;
-  isAccountVerified: boolean;
-  isPrivateAccount: boolean;
-  avgRating: number;
-  totalRating: number;
-  indGender: string;
-  indPic: IndPic;
-  indLanPref: string;
-  indContentPref: string;
-  totalUnpublishedPosts: number;
-  totalPublishedPosts: number;
-  totalFollowers: number;
-  totalFollowing: number;
-  indCategories: string[];
-  profileImages: string[];
-  title: string;
-}
-
-interface ProfilePageProps {
-  profileData: {
-    message: string;
-    data: ProfileData;
-  };
-}
-
-export async function generateMetadata({
-  profileData,
-}: ProfilePageProps): Promise<Metadata> {
-  const username = profileData.data.indFirstName;
+export async function generateMetadata(
+  profileData: ProfileDataProps,
+): Promise<Metadata> {
+  const username = profileData.indFirstName;
   return {
     title: `${username}'s Profile | Rewardwale`,
     description: `View the profile of ${username} on Rewardwale.`,
   };
 }
 
-export interface videoData {
-  _id: string;
-  userDetails: {
-    userId: string;
-    firstName: string;
-    lastName: string;
-    userName: string;
-  };
-  videoId: string;
-  hashtags: string[];
-  title: string;
-  desc: string;
-  cdnVideoPath: string;
-  cdnThumbPath: string[];
-  totalViewCount: number;
-  totalShareCount: number;
-  totalLikes: number;
-  totalComments: number;
-  isCommentingAllowed: boolean;
-  avgRating: number;
-  status: string;
-  uploadedAt: string;
-  videoLocation: {
-    type: string;
-    coordinates: number[];
-  };
-  locationName: string;
-  isSponsored: boolean;
-  isAdvertisement: boolean;
-  categoryId: string;
-  categoryName: string;
+interface Props {
+  profileData: ProfileDataProps | undefined;
+  id: string;
 }
 
-const ProfilePage = ({ profileData }: ProfilePageProps) => {
-  const [videoData, setvideodata] = useState<videoData[] | []>([]);
+const ProfilePage = ({ profileData, id }: Props) => {
+  const [videoData, setvideodata] = useState<VideoData[] | []>([]);
+  const [taggedVideo, setTaggedVideo] = useState<VideoData[] | []>([]);
   const [count, setCount] = useState<number>(0);
   const router = useRouter();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const [myProfile, setMyProfile] = useState<boolean>(false);
+  const [data, setData] = useState<{
+    fname: string;
+    lname: string;
+    desc: string;
+    title: string;
+    dob: Date;
+    gender: string;
+    email:string|undefined;
+    phone:string|undefined;
+  }>({ fname: "", lname: "", desc: "", title: "", dob: new Date(), gender: "" ,email:"",phone:""});
 
   useEffect(() => {
-    init();
-  }, []);
+    if (profileData) {
+      const data = localStorage.getItem("uib");
+      const name = JSON.parse(data || "").userName;
+      if (name === profileData.userName) {
+        setMyProfile(true);
+      }
+      init();
+    }
+  }, [profileData]);
 
   const init = async () => {
     try {
-      const data = localStorage.getItem("uib");
-      const userId = JSON.parse(data || "")._id;
-      console.log("----->",userId)
-      const responseData = await fetchProfilePosts(userId, count);
-      setvideodata(responseData?.data);
+      if (profileData?._id) {
+        setData((prev) => ({
+          ...prev,
+          fname: profileData.indFirstName,
+          lname: profileData.indLastName,
+          desc: profileData.desc,
+          title: profileData.title,
+          dob:new Date(profileData.indDob),
+          gender: profileData.indGender,
+          email:profileData?.indEmail,
+          phone:profileData?.indMobileNum
+        }));
+        const responseData = await fetchProfilePosts(profileData?._id, count);
+        setvideodata(responseData?.data);
+        const responseDataTagged = await fetchTaggedVideos(
+          profileData?._id,
+          count,
+        );
+        setTaggedVideo(responseDataTagged?.data);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -130,16 +91,19 @@ const ProfilePage = ({ profileData }: ProfilePageProps) => {
 
   const getMoreData = async () => {
     try {
-      setCount(count + 10);
-      const data = localStorage.getItem("uib");
-      const userId = JSON.parse(data || "")._id;
-      const responseData = await fetchProfilePosts(userId, count + 10);
+      if (profileData?._id) {
+        setCount(count + 10);
+        const responseData = await fetchProfilePosts(
+          profileData?._id,
+          count + 10,
+        );
 
-      let newData = responseData?.data;
-      if (newData.length > 0) {
-        setvideodata(videoData.concat(newData));
-      } else {
-        return;
+        let newData = responseData?.data;
+        if (newData.length > 0) {
+          setvideodata(videoData.concat(newData));
+        } else {
+          return;
+        }
       }
     } catch (error) {
       console.error(error);
@@ -155,6 +119,63 @@ const ProfilePage = ({ profileData }: ProfilePageProps) => {
       await getMoreData();
     }
   }
+
+  const getMoreDatatagged = async () => {
+    try {
+      if (profileData?._id) {
+        setCount(count + 10);
+        const responseData = await fetchTaggedVideos(
+          profileData?._id,
+          count + 10,
+        );
+
+        let newData = responseData?.data;
+        if (newData.length > 0) {
+          setTaggedVideo(taggedVideo.concat(newData));
+        } else {
+          return;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  async function handleScrollEventTagged(e: React.UIEvent<HTMLDivElement>) {
+    if (
+      e.currentTarget.clientHeight + e.currentTarget.scrollTop + 1 >=
+      e.currentTarget.scrollHeight
+    ) {
+      // setCount(count + 10);
+      await getMoreDatatagged();
+    }
+  }
+
+  const reload = (
+    fname: string,
+    lname: string,
+    desc: string,
+    title: string,
+    dob: Date,
+    gender: string,
+    email:string|undefined,
+    phone:string|undefined,
+  ) => {
+    if (profileData) {
+      setData((prev) => ({
+        ...prev,
+        fname: fname,
+        lname: lname,
+        desc: desc,
+        title: title,
+        dob: new Date(dob),
+        gender: gender,
+        email:email,
+        phone:phone,
+      }));
+    }
+  };
+
   return (
     profileData && (
       <div className="min-h-screen p-4">
@@ -163,7 +184,9 @@ const ProfilePage = ({ profileData }: ProfilePageProps) => {
           {/* Profile Image */}
           <div className="flex-shrink-0">
             <Image
-              src={profileData?.data?.indPic?.original}
+              src={
+                profileData?.indPic?.original || "https://github.com/shadcn.png"
+              }
               width={500}
               height={500}
               alt="Profile Image"
@@ -174,27 +197,66 @@ const ProfilePage = ({ profileData }: ProfilePageProps) => {
           {/* Profile Details */}
           <div className="flex flex-col gap-2 flex-grow">
             <p className="font-bold text-lg sm:text-xl md:text-2xl">
-              {profileData?.data?.indFirstName} {profileData?.data?.indLastName}
+              {data.fname} {data.lname}
             </p>
-            <div className="flex items-center gap-2 text-sm sm:text-md md:text-base text-muted-foreground">
-              <span>{profileData?.data?.userName}</span>
-              <span>{profileData?.data?.totalFollowers}</span>
-              <span>{profileData?.data?.totalPublishedPosts} Reviews</span>
+            {/* <div className="flex items-center gap-2 text-sm sm:text-md md:text-base text-muted-foreground">
+              <span>{profileData?.userName}</span>
+              <span>{profileData?.totalFollowers}</span>
+              <span>{profileData?.totalPublishedPosts} Reviews</span>
+            </div> */}
+
+            <div className="flex flex-col justify-between items-start gap-4 w-[420px]">
+              <div className="text-base font-semibold text-gray-500">
+                {profileData?.userName || "Username"} , <b>{profileData?.totalPublishedPosts || 0}</b> Reviews
+              </div>
+              <div className="flex gap-3">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>
+                    
+                 
+                      <b>{profileData?.totalFollowers || 0}</b> Followers
+                    </Button>
+                  </DialogTrigger>
+                  <FollowersList
+                    id={profileData._id}
+                    usern={profileData.userName}
+                  />
+                </Dialog>
+                {/* </div> */}
+
+                {/* <div className=" col-span-1 row-span-2 bg-purple-500"> */}
+                {/* <Button
+                  variant={"ghost"}
+                  className="hover:bg-transparent cursor-default hover:text-gray-500"
+                >
+                  <b>{profileData?.totalPublishedPosts || 0}</b> Reviews
+                </Button> */}
+                {myProfile && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Edit</Button>
+                    </DialogTrigger>
+                    <EditProfile profileData={profileData} data={data} reload={reload} />
+                  </Dialog>
+                )}
+              </div>
             </div>
-            <div className="max-w-[650px]">
+
+            <div className="max-w-[650px] flex flex-col pb-4 ">
               <p className="text-md font-normal sm:text-base md:text-lg leading-tight">
-                {profileData?.data?.title}
+                {data?.title}
               </p>
               <p className="text-sm sm:text-md md:text-base text-muted-foreground mt-2">
-                {profileData?.data?.desc}
+                {data?.desc}
               </p>
-            </div>
-            <div className="flex items-center mt-1 gap-2">
+
+              <div className="flex items-center mt-1 gap-2">
               {Array.from({ length: 5 }).map((_, index) => (
                 <Star
                   key={index}
                   className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${
-                  index < Math.round(profileData?.data?.avgRating || 0)
+                  index < Math.round(profileData?.avgRating || 0)
                       ? "text-orange-500"
                       : "text-gray-500"
                   }`}
@@ -202,129 +264,105 @@ const ProfilePage = ({ profileData }: ProfilePageProps) => {
               ))}
               <span className="text-xs sm:text-sm md:text-base">
                 <span className="text-green-500">
-                  {profileData?.data?.avgRating}/5
+                  {profileData?.avgRating}/5
                 </span>{" "}
                 on{" "}
                 <span className="text-red-500">
-                  {profileData?.data?.totalRating}
+                  {profileData?.totalRating || 0}
                 </span>{" "}
                 Ratings
               </span>
             </div>
+            </div>
+            
           </div>
 
           {/* Social Icons */}
-          <div className="social-icons flex sm:flex-col ms-4 mt-1 items-center justify-center sm:mt-0">
-            <Link href={profileData.data.socialUrls.whatsapp}>
-              {" "}
-              <Image
-                className="mb-2 mr-5"
-                src="/whatsApp-logo.png"
-                alt="social-icon"
-                height={50}
-                width={40}
-              />{" "}
-            </Link>
-            {/* <Link href="http://">
-            {" "}
-            <Image
-              className="mb-2 mr-5"
-              src="/facebook-logo.png"
-              alt="social-icon"
-              height={50}
-              width={40}
-            />{" "}
-          </Link> */}
-            <Link href={profileData.data.socialUrls.twitter}>
-              {" "}
-              <Image
-                className="mb-2 mr-5"
-                src="/twitter-old-logo.png"
-                alt="social-icon"
-                height={50}
-                width={40}
-              />{" "}
-            </Link>
-            <Link href={profileData.data.socialUrls.instagram}>
-              {" "}
-              <Image
-                className="mb-2 mr-5"
-                src="/Instagram-logo.png"
-                alt="social-icon"
-                height={50}
-                width={40}
-              />{" "}
-            </Link>
-            <Link href={profileData.data.socialUrls.linkedin}>
-              {" "}
-              <Image
-                className="mb-2 mr-5"
-                src="/Linkedin-logo.png"
-                alt="social-icon"
-                height={50}
-                width={40}
-              />{" "}
-            </Link>
-          </div>
+          <SocialMedia profileData={profileData} />
         </div>
 
-        {/* Tab Navigation */}
-        <div className="py-4">
-          <div className="flex justify-evenly cursor-pointer">
-            {/* POSTS */}
-            <div className="flex items-center gap-2">
-              <Grip className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
-              <span className="text-xs sm:text-sm md:text-base">POSTS</span>
-            </div>
-
-            {/* TAG */}
-            <div className="flex items-center gap-2">
-              <Tag className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
-              <span className="text-xs sm:text-sm md:text-base">TAG</span>
-            </div>
-
-            {/* SAVED */}
-            {/* <div className="flex items-center gap-2">
-              <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
-              <span className="text-xs sm:text-sm md:text-base">SAVED</span>
-            </div> */}
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* Posts Section */}
-        <div className="py-6">
-          <div className="flex w-full justify-center">
-            {/* <div>No Posts Available, start posting to see!!!</div>
-             */}
-
-            <ScrollArea
-              className="h-full w-full pb-36"
-              ref={scrollContainerRef}
-              onScroll={handleScrollEvent}
+        <Tabs defaultValue="posts" className="w-full">
+          <TabsList className="w-full flex items-center justify-center bg-black">
+            <TabsTrigger
+              value="posts"
+              className="text-xs sm:text-sm md:text-base w-full"
             >
-              <div className="flex flex-wrap w-full h-full gap-3">
-                {videoData.length > 0 || !videoData ? (
-                  videoData.map((item: videoData, index: number) => (
-                    <ProfileItem
-                      data={item}
-                      key={index}
-                      height={1000}
-                      width={1000}
-                      className="w-[100px] h-[200px] sm:w-[140px] sm:h-[300px] lg:w-[190px] lg:h-[380px]"
-                      aspectRatio="portrait"
-                    />
-                  ))
-                ) : (
-                  <div className="w-full text-center">no data</div>
-                )}
-              </div>
+              POSTS
+            </TabsTrigger>
+            <TabsTrigger
+              value="tag"
+              className="text-xs sm:text-sm md:text-base w-full"
+            >
+              TAG
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="posts">
+            <Separator />
 
-              <ScrollBar orientation="vertical" />
-            </ScrollArea>
-          </div>
-        </div>
+            {/* Posts Section */}
+            <div className="py-6">
+              <div className="flex w-full justify-center">
+                <ScrollArea
+                  className="h-full w-full pb-36"
+                  ref={scrollContainerRef}
+                  onScroll={handleScrollEvent}
+                >
+                  <div className="flex flex-wrap w-full h-full gap-3 lg:gap-5">
+                    {videoData.length > 0 || !videoData ? (
+                      videoData.map((item: VideoData, index: number) => (
+                        <ProfileItem
+                          data={item}
+                          key={index}
+                          height={1000}
+                          width={1000}
+                          className="w-[127px] h-[200px] sm:w-[140px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
+                          aspectRatio="portrait"
+                        />
+                      ))
+                    ) : (
+                      <div className="w-full text-center">no data</div>
+                    )}
+                  </div>
+
+                  <ScrollBar orientation="vertical" />
+                </ScrollArea>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="tag">
+            <Separator />
+
+            {/* Tgged Section */}
+            <div className="py-6">
+              <div className="flex w-full justify-center">
+                <ScrollArea
+                  className="h-full w-full pb-36"
+                  ref={scrollContainerRef}
+                  onScroll={handleScrollEventTagged}
+                >
+                  <div className="flex flex-wrap w-full h-full gap-3 lg:gap-5">
+                    {taggedVideo.length > 0 || !taggedVideo ? (
+                      taggedVideo.map((item: VideoData, index: number) => (
+                        <ProfileItem
+                          data={item}
+                          key={index}
+                          height={1000}
+                          width={1000}
+                          className="w-[127px] h-[200px] sm:w-[140px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
+                          aspectRatio="portrait"
+                        />
+                      ))
+                    ) : (
+                      <div className="w-full text-center">no data</div>
+                    )}
+                  </div>
+
+                  <ScrollBar orientation="vertical" />
+                </ScrollArea>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     )
   );

@@ -22,6 +22,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
+
   const SidebarContent = () => (
     <ScrollArea className="h-screen">
       <div className="space-y-4 py-4">
@@ -68,7 +69,7 @@ export function Sidebar({ className }: SidebarProps) {
             <Button
               variant="ghost"
               className="w-full justify-start"
-              onClick={() => router.push("/profile/lokesh")}
+              onClick={() => router.push("/profile")}
             >
               <UserRound className="mr-2 h-4 w-4" />
               My Profile
