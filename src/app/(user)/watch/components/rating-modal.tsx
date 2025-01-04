@@ -11,7 +11,8 @@ interface RatingModalProps {
   onSubmit: (rating: number) => void;
 }
 
-export function RatingModal({ isOpen, onClose, onSubmit }: RatingModalProps) {
+export function RatingModal({ isOpen, onClose, onSubmit }: RatingModalProps) { 
+  console.log("chekcing for isOpen", isOpen)
   const [rating, setRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);
 

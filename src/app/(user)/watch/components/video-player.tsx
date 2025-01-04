@@ -6,40 +6,64 @@ import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useVideoContext } from "../providers/video-control-provider";
 import { VideoLoading } from "./video-loading";
+import { useVideoRating } from "../hooks/use-video-rating";
+import { RatingModal } from "./rating-modal";
 
 interface VideoPlayerProps {
   videoUrl?: string;
+  onVideoEnd?: () => void;
 }
 
-export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl, onVideoEnd }: VideoPlayerProps) {
   const { videoRef, isPlaying, isMuted, togglePlay, toggleMute } =
     useVideoContext();
+
   const [progress, setProgress] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { showRatingModal, handleRatingSubmit, handleRatingSkip } =
+    useVideoRating({
+      videoRef,
+      onVideoEnd: () => onVideoEnd?.(),
+    });
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !videoUrl) return;
 
-    // Reset video when URL changes
+    setIsLoading(true);
     video.load();
 
-    // Try to autoplay
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.error("Autoplay prevented:", error);
-      });
-    }
-
-    // Update progress
+    const handleLoadStart = () => setIsLoading(true);
+    const handleCanPlay = () => {
+      setIsLoading(false);
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Autoplay prevented:", error);
+        });
+      }
+    };
     const handleTimeUpdate = () => {
       setProgress((video.currentTime / video.duration) * 100);
     };
+    const handleWaiting = () => setIsLoading(true);
+    const handlePlaying = () => setIsLoading(false);
 
+    video.addEventListener("loadstart", handleLoadStart);
+    video.addEventListener("canplay", handleCanPlay);
     video.addEventListener("timeupdate", handleTimeUpdate);
-    return () => video.removeEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("waiting", handleWaiting);
+    video.addEventListener("playing", handlePlaying);
+
+    return () => {
+      video.removeEventListener("loadstart", handleLoadStart);
+      video.removeEventListener("canplay", handleCanPlay);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("waiting", handleWaiting);
+      video.removeEventListener("playing", handlePlaying);
+    };
   }, [videoUrl, videoRef]);
 
   // Hide controls after video starts playing
@@ -61,6 +85,8 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       </div>
     );
   }
+
+  console.log("checking video player", isPlaying);
 
   return (
     <div
@@ -122,6 +148,18 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         <div
           className="h-full bg-white transition-all duration-100"
           style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div
+        style={{
+          zIndex: "9999",
+        }}
+      >
+        <RatingModal
+          isOpen={showRatingModal}
+          onClose={handleRatingSkip}
+          onSubmit={handleRatingSubmit}
         />
       </div>
     </div>
