@@ -18,6 +18,7 @@ import {
   Settings,
   LogOut,
   SearchIcon,
+  Handshake,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
@@ -39,11 +40,11 @@ export function Header() {
         {/* <Button variant="ghost" size="icon">
           <Menu className="h-5 w-5" />
         </Button> */}
-        <Sidebar />
+        {/* <Sidebar /> */}
       </div>
 
       <div
-        className={`flex items-center w-full ${isMobile ? "justify-center" : "justify-normal"}`}
+        className={"flex items-center w-full justify-center"}
       >
         <SearchInputContainer />
       </div>
@@ -65,6 +66,13 @@ export function Header() {
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </DropdownMenuItem>
+            <DropdownMenuItem
+            onClick={()=> router.push('createBusiness')}
+            >
+            <Handshake className="mr-2 h-4 w-4" />
+              Create Business Profile
+            </DropdownMenuItem>
+
             <DropdownMenuItem
               onClick={async () => {
                 await logout();

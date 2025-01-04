@@ -229,28 +229,31 @@ export function VideoControls({ video }: VideoControlsProps) {
       />
 
       {/* Center play/pause button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-          text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full w-16
-          h-16"
-        onClick={togglePlay}
+      {/* <div
+        className={`absolute inset-0 flex items-center justify-center transition-opacity
+          duration-300 ${isPlaying && "group-hover:opacity-100 opacity-0"} ${ !isPlaying
+          && "opacity-100" }`}
       >
-        {isPlaying ? (
-          <Pause className="h-8 w-8" />
-        ) : (
-          <Play className="h-8 w-8" />
-        )}
-      </Button>
+        <div className="bg-black/30 rounded-full p-4">
+          {isPlaying ? (
+            <Pause className="w-12 h-12 text-white" />
+          ) : (
+            <Play className="w-12 h-12 text-white" />
+          )}
+        </div>
+      </div> */}
 
       {/* Top controls */}
-      <div className="absolute top-4 right-4 flex">
+
+      {/* <div className="absolute top-4 right-4 flex gap-2">
         <Button
           variant="ghost"
           size="icon"
-          className="text-white"
-          onClick={toggleMute}
+          className="text-white hover:bg-black/30"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent video play/pause
+            toggleMute();
+          }}
         >
           {isMuted ? (
             <VolumeX className="h-6 w-6" />
@@ -258,33 +261,34 @@ export function VideoControls({ video }: VideoControlsProps) {
             <Volume2 className="h-6 w-6" />
           )}
         </Button>
+      </div> */}
 
-        {isMobile && (
-          <div
-            className="absolute top-4"
+      {isMobile && (
+        <div
+          className="absolute top-4"
+          style={{
+            top: '2%',
+            right: "21rem",
+            height: "50px",
+            width: "50px",
+          }}
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white"
+            onClick={navigateBack}
             style={{
-              top: 0,
-              right: "21rem",
               height: "50px",
               width: "50px",
             }}
           >
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white"
-              onClick={navigateBack}
-              style={{
-                height: "50px",
-                width: "50px",
-              }}
-            >
-              {/* <MoveLeft size={50} /> */}
-              <ArrowLeft size={40} />
-            </Button>
-          </div>
-        )}
-        {/* <Button
+            {/* <MoveLeft size={50} /> */}
+            <ArrowLeft size={40} />
+          </Button>
+        </div>
+      )}
+      {/* <Button
           variant="ghost"
           size="icon"
           className="text-white"
@@ -292,7 +296,6 @@ export function VideoControls({ video }: VideoControlsProps) {
         >
           <Maximize2 className="h-6 w-6" />
         </Button> */}
-      </div>
 
       {/* Right side controls */}
       <div
@@ -365,7 +368,7 @@ export function VideoControls({ video }: VideoControlsProps) {
       <div
         className="absolute bottom-4 left-4 right-16 text-white"
         style={{
-          top: `${isMobile ? "75%" : "82%"}`,
+          top: `${isMobile ? "85%" : "82%"}`,
         }}
       >
         <div className="flex items-center gap-3 mb-2 cursor-pointer">

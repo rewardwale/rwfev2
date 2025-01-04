@@ -81,53 +81,7 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
         <Separator />
-        {/* <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-            Explore
-          </h2>
-          <div className="space-y-1">
-            <Button variant="ghost" className="w-full justify-start">
-              <Flame className="mr-2 h-4 w-4" />
-              Trending
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <ShoppingBag className="mr-2 h-4 w-4" />
-              Shopping
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Music2 className="mr-2 h-4 w-4" />
-              Music
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Film className="mr-2 h-4 w-4" />
-              Movies
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Radio className="mr-2 h-4 w-4" />
-              Live
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Gamepad2 className="mr-2 h-4 w-4" />
-              Gaming
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Newspaper className="mr-2 h-4 w-4" />
-              News
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Trophy className="mr-2 h-4 w-4" />
-              Sports
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Lightbulb className="mr-2 h-4 w-4" />
-              Learning
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Shirt className="mr-2 h-4 w-4" />
-              Fashion
-            </Button>
-          </div>
-        </div> */}
+      
       </div>
     </ScrollArea>
   );
