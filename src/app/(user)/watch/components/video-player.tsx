@@ -93,6 +93,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       rating: rating,
     };
     let res = await rateVideo(videoId, payload);
+    console.log("checking res of rate video", res.message);
     if (res) {
       setShowThankYou(true);
     }

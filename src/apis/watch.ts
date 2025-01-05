@@ -146,8 +146,11 @@ export async function deleteComment(videoId: string, commentId: string) {
 
 export async function rateVideo(videoId: string, payload: Record<string, any>) {
   try {
-    const response = await apiClient(`/video/rating/${videoId}`, "PUT");
-
+    const response = await apiClient(
+      `/video/rating/${videoId}`,
+      "PUT",
+      payload,
+    );
     if (response.success && response.data) {
       return response.data;
     } else {
