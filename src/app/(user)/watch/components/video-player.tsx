@@ -1,68 +1,62 @@
 "use client";
 
-import { useEffect, useState } from "react";
-// import { useVideoContext } from "../providers/video-controls-provider";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Play, Pause, Volume2, VolumeX, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useVideoContext } from "../providers/video-control-provider";
-import { VideoLoading } from "./video-loading";
-import { useVideoRating } from "../hooks/use-video-rating";
-import { RatingModal } from "./rating-modal";
+import { rateVideo } from "@/apis/watch";
+import { useSearchParams } from "next/navigation";
 
 interface VideoPlayerProps {
   videoUrl?: string;
-  onVideoEnd?: () => void;
 }
 
-export function VideoPlayer({ videoUrl, onVideoEnd }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const { videoRef, isPlaying, isMuted, togglePlay, toggleMute } =
     useVideoContext();
-
   const [progress, setProgress] = useState(0);
   const [showControls, setShowControls] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+  const [hoverRating, setHoverRating] = useState(0);
+  const isVideoEnded = useRef(false);
 
-  const { showRatingModal, handleRatingSubmit, handleRatingSkip } =
-    useVideoRating({
-      videoRef,
-      onVideoEnd: () => onVideoEnd?.(),
-    });
+  const searchParams = useSearchParams();
+  const videoId = searchParams.get("v") || "";
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !videoUrl) return;
 
-    setIsLoading(true);
+    // Reset video when URL changes
     video.load();
 
-    const handleLoadStart = () => setIsLoading(true);
-    const handleCanPlay = () => {
-      setIsLoading(false);
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.error("Autoplay prevented:", error);
-        });
-      }
-    };
+    // Try to autoplay
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        console.error("Autoplay prevented:", error);
+      });
+    }
+
+    // Update progress
     const handleTimeUpdate = () => {
       setProgress((video.currentTime / video.duration) * 100);
     };
-    const handleWaiting = () => setIsLoading(true);
-    const handlePlaying = () => setIsLoading(false);
 
-    video.addEventListener("loadstart", handleLoadStart);
-    video.addEventListener("canplay", handleCanPlay);
+    const handleEnded = () => {
+      isVideoEnded.current = true;
+      setShowOverlay(true);
+      setCountdown(10); // Reset countdown timer
+    };
+
     video.addEventListener("timeupdate", handleTimeUpdate);
-    video.addEventListener("waiting", handleWaiting);
-    video.addEventListener("playing", handlePlaying);
+    video.addEventListener("ended", handleEnded);
 
     return () => {
-      video.removeEventListener("loadstart", handleLoadStart);
-      video.removeEventListener("canplay", handleCanPlay);
       video.removeEventListener("timeupdate", handleTimeUpdate);
-      video.removeEventListener("waiting", handleWaiting);
-      video.removeEventListener("playing", handlePlaying);
+      video.removeEventListener("ended", handleEnded);
     };
   }, [videoUrl, videoRef]);
 
@@ -78,6 +72,34 @@ export function VideoPlayer({ videoUrl, onVideoEnd }: VideoPlayerProps) {
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    if (showOverlay) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            setShowOverlay(false);
+            clearInterval(timer);
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [showOverlay]);
+
+  const handleRatingChange = async (rating: number) => {
+    console.log("User rating:", rating);
+    let payload = {
+      rating: rating,
+    };
+    let res = await rateVideo(videoId, payload);
+    if (res) {
+      setShowThankYou(true);
+    }
+    setShowOverlay(false);
+    setTimeout(() => setShowThankYou(false), 3000); // Show thank you message for 3 seconds
+  };
+
   if (!videoUrl) {
     return (
       <div className="w-full h-full flex items-center justify-center text-white">
@@ -85,8 +107,6 @@ export function VideoPlayer({ videoUrl, onVideoEnd }: VideoPlayerProps) {
       </div>
     );
   }
-
-  console.log("checking video player", isPlaying);
 
   return (
     <div
@@ -100,12 +120,9 @@ export function VideoPlayer({ videoUrl, onVideoEnd }: VideoPlayerProps) {
         src={videoUrl}
         className="w-full h-full object-contain"
         controls={false}
-        loop
         playsInline
         muted={isMuted}
       />
-
-      {/* {isLoading && <VideoLoading />} */}
 
       {/* Center play/pause button - only shown when controls are visible */}
       <div
@@ -151,17 +168,45 @@ export function VideoPlayer({ videoUrl, onVideoEnd }: VideoPlayerProps) {
         />
       </div>
 
-      <div
-        style={{
-          zIndex: "9999",
-        }}
-      >
-        <RatingModal
-          isOpen={showRatingModal}
-          onClose={handleRatingSkip}
-          onSubmit={handleRatingSubmit}
-        />
-      </div>
+      {/* Overlay */}
+      {showOverlay && (
+        <div
+          className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center
+            text-white"
+        >
+          <h2 className="text-2xl font-semibold mb-4">Rate this video</h2>
+          <div className="flex gap-2 mb-4">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                className="text-yellow-400 hover:scale-110 transition-transform"
+                onMouseEnter={() => setHoverRating(0)}
+                onMouseLeave={() => setHoverRating(0)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRatingChange(star);
+                }}
+              >
+                <Star
+                  className={`h-8 w-8 ${
+                  (hoverRating ?? 0) >= star
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+          {/* <p className="text-sm">This overlay will disappear in {countdown} seconds.</p> */}
+        </div>
+      )}
+
+      {/* Thank you message */}
+      {showThankYou && (
+        <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-white">
+          <h2 className="text-2xl font-semibold">Thank you for your rating!</h2>
+        </div>
+      )}
     </div>
   );
 }
