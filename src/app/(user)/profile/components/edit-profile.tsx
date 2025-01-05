@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import EditForm from "./edit-form";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface Props {
   data: {
@@ -56,6 +57,17 @@ interface Props {
 }
 
 export default function EditProfile({ profileData,data, reload }: Props) {
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+    // async function handleScrollEvent(e: React.UIEvent<HTMLDivElement>) {
+    //   if (
+    //     e.currentTarget.clientHeight + e.currentTarget.scrollTop + 1 >=
+    //     e.currentTarget.scrollHeight
+    //   ) {
+    //     // setCount(count + 10);
+    //     await getMoreData();
+    //   }
+    // }
   return (
     <DialogContent className="lg:max-w-3xl xl:max-w-5xl xl:h-[700px] sm:max-w-xl max-w-sm h-[400px] rounded-md">
       <DialogHeader>
@@ -65,7 +77,12 @@ export default function EditProfile({ profileData,data, reload }: Props) {
         </DialogDescription>
       </DialogHeader>
 
-      <div className="h-full overflow-y-scroll">
+      <ScrollArea
+    className="h-full w-full"
+    // ref={scrollContainerRef}
+    // onScroll={handleScrollEvent}
+  >
+      <div className="h-full">
         <div
           className="flex flex-col md:flex-row items-center mb-6 border border-gray-600 p-4
             rounded-lg"
@@ -92,6 +109,8 @@ export default function EditProfile({ profileData,data, reload }: Props) {
 
         <EditForm profileData={profileData} data={data} reload={reload} />
       </div>
+      <ScrollBar orientation="vertical" />
+      </ScrollArea>
     </DialogContent>
   );
 }

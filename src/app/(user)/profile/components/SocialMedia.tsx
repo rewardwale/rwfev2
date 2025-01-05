@@ -9,7 +9,7 @@ interface Props{
 export default function SocialMedia({profileData}:Props){
     return(
         <div className="social-icons flex sm:flex-col ms-4 mt-1 items-center justify-center sm:mt-0">
-        {profileData.socialUrls?.whatsapp ? (
+        {profileData.socialUrls?.whatsapp && (
           <Link
             href={
               profileData.socialUrls?.whatsapp.trim().length !== 0
@@ -25,17 +25,9 @@ export default function SocialMedia({profileData}:Props){
               width={40}
             />{" "}
           </Link>
-        ) : (
-          <Image
-            className="mb-2 mr-5"
-            src="/whatsApp-logo.png"
-            alt="social-icon"
-            height={50}
-            width={40}
-          />
-        )}
+        ) }
 
-        {profileData.socialUrls?.twitter ? (
+        {profileData.socialUrls?.twitter && (
           <Link
             href={
               profileData.socialUrls?.twitter.trim().length !== 0
@@ -52,17 +44,9 @@ export default function SocialMedia({profileData}:Props){
               width={40}
             />{" "}
           </Link>
-        ) : (
-          <Image
-            className="mb-2 mr-5"
-            src="/twitter-old-logo.png"
-            alt="social-icon"
-            height={50}
-            width={40}
-          />
-        )}
+        ) }
 
-        {profileData.socialUrls?.instagram ? (
+        {profileData.socialUrls?.instagram && (
           <Link
             href={
               profileData.socialUrls?.instagram.trim().length !== 0
@@ -79,17 +63,9 @@ export default function SocialMedia({profileData}:Props){
               width={40}
             />{" "}
           </Link>
-        ) : (
-          <Image
-            className="mb-2 mr-5"
-            src="/Instagram-logo.png"
-            alt="social-icon"
-            height={50}
-            width={40}
-          />
-        )}
+        ) }
 
-        {profileData.socialUrls?.linkedin ? (
+        {profileData.socialUrls?.linkedin && (
           <Link
             href={
               profileData.socialUrls?.linkedin.trim().length !== 0
@@ -106,15 +82,7 @@ export default function SocialMedia({profileData}:Props){
               width={40}
             />{" "}
           </Link>
-        ) : (
-          <Image
-            className="mb-2 mr-5"
-            src="/Linkedin-logo.png"
-            alt="social-icon"
-            height={50}
-            width={40}
-          />
-        )}
+        ) }
       </div>
     )
 }

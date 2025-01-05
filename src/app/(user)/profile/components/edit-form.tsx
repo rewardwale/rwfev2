@@ -19,18 +19,20 @@ import { EditPersonalInfo } from "@/actions/profile";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useRouter } from "next/navigation";
+import { DialogFooter } from "@/components/ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
 interface Props {
   data: {
-    fname: string,
-    lname: string,
-    desc: string,
-    title: string,
-    dob: Date,
-    gender: string,
-    email: string|undefined,
-    phone: string|undefined,
-  },
-  profileData:ProfileDataProps,
+    fname: string;
+    lname: string;
+    desc: string;
+    title: string;
+    dob: Date;
+    gender: string;
+    email: string | undefined;
+    phone: string | undefined;
+  };
+  profileData: ProfileDataProps;
   reload: (
     fname: string,
     lname: string,
@@ -42,7 +44,7 @@ interface Props {
     phone: string,
   ) => void;
 }
-export default function EditForm({ data, reload,profileData }: Props) {
+export default function EditForm({ data, reload, profileData }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
@@ -86,7 +88,7 @@ export default function EditForm({ data, reload,profileData }: Props) {
 
               values.gender,
               values.email,
-              values.mobile
+              values.mobile,
             );
           }
 
@@ -97,6 +99,7 @@ export default function EditForm({ data, reload,profileData }: Props) {
   };
 
   return (
+
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
@@ -215,9 +218,7 @@ export default function EditForm({ data, reload,profileData }: Props) {
                 name="lastname"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
-                      Last Name<span className="text-red-600"> *</span>
-                    </FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -246,9 +247,7 @@ export default function EditForm({ data, reload,profileData }: Props) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Email<span className="text-red-600"> *</span>
-                    </FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -276,9 +275,7 @@ export default function EditForm({ data, reload,profileData }: Props) {
                 name="mobile"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Phone Number<span className="text-red-600"> *</span>
-                    </FormLabel>
+                    <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -307,9 +304,7 @@ export default function EditForm({ data, reload,profileData }: Props) {
                 name="gender"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
-                      gender<span className="text-red-600"> *</span>
-                    </FormLabel>
+                    <FormLabel>gender</FormLabel>
                     <FormControl>
                       {/* <Input
                           {...field}
@@ -334,9 +329,7 @@ export default function EditForm({ data, reload,profileData }: Props) {
                 name="dob"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
-                      Date of Birth<span className="text-red-600"> *</span>
-                    </FormLabel>
+                    <FormLabel>Date of Birth</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -365,9 +358,12 @@ export default function EditForm({ data, reload,profileData }: Props) {
         {error && <FormError message={error} />}
         {success && <FormSuccess message={success} />}
         <div className="flex flex-row justify-center gap-12 w-full">
-          <Button className="w-full" type="submit">
-            Save
-          </Button>
+          <DialogFooter  className="w-full">
+            <DialogClose />
+            <Button className="w-full" type="submit">
+              Save
+            </Button>
+          </DialogFooter>
         </div>
       </form>
     </Form>
