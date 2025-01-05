@@ -45,6 +45,8 @@ export default function WatchPage() {
   const [initialVideo, setInitialVideo] = useState<VideoDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
+  
+
   useEffect(() => {
     const loadInitialVideo = async () => {
       try {
