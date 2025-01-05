@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useVideoContext } from "../providers/video-control-provider";
 import { rateVideo } from "@/apis/watch";
 import { useSearchParams } from "next/navigation";
+import { StarRating } from "../../post/components/StarRating";
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -21,6 +22,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const [countdown, setCountdown] = useState(10);
   const [hoverRating, setHoverRating] = useState(0);
   const isVideoEnded = useRef(false);
+  const [rating, setRating] = useState(0);
 
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v") || "";
@@ -89,6 +91,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
   const handleRatingChange = async (rating: number) => {
     console.log("User rating:", rating);
+    setRating(rating)
     let payload = {
       rating: rating,
     };
@@ -176,29 +179,14 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             text-white"
         >
           <h2 className="text-2xl font-semibold mb-4">Rate this video</h2>
-          <div className="flex gap-2 mb-4">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                className="text-yellow-400 hover:scale-110 transition-transform"
-                onMouseEnter={() => setHoverRating(0)}
-                onMouseLeave={() => setHoverRating(0)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRatingChange(star);
-                }}
-              >
-                <Star
-                  className={`h-8 w-8 ${
-                  (hoverRating ?? 0) >= star
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-          {/* <p className="text-sm">This overlay will disappear in {countdown} seconds.</p> */}
+          <StarRating
+            value={rating}
+            onChange={handleRatingChange}
+            type="interactive"
+          />
+          <p className="text-sm mt-2">
+            This overlay will disappear in {countdown} seconds.
+          </p>
         </div>
       )}
 
