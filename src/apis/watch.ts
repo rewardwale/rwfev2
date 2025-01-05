@@ -132,13 +132,35 @@ export async function deleteComment(videoId: string, commentId: string) {
 
 
 
-// // Reply to a comment
-// export const replyToComment = async (commentId: string, text: string) => {
-//   try {
-//     const response = await axios.post(`${API_BASE_URL}/api/v2/comment/${commentId}/comment`, { text });
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error replying to comment:', error);
-//     throw error;
-//   }
-// };
+// Reply to a comment
+export const replyToComment = async (commentId: string, text: string) => {
+  try {
+    const response = await apiClient(`/comment/${commentId}`,
+      "POST", { comment:text }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error replying to comment:', error);
+    throw error;
+  }
+};
+
+
+export const getReplyComment = async (commentId: string,count:number) => {
+  try {
+    const queryParams = new URLSearchParams({
+      limit: "10",
+      skip:JSON.stringify(count),
+      
+    }).toString();
+    const response = await apiClient(`/video/replyComment/${commentId}?${queryParams}`,
+      "GET"
+    );
+    console.log("response reply",response)
+    return response.data;
+  } catch (error) {
+    console.error('Error replying to comment:', error);
+    throw error;
+  }
+};
+
