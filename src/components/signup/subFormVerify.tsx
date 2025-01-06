@@ -201,7 +201,7 @@ export default function CredentialVerificationForm({
                       <Input
                         {...field}
                         placeholder="123456"
-                        type="number"
+                        type="text"
                         disabled={pending}
                         maxLength={6}
                         onChange={(e) => {
