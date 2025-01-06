@@ -74,6 +74,7 @@ export const followUser = async (id: string) => {
   const response = await apiClient(`/user/follow/${id}`, "PUT");
 
   if (response.success && response.data) {
+    console.log("follow user==>",response)
     return response.data;
   } else {
     console.error("Failed to fetch landing page data:", response.error);
@@ -85,6 +86,7 @@ export const unFollowUser = async (id: string) => {
   const response = await apiClient(`/user/unfollow/${id}`, "PUT");
 
   if (response.success && response.data) {
+    console.log("un follow user==>",response)
     return response.data;
   } else {
     console.error("Failed to fetch landing page data:", response.error);
@@ -115,6 +117,34 @@ export const getfollowerList = async (id: string,count:number) => {
     return response.data;
   } else {
     console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+};
+
+
+export const getfollowingList = async (id: string,count:number) => {
+  console.log("::::::::::::::::",id,count)
+  let queryParams
+  if(id.length===0){
+    queryParams = new URLSearchParams({
+      limit: "10",
+      skip:JSON.stringify(count),
+      // userId: id,
+    }).toString();
+  }else{
+    queryParams = new URLSearchParams({
+      limit: "10",
+      skip:JSON.stringify(count),
+      userId: id,
+    }).toString();
+  }
+
+  const response = await apiClient(`/followingList?${queryParams}`, "GET");
+  console.log("followingList",response)
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch followingList data:", response.error);
     return null;
   }
 };
