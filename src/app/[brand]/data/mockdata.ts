@@ -1,14 +1,6 @@
-import { BrandInfo, Post, Review } from "../types/brands";
+import {  Post, Review } from "../types/brands";
 // import { SingleCategoryShortsProps } from "../components/postSection";
 
-export const brandInfo: BrandInfo = {
-  name: "Arata",
-  logo: "https://cdn.shopify.com/s/files/1/0082/7300/2573/files/Asset_1.svg?v=1734691219",
-  // isVerified: true,
-  rating: 4.5,
-  banner:"",
-  // rank: 3,
-};
 
 export const reviews: Review[] = [
   {

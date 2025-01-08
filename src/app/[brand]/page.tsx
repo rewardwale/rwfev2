@@ -3,7 +3,6 @@ import { animateCards } from "@/lib/animation";
 import { Metadata } from "next";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { BrandHeader } from "./components/BrandPageBanner";
-import { brandInfo, posts, reviews } from "./data/mockdata";
 import {
   ProfileDataProps,
   VideoData,
