@@ -8,7 +8,6 @@ import {
   VideoData,
 } from "../(user)/profile/components/dataTypes";
 
-import { Footer } from "@/components/layout";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Separator } from "@radix-ui/react-select";
@@ -34,6 +33,7 @@ interface BrandInfo {
   rating: number;
   banner: string;
   Id: string;
+  isFollow: boolean
   // rank: number;
 }
 
@@ -70,6 +70,8 @@ export default function BrandPage({ params }: { params: any }) {
       logo: data.data[0].defaultBusinessImage.original || "",
       banner: data.data[0].defaultBusinessBanner.original || "",
       Id: data.data[0]._id,
+      // isFollow: data.data[0]?.isFollow
+      isFollow: false
       // rank: data.data[0]?.rank || 0,
     };
 
@@ -306,7 +308,7 @@ export default function BrandPage({ params }: { params: any }) {
         {/* <Footer/> */}
       </div>
 
-      {/* <Footer /> */}
+  
     </div>
   );
 }
