@@ -16,7 +16,7 @@ import { Button } from "../ui/button";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useState, useTransition } from "react";
-import { reset } from "@/actions/reset";
+import { reset } from "../../actions/reset";
 
 export default function ResetForm() {
   const [pending, startTransition] = useTransition();

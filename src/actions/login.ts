@@ -6,6 +6,10 @@ import {
 } from "../apis/login";
 import { LoginSchema } from "@/schema";
 import * as z from "zod";
+import { DEFAULT_LOGIN_REDIRECT } from "../../routes";
+import { signIn } from "../../auth";
+import { AuthError } from "next-auth";
+
 
 export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:string,latitude:string,longitude:string) => {
   const validatedFields = LoginSchema.safeParse(values);
@@ -31,38 +35,62 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
     identity = "Unknown";
   }
 
-  if (identity === "Email") {
-    const email = await signInWithEmail(password, userIdentity,fingerPrint,latitude,longitude);
-    if (email.status) {
-      // window.localStorage.setItem("UID", email.message.data.indDetail);
-      return { success: email.message.data.indDetail };
+  // if (identity === "Email") {
+  //   const email = await signInWithEmail(password, userIdentity,fingerPrint,latitude,longitude);
+  //   if (email.status) {
+  //     // window.localStorage.setItem("UID", email.message.data.indDetail);
+  //     return { success: email.message.data.indDetail };
+  //   }
+  // }
+
+  // if (identity === "Phone Number") {
+  //   const mobile = await signInWithMobile(password, "91", userIdentity,fingerPrint,latitude,longitude);
+  //   if (mobile.status) {
+  //     // window.localStorage.setItem("UID", mobile.message.data.indDetail);
+  //     return { success: mobile.message.data.indDetail };
+  //   }
+  // }
+
+  // if (identity === "Username") {
+  //   const username = await signInWithUserName(password, userIdentity,fingerPrint,latitude,longitude);
+  //   if (username.status) {
+  //     // window.localStorage.setItem(
+  //     //   "UID",
+  //     //   username.message.data.indDetail
+  //     // );
+  //     return { success: username.message.data.indDetail };
+  //   }
+  // }
+
+  // //check if the user is available or not
+  // if (identity === "Unknown") {
+  //   return { error: "Login identity doesnt belong to mobile/email/userName" };
+  // }
+
+  try {
+    await signIn("credentials", {
+      identity,
+      userIdentity,
+      password,
+      latitude,
+      longitude,
+      fingerPrint,
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      console.log("error:::::::",error)
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { error: "Invalid credentials!" };
+        default:
+          return { error: "something went wrong!" };
+      }
     }
+    throw error;
   }
 
-  if (identity === "Phone Number") {
-    const mobile = await signInWithMobile(password, "91", userIdentity,fingerPrint,latitude,longitude);
-    if (mobile.status) {
-      // window.localStorage.setItem("UID", mobile.message.data.indDetail);
-      return { success: mobile.message.data.indDetail };
-    }
-  }
 
-  if (identity === "Username") {
-    const username = await signInWithUserName(password, userIdentity,fingerPrint,latitude,longitude);
-    if (username.status) {
-      // window.localStorage.setItem(
-      //   "UID",
-      //   username.message.data.indDetail
-      // );
-      return { success: username.message.data.indDetail };
-    }
-  }
-
-  //check if the user is available or not
-  if (identity === "Unknown") {
-    return { error: "Login identity doesnt belong to mobile/email/userName" };
-  }
-
-  return { error: " Invalid credentials" };
+  // return { error: " Invalid credentials" };
 };
 

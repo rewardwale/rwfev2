@@ -25,9 +25,9 @@ export const SignupSchema = z.object({
   name: z.string().min(1, {
     message: "name is required",
   }),
-  termsAndCondition: z.boolean({
-    message: "Terms and Condition has to be agreed to access the application",
-  }),
+  // termsAndCondition: z.boolean({
+  //   message: "Terms and Condition has to be agreed to access the application",
+  // }),
 });
 
 export const ResetSchema = z.object({
@@ -266,6 +266,87 @@ export const EditPersonalInfoFormSchema = z.object({
     title:z.string().optional(),
     desc:z.string().optional()
 });
+
+
+export const newSignupSchema = z.object({
+  firstname: z
+  .string()
+  .nonempty({
+    message: "First name cannot be empty.",
+  })
+  .min(3, {
+    message: "Invalid first name. It must be between 3 and 30 characters long.",
+  })
+  .max(30, {
+    message: "Invalid first name. It must be between 3 and 30 characters long.",
+  })
+  .regex(/^[A-Za-z]+$/, {
+    message: "First name can only contain alphabets.",
+  }),
+lastname: z
+  .string()
+  .nonempty({
+    message: "Last Name cannot be empty.",
+  })
+  .min(1, {
+    message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+  })
+  .max(30, {
+    message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+  })
+  .regex(/^[A-Za-z]+$/, {
+    message: "Last name can only contain alphabets.",
+  }),
+email: z
+  .string({
+    required_error: "Please select an email to display.",
+  })
+  .nonempty({
+    message: "Email cannot be empty.",
+  })
+  .email(),
+  password: z
+  .string()
+  .nonempty({
+    message: "Password cannot be empty.",
+  })
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .regex(/[A-Z]/, {
+    message: "Password must contain at least one uppercase letter.",
+  })
+  .regex(/[a-z]/, {
+    message: "Password must contain at least one lowercase letter.",
+  })
+  .regex(/\d/, { message: "Password must contain at least one number." })
+  .regex(/[\W_]/, {
+    message: "Password must contain at least one symbol.",
+  }),
+userName: z
+  .string()
+  .nonempty({
+    message: "User Name cannot be empty.",
+  })
+  .min(3, { message: "Username must be at least 3 characters." })
+  .max(30, { message: "Username must not be longer than 30 characters." })
+  .regex(/^(?![._-])(?!.*[._-]{2})[a-zA-Z0-9._-]+$/, {
+    message:
+      "Username can only contain letters, numbers, underscores, dots, and hyphens.\n It cannot start with special characters or \nhave consecutive special characters.",
+  }),
+
+TnC: z.boolean().refine((val) => val === true, {
+  message: "You must accept the terms and conditions to proceed.",
+}),
+TnC2: z.boolean().refine((val) => val === true, {
+  message: "You must accept the terms and conditions to proceed.",
+}),
+confirmPassword: z.string().nonempty({
+  message: "Confirm Password cannot be empty.",
+})
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords must match.",
+  path: ["confirmPassword"], // Attach the error to `confirmPassword`
+})
+
 
 export const combinedSchema = z.object({
   ...PersonalInfoFormSchema.shape,

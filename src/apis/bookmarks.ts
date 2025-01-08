@@ -2,7 +2,7 @@ import { apiClient } from "../lib/apiClient";
 
 export async function getAllBookMarks(skip: number) {
   const response = await apiClient(
-    `bookmarkList?limit=100&skip=${skip}&latestFirst=true`,
+    `bookmarkList?limit=50&skip=${skip}&latestFirst=true`,
     "GET",
   );
  if (response.success && response.data) {

@@ -41,6 +41,7 @@ export async function signInWithMobile(
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
+    console.log("response::::::::",response)
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {
@@ -82,7 +83,9 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
+    console.log("response::::::::",response)
     if (response.status === 200) {
+
       return { status: true, message: response.data };
     } else {
       return { status: false, message: response.data };
@@ -123,6 +126,7 @@ export async function signInWithUserName(password: string, userName: string,  fi
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
+    console.log("response::::::::",response)
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {

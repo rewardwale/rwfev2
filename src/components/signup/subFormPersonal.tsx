@@ -19,7 +19,7 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { PersonalInfo } from "@/actions/signup";
+import { PersonalInfo } from "../../actions/signup";
 import { json } from "node:stream/consumers";
 import { SelectGender } from "./Gender-dropDown";
 import { Checkbox } from "@radix-ui/react-checkbox";

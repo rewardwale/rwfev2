@@ -19,7 +19,7 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Final } from "@/actions/signup";
+import { Final } from "../../actions/signup";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { cn } from "@/lib/utils";
 import { EyeClosed } from "lucide-react";

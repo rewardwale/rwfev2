@@ -162,11 +162,11 @@ export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:s
 export async function signup(value: {
   firstName: string;
   lastName: string;
-  dateOfBirth: string;
-  city: string;
-  gender: string;
+  // dateOfBirth: string;
+  // city: string;
+  // gender: string;
   email: string;
-  mobile: string;
+  // mobile: string;
   userName: string;
   password: string;
   fingerPrints:string;
@@ -182,17 +182,17 @@ longitude:string) {
         indFirstName: value.firstName,
         indLastName: value.lastName,
         userName: value.userName,
-        indGender: value.gender,
-        indDob: value.dateOfBirth.replace(/^"|"$/g, ""),
-        location: value.city,
+        // indGender: value.gender,
+        // indDob: value.dateOfBirth.replace(/^"|"$/g, ""),
+        // location: value.city,
         locationCoordinates: {
           latitude: 90,
           longitude: 180,
         },
         indEmail: value.email,
         indPwd: value.password,
-        indCountryCode: "91",
-        indMobileNum: value.mobile,
+        // indCountryCode: "91",
+        // indMobileNum: value.mobile,
         indEmailNotify: true,
         indMobileNotify: true,
         indPushNotify: true,

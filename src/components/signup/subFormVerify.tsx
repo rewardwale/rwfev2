@@ -19,7 +19,7 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { Verification } from "@/actions/signup";
+import { Verification } from "../../actions/signup";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
 import { CountdownTimerIcon, MobileIcon } from "@radix-ui/react-icons";
 import { resendOTPEmail, resendOTPMobile } from "@/apis/signUp";

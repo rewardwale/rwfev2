@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useState, useTransition } from "react";
-import { Newlogin } from "@/actions/login";
+import { Newlogin } from "../../actions/login";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { EyeClosed } from "lucide-react";
@@ -27,6 +27,7 @@ import blackLogo from "../../../public/brand_logo/PNG/RW_Black_Name.png";
 import whiteLogo from "../../../public/brand_logo/PNG/RW_White_Name.png";
 import Image from "next/image";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
+import { Social } from "./social";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -71,15 +72,15 @@ export default function LoginForm() {
             setError(res?.error);
           }
 
-          if (res?.success) {
+          // if (res?.success) {
             // form.reset();
             router.push("/home");
             localStorage.removeItem("uib");
             localStorage.removeItem("token");
-            localStorage.setItem("uib", JSON.stringify(res.success));
-            localStorage.setItem("token", res.success.accessToken);
+            // localStorage.setItem("uib", JSON.stringify(res.success));
+            // localStorage.setItem("token", res.success.accessToken);
             setSuccess("logging In.....");
-          }
+          // }
 
           // if (res?.twoFactor) {
           //   setShowTwoFactor(true);
@@ -206,6 +207,8 @@ export default function LoginForm() {
                 {/* {shwoTwoFactor ? "Confirm" : "login"} */}
                 login
               </Button>
+
+              <Social />
 
               <Button
                 variant={"link"}

@@ -1,6 +1,7 @@
 "use server";
 import {
   combinedSchema,
+  newSignupSchema,
   OTPFormSchema,
   PasswordFormSchema,
   PersonalInfoFormSchema,
@@ -102,5 +103,37 @@ export const Final = async (values: z.infer<typeof PasswordFormSchema>,latitude:
   return { success: "Success" };
 };
 
+export const simpleForm = async (
+  values: z.infer<typeof newSignupSchema>,fingerPrints:string,latitude:string,longitude:string
+) => {
+  const validatedFields = newSignupSchema.safeParse(values);
 
+  console.log(":::::::::!!!!", validatedFields);
+  if (!validatedFields.success) {
+    return { error: "Invalid fields!" };
+  }
+  const { firstname, lastname,email } =
+    validatedFields.data;
+
+  const validatedEmail = await validateEmail(email,fingerPrints,latitude,longitude);
+  // const validateMobile = await validatePhone("91", mobile,fingerPrints,latitude,longitude);
+  if (!validatedEmail.status) {
+    return { error:validatedEmail.message };
+  }
+
+  // if (!validateMobile.status) {
+  //   return { error: validateMobile.message };
+  // }
+  //check if email is already is in use or not- api
+  // if (validatedEmail.status && validateMobile.status) {
+  //   console.log("done!! email");
+  //   return { success: "OTP has been sent to your email id and mobile number" };
+  // }
+  if (validatedEmail.status) {
+    console.log("done!! email");
+    return { success: "OTP has been sent to your email id and mobile number" };
+  }
+
+
+};
 
