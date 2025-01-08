@@ -8,6 +8,7 @@ import LayoutWrapper from "@/components/layout/layout-wrapper";
 import { auth } from "../../auth";
 import { SessionProvider } from "next-auth/react";
 
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "RewardWale - Review honestly Rate diligently Earn Rewards",
@@ -31,6 +32,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body>
+        <Toaster position="top-center" richColors />
         <NextThemesProvider
           attribute="class"
           defaultTheme="system"

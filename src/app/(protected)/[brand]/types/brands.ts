@@ -19,7 +19,9 @@ export interface Post {
 export interface BrandInfo {
   name: string;
   logo: string;
-  isVerified: boolean;
+  banner: string;
+  Id: string;
+  // isVerified: boolean;
   rating: number;
-  rank: number;
+  // rank: number;
 }

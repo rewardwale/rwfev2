@@ -1,11 +1,79 @@
 import { apiClient } from "@/lib/apiClient";
 
-export const addBusiness = async ( payload: Record<string, any>) => {
-  try {
-    const response = await apiClient(`/businessPage`,'POST', payload);
-    return response.data;
-  } catch (error) {
-    console.error('Error adding comment:', error);
-    throw error;
+export const addBusiness = async (payload: Record<string, any>) => {
+  const response = await apiClient(`/businessPage`, "POST", payload);
+
+  if (!response.success) {
+    console.error("Error adding business:", response.error);
+    throw new Error(response.error || "Failed to add business");
   }
+
+  return response.data;
 };
+
+export async function fetchbusinessPageData(handle: string) {
+  const response = await apiClient(`/businessPageByHandle/${handle}`, "GET");
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch business page data:", response.error);
+    return null;
+  }
+}
+
+///api/uploadBusinessProfileImage/{id}
+
+export async function uploadBusinessProfile(Id: string, formData: FormData) {
+  try {
+    const response = await apiClient(
+      `/uploadBusinessProfileImage/${Id}`,
+      "PUT",
+      formData,
+    );
+
+    if (response.success && response.data) {
+      return response.data;
+    } else {
+      console.error("Failed to fetch signed URL:", response.error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error in getSignedUrl function:", error);
+    return null;
+  }
+}
+
+export async function fetchBusinessPostsVideos(id: string, count?: number) {
+  const queryParams = new URLSearchParams({
+    limit: "10",
+    skip: JSON.stringify(count),
+    flag: "1",
+    businessPageId: id,
+  }).toString();
+  const response = await apiClient(`/uploadedVideos?${queryParams}`, "GET");
+  console.log("fetchProfilePosts::", response);
+  if (response.success && response.data) {
+    return response.data.data;
+  } else {
+    console.error("Failed to fetch fetchProfilePosts data:", response.error);
+    return null;
+  }
+}
+
+export async function fetchBusinessTaggedVideos(id: string, count: number) {
+  const queryParams = new URLSearchParams({
+    limit: "10",
+    skip: JSON.stringify(count),
+    // flag: "1",
+    businessPageId: id,
+  }).toString();
+  const response = await apiClient(`/taggedVideos?${queryParams}`, "GET");
+  console.log("fetchTaggedVideos::", response);
+  if (response.success && response.data) {
+    return response.data.data;
+  } else {
+    console.error("Failed to fetch fetchTaggedVideos data:", response.error);
+    return null;
+  }
+}
