@@ -44,6 +44,25 @@ export async function uploadBusinessProfile(Id: string, formData: FormData) {
   }
 }
 
+export async function uploadBusinessBanner(Id: string, formData: FormData) {
+  try {
+    const response = await apiClient(
+      `/uploadBusinessBannerImage/${Id}`,
+      "PUT",
+      formData,
+    );
+
+    if (response.success && response.data) {
+      return response.data;
+    } else {
+      console.error("Failed to fetch signed URL:", response.error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error in getSignedUrl function:", error);
+    return null;
+  }
+}
 export async function fetchBusinessPostsVideos(id: string, count?: number) {
   const queryParams = new URLSearchParams({
     limit: "10",
@@ -77,3 +96,30 @@ export async function fetchBusinessTaggedVideos(id: string, count: number) {
     return null;
   }
 }
+
+// /api/followBusinessPage/{id},
+export const followMerchant = async (id: string) => {
+  console.log(":::::::::::::::::::", id);
+  const response = await apiClient(`/followBusinessPage/${id}`, "PUT");
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+};
+
+// /api/unfollowBusinessPage/{id},
+
+export const unFollowMerchant = async (id: string) => {
+  console.log(":::::::::::::::::::", id);
+  const response = await apiClient(`/unfollowBusinessPage/${id}`, "PUT");
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+};
