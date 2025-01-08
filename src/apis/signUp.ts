@@ -30,7 +30,8 @@ console.log("response:::",response)
   } catch (error: any) {
     console.log("error\n\t",error)
     console.error("error", error.response);
-    return {status:false,message:error.message};  }
+    return {status:false,message:error.response.data.message};  }
+
 }
 
 export async function validateEmail(email: string,  fingerPrints:string,latitude:string,longitude:string) {
@@ -60,7 +61,7 @@ export async function validateEmail(email: string,  fingerPrints:string,latitude
     }
   } catch (error: any) {
 console.log("error\n\t",error)
-return {status:false,message:error.message};  }
+return {status:false,message:error.response.data.message};   }
 }
 
 export async function validatePhone(countryCode: string, mobile: string,  fingerPrints:string,latitude:string,longitude:string) {
@@ -89,7 +90,7 @@ export async function validatePhone(countryCode: string, mobile: string,  finger
     }
   } catch (error: any) {
     console.log("error\n\t",error)
-    return {status:false,message:error.message};  }
+    return {status:false,message:error.response.data.message};   }
 }
 
 export async function verifyOTPMobile(
@@ -127,7 +128,7 @@ export async function verifyOTPMobile(
     }
   } catch (error: any) {
     console.error("error\n\t", error);
-    return {status:false,message:error.message};  }
+    return {status:false,message:error.response.data.message};   }
 }
 
 export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:string,latitude:string,longitude:string) {
@@ -156,7 +157,7 @@ export async function verifyOTPEmail(otp: string, email: string,  fingerPrints:s
     }
   } catch (error: any) {
     console.error("error\n\t",error);
-    return {status:false,message:error.message};  }
+    return {status:false,message:error.response.data.message};  }
 }
 
 export async function signup(value: {
@@ -226,7 +227,7 @@ longitude:string) {
     }
   } catch (error: any) {
     console.log("error\n\t", error );
-    return {status:false,message:error.message};  }
+    return {status:false,message:error.response.data.message};   }
 }
 
 
