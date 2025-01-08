@@ -35,7 +35,7 @@ console.log("response::::::::::;",response)
 //   }
 // }
 
-export async function fetchProfilePosts(id: string,count:number) {
+export async function fetchProfilePosts(id: string,count?:number) {
   const queryParams = new URLSearchParams({
     limit: "10",
     skip:JSON.stringify(count),

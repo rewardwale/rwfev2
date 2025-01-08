@@ -5,6 +5,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ThemeDataProvider from "@/context/theme-data-provider";
 import { Header } from "@/components/layout";
 import LayoutWrapper from "@/components/layout/layout-wrapper";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "RewardWale - Review honestly Rate diligently Earn Rewards",
@@ -24,6 +25,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
+        <Toaster position="top-center" richColors />
         <NextThemesProvider
           attribute="class"
           defaultTheme="system"

@@ -16,17 +16,16 @@ export default function HomePage() {
   const [postData, setPostData] = useState([]);
 
   const isMobile = useIsMobile();
+
   const init = async () => {
     const profileData = await fetchProfileData();
-      setData(profileData.data);
-      setUserId(profileData.data._id);   
+    setData(profileData.data);
+    setUserId(profileData.data._id);
   };
 
   useEffect(() => {
     init();
   }, []);
-
-
 
   console.log("checking for profile data----myProfile", data);
 
@@ -37,7 +36,7 @@ export default function HomePage() {
         <Header />
         {/* <div className="flex justify-center w-full"><SearchInputContainer/></div> */}
         <Suspense fallback={<div>Loading...</div>}>
-         {data  &&  <ProfilePage profileData={data} id={userId} />}
+          {data && <ProfilePage profileData={data} id={userId} />}
         </Suspense>
         {/* <Footer/> */}
       </div>
