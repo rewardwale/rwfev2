@@ -84,6 +84,7 @@ const DEFAULT_VALUES: BusinessFormData = {
 
 export function BusinessForm() {
   const [currentStep, setCurrentStep] = useState<FormStep>("business");
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
 
   const form = useForm<BusinessFormData>({
     resolver: zodResolver(businessFormSchema),
@@ -93,6 +94,8 @@ export function BusinessForm() {
 
   const currentStepIndex = STEPS.findIndex((step) => step.id === currentStep);
   const isLastStep = currentStepIndex === STEPS.length - 1;
+
+  console.log("checking isLastStep", isLastStep);
 
   const getStepFields = (step: FormStep): (keyof BusinessFormData)[] => {
     switch (step) {
@@ -119,8 +122,15 @@ export function BusinessForm() {
     return result;
   };
 
+  const navigateToStep = async (stepIndex: number) => {
+    if (completedSteps.has(stepIndex) || stepIndex === currentStepIndex) {
+      setCurrentStep(STEPS[stepIndex].id);
+    }
+  };
+
   const nextStep = async () => {
     if (await isStepValid()) {
+      setCompletedSteps((prev) => new Set([...prev, currentStepIndex]));
       const nextIndex = currentStepIndex + 1;
       if (nextIndex < STEPS.length) {
         setCurrentStep(STEPS[nextIndex].id);
@@ -135,22 +145,24 @@ export function BusinessForm() {
     }
   };
 
-  async function onSubmit(data: BusinessFormData) {
-    try {
-      const response = await addBusiness(data);
-      console.log("checking res of add business", response);
-      if (response) {
-        toast.success("Business information submitted successfully!");
-        <Toaster />;
+  const handleFinalSubmit = async () => {
+    if (await isStepValid()) {
+      try {
+        const data = form.getValues();
+        const response = await addBusiness(data);
+
+        console.log("checking res of add bussines", response);
+        if (response?.data?.statusCode) {
+          toast.success("Business information submitted successfully!");
+          <Toaster position="top-right" />;
+        }
+      } catch (error: any) {
+        console.error("Submission error:", error.message || error);
+        // alert(`${error.message}, "Failed to submit form. Please try again"`);
+        toast.error(error.message || "Failed to submit form. Please try again.");
       }
-      // if (!response.ok) {
-      //   throw new Error("Failed to submit form");
-      // }
-    } catch (error) {
-      console.log("checking error", error);
-      toast.error("Failed to submit form. Please try again.");
     }
-  }
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -174,26 +186,32 @@ export function BusinessForm() {
   return (
     <div className="max-w-3xl mx-auto px-4">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        {STEPS.map((step, index) => (
-          <div
-            key={step.id}
-            className={`flex flex-col items-center ${
-            index <= currentStepIndex
-                ? "text-primary"
-                : "text-muted-foreground"
-            }`}
-          >
-            <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 mb-2">
-              {step.icon}
-            </div>
-            <span className="text-sm text-center">{step.title}</span>
-          </div>
-        ))}
+        {STEPS.map((step, index) => {
+          const isCompleted = completedSteps.has(index);
+          const isCurrent = index === currentStepIndex;
+          const isClickable = isCompleted || isCurrent;
+
+          return (
+            <button
+              key={step.id}
+              onClick={() => navigateToStep(index)}
+              disabled={!isClickable}
+              className={`flex flex-col items-center ${
+              isClickable ? "cursor-pointer" : "cursor-not-allowed opacity-50" }
+              ${isCurrent ? "text-primary" : isCompleted ? "text-success" : "text-muted-foreground"}`}
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 mb-2">
+                {step.icon}
+              </div>
+              <span className="text-sm text-center">{step.title}</span>
+            </button>
+          );
+        })}
       </div>
 
       <Card className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             {renderStep()}
 
             <div className="flex justify-between mt-6">
@@ -207,7 +225,9 @@ export function BusinessForm() {
               </Button>
 
               {isLastStep ? (
-                <Button type="submit">Submit</Button>
+                <Button type="button" onClick={handleFinalSubmit}>
+                  Submit
+                </Button>
               ) : (
                 <Button type="button" onClick={nextStep}>
                   Next

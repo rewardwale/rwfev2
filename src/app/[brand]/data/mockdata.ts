@@ -4,9 +4,10 @@ import { BrandInfo, Post, Review } from "../types/brands";
 export const brandInfo: BrandInfo = {
   name: "Arata",
   logo: "https://cdn.shopify.com/s/files/1/0082/7300/2573/files/Asset_1.svg?v=1734691219",
-  isVerified: true,
+  // isVerified: true,
   rating: 4.5,
-  rank: 3,
+  banner:"",
+  // rank: 3,
 };
 
 export const reviews: Review[] = [

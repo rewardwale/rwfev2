@@ -4,7 +4,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Header } from "../home/components/header";
 import { Sidebar } from "../home/components/sidebar";
 import { BusinessForm } from "./components/business-form";
-import { Footer } from "@/components/layout";
 
 export default function BusinessPage() {
   const isMobile = useIsMobile();
