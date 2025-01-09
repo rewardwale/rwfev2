@@ -18,6 +18,7 @@ declare module "next-auth" {
     accessToken: string|undefined;
     refreshToken: string|undefined;
     providerAccountId:string|undefined;
+    provider:string|undefined;
   }
 
   // interface Session {
@@ -34,6 +35,7 @@ declare module "next-auth" {
       accessToken: string|undefined;
       refreshToken: string|undefined;
       providerAccountId:string|undefined;
+      provider:string|undefined;
     };
   }
 
@@ -56,5 +58,6 @@ declare module "next-auth/jwt" {
     accessToken: string|undefined;
     refreshToken: string|undefined;
     providerAccountId:string|undefined;
+    provider:string|undefined;
   }
 }

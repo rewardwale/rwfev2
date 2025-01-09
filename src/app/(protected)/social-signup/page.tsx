@@ -1,5 +1,5 @@
-import ProviderForm from "@/components/signup/providerForm";
+import ProviderAuth from "@/components/signup/providerPage";
 
 export default function ProviderSignUpPage() {
-  return <ProviderForm />;
+  return <ProviderAuth />;
 }

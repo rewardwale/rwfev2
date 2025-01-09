@@ -25,7 +25,7 @@ export const {
   callbacks: {
     // 1. Called during sign-in attempt
     async signIn({ user, account, profile }) {
-      console.log("Account*:", account, "profile**", profile, "user**", user);
+      // console.log("Account*:", account, "profile**", profile, "user**", user);
 
       if (account?.provider !== "credentials") {
         return true;
@@ -42,16 +42,16 @@ export const {
 
     // 2. Called when creating JWT token
     async jwt({ token, user, trigger, account, profile }) {
-      console.log(
-        "Account-1-*:",
-        account,
-        "profile**",
-        profile,
-        "user**",
-        user,
-        "token**",
-        token,
-      );
+      // console.log(
+      //   "Account-1-*:",
+      //   account,
+      //   "profile**",
+      //   profile,
+      //   "user**",
+      //   user,
+      //   "token**",
+      //   token,
+      // );
       // Only add user data to token on sign in
 
       if (user) {
@@ -64,6 +64,7 @@ export const {
           token.image = profile?.picture || "";
           token.refreshToken = account?.access_token;
           token.providerAccountId = account?.providerAccountId;
+          token.provider=account?.provider
         } else {
           token.id = user?.id;
           token.accessToken = user.accessToken;
@@ -74,6 +75,7 @@ export const {
           token.accessToken = user.accessToken;
           token.refreshToken = user.refreshToken;
           token.providerAccountId = user.providerAccountId;
+          token.provider="credentials"
         }
       }
 
@@ -82,7 +84,7 @@ export const {
 
     // 3. Called whenever session is checked
     async session({ session, token, user, trigger }) {
-      console.log("Account-2-*:", session, "user**", user, "token**", token);
+      // console.log("Account-2-*:", session, "user**", user, "token**", token);
       // Ensure session user data matches token
       if (token) {
         session.user.id = token.id||"";
@@ -93,6 +95,7 @@ export const {
         session.user.image = token.image;
         session.user.refreshToken = token.refreshToken;
         session.user.providerAccountId = token.providerAccountId;
+        session.user.provider=token?.provider
       }
 
       return session;

@@ -136,3 +136,46 @@ export async function signInWithUserName(password: string, userName: string,  fi
     // console.error("error", error.response);
     return {status:false,message:error.response.data.message};   }
 }
+
+export async function signInWithProviders(provider: string, token: string,  
+  fingerPrint:string,latitude:string,longitude:string) {
+  console.log("::::::login userName:::::");
+  try {
+     const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/loginWithSocialProivder`,
+      {
+        
+          "socialProviderType": provider,
+          "socialProviderToken": token,
+          "indPushNotify": true,
+          "notificationObj": {
+            "endpoint": "login",
+            "expirationTime": "",
+            "keys": {
+              "p256dh": "key",
+              "auth": "auth"
+            }
+          }
+        
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          fingerprint: fingerPrint,
+          latitude: latitude,
+          longitude: longitude,
+          lan: "en",
+        },
+        timeout: 10000, // Include timeout as part of the Axios config
+      },
+    );
+    console.log("response::::::::",response)
+    if (response.status === 200) {
+      return { status: true, message: response.data };
+    } else {
+      return { status: false, message: response.data };
+    }
+  } catch (error: any) {
+    // console.error("error", error.response);
+    return {status:false,message:error.response.data.message};   }
+}

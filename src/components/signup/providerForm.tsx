@@ -19,13 +19,14 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { PersonalInfo, simpleForm } from "../../actions/signup";
+import { PersonalInfo, simpleForm, simpleProviderForm } from "../../actions/signup";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
 import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import blackLogo from "../../../public/brand_logo/PNG/RW_Black_Name.png";
 import whiteLogo from "../../../public/brand_logo/PNG/RW_White_Name.png";
+import { useRouter } from "next/navigation";
 
 interface Props {
   stateChange: (one: boolean, two: boolean, three: boolean) => void;
@@ -45,6 +46,7 @@ export default function ProviderForm() {
   const [success, setSuccess] = useState<string | undefined>();
   const [showPassword, setShowpassword] = useState<boolean>(false);
   const [showPassword_1, setShowpassword_1] = useState<boolean>(false);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
@@ -73,6 +75,8 @@ export default function ProviderForm() {
     },
   });
 
+
+
   const onSubmit = (values: z.infer<typeof newSignupSchema>) => {
     setError("");
     setSuccess("");
@@ -86,7 +90,7 @@ export default function ProviderForm() {
       const longitude = isLocalStorageAvailable
         ? (localStorage.getItem("loc-lng") ?? "90")
         : "90";
-      simpleForm(values, fingerPrints, latitude, longitude)
+      simpleProviderForm(values, fingerPrints, latitude, longitude,data?.user.accessToken||"",data?.user.provider||"")
         .then((res) => {
           //console.log("===res===", res);
           if (res?.error) {
@@ -97,9 +101,10 @@ export default function ProviderForm() {
           if (res?.success) {
             // form.reset();
             setSuccess(res?.success);
+            router.push("/home")
+            
           }
 
-          //start transition will tell when the validation has ended till then the feilds will be disabled
         })
         .catch((error) => setError(error.message));
     });

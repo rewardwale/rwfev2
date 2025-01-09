@@ -1,3 +1,4 @@
+import { checkUserNameAvailability } from "@/apis/signUp";
 import * as z from "zod";
 
 export const LoginSchema = z.object({
@@ -57,10 +58,12 @@ export const PersonalInfoFormSchema = z.object({
       message: "First name cannot be empty.",
     })
     .min(3, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .max(30, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "First name can only contain alphabets.",
@@ -71,10 +74,12 @@ export const PersonalInfoFormSchema = z.object({
       message: "Last Name cannot be empty.",
     })
     .min(1, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .max(30, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "Last name can only contain alphabets.",
@@ -112,8 +117,7 @@ export const PersonalInfoFormSchema = z.object({
       message: "Mobile Number cannot be empty.",
     })
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
-      message:
-        "Must be a valid 10-digit number.",
+      message: "Must be a valid 10-digit number.",
     }),
 });
 
@@ -189,7 +193,6 @@ export const OTPFormSchema = z.object({
     .max(6),
 });
 
-
 export const EditPersonalInfoFormSchema = z.object({
   gender: z.string({ message: "choose your gender" }).nonempty({
     message: "Gender cannot be empty.",
@@ -205,10 +208,12 @@ export const EditPersonalInfoFormSchema = z.object({
       message: "First name cannot be empty.",
     })
     .min(3, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .max(30, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "First name can only contain alphabets.",
@@ -219,10 +224,12 @@ export const EditPersonalInfoFormSchema = z.object({
       message: "Last Name cannot be empty.",
     })
     .min(1, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .max(30, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "Last name can only contain alphabets.",
@@ -260,93 +267,112 @@ export const EditPersonalInfoFormSchema = z.object({
       message: "Mobile Number cannot be empty.",
     })
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
-      message:
-        "Must be a valid 10-digit number.",
+      message: "Must be a valid 10-digit number.",
     }),
-    title:z.string().optional(),
-    desc:z.string().optional()
+  title: z.string().optional(),
+  desc: z.string().optional(),
 });
-
 
 export const newSignupSchema = z.object({
   firstname: z
-  .string()
-  .nonempty({
-    message: "First name cannot be empty.",
-  })
-  .min(3, {
-    message: "Invalid first name. It must be between 3 and 30 characters long.",
-  })
-  .max(30, {
-    message: "Invalid first name. It must be between 3 and 30 characters long.",
-  })
-  .regex(/^[A-Za-z]+$/, {
-    message: "First name can only contain alphabets.",
-  }),
-lastname: z
-  .string()
-  .nonempty({
-    message: "Last Name cannot be empty.",
-  })
-  .min(1, {
-    message:  "Invalid Last name. It must be between 1 and 30 characters long.",
-  })
-  .max(30, {
-    message:  "Invalid Last name. It must be between 1 and 30 characters long.",
-  })
-  .regex(/^[A-Za-z]+$/, {
-    message: "Last name can only contain alphabets.",
-  }),
-email: z
-  .string({
-    required_error: "Please select an email to display.",
-  })
-  .nonempty({
-    message: "Email cannot be empty.",
-  })
-  .email(),
-  password: z
-  .string()
-  .nonempty({
-    message: "Password cannot be empty.",
-  })
-  .min(8, { message: "Password must be at least 8 characters long." })
-  .regex(/[A-Z]/, {
-    message: "Password must contain at least one uppercase letter.",
-  })
-  .regex(/[a-z]/, {
-    message: "Password must contain at least one lowercase letter.",
-  })
-  .regex(/\d/, { message: "Password must contain at least one number." })
-  .regex(/[\W_]/, {
-    message: "Password must contain at least one symbol.",
-  }),
-userName: z
-  .string()
-  .nonempty({
-    message: "User Name cannot be empty.",
-  })
-  .min(3, { message: "Username must be at least 3 characters." })
-  .max(30, { message: "Username must not be longer than 30 characters." })
-  .regex(/^(?![._-])(?!.*[._-]{2})[a-zA-Z0-9._-]+$/, {
-    message:
-      "Username can only contain letters, numbers, underscores, dots, and hyphens.\n It cannot start with special characters or \nhave consecutive special characters.",
-  }),
+    .string()
+    .nonempty({
+      message: "First name cannot be empty.",
+    })
+    .min(3, {
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
+    })
+    .max(30, {
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
+    })
+    .regex(/^[A-Za-z]+$/, {
+      message: "First name can only contain alphabets.",
+    }),
+  lastname: z
+    .string()
+    .nonempty({
+      message: "Last Name cannot be empty.",
+    })
+    .min(1, {
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
+    })
+    .max(30, {
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
+    })
+    .regex(/^[A-Za-z]+$/, {
+      message: "Last name can only contain alphabets.",
+    }),
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .nonempty({
+      message: "Email cannot be empty.",
+    })
+    .email(),
+  // password: z
+  //   .string()
+  //   .nonempty({
+  //     message: "Password cannot be empty.",
+  //   })
+  //   .min(8, { message: "Password must be at least 8 characters long." })
+  //   .regex(/[A-Z]/, {
+  //     message: "Password must contain at least one uppercase letter.",
+  //   })
+  //   .regex(/[a-z]/, {
+  //     message: "Password must contain at least one lowercase letter.",
+  //   })
+  //   .regex(/\d/, { message: "Password must contain at least one number." })
+  //   .regex(/[\W_]/, {
+  //     message: "Password must contain at least one symbol.",
+  //   }),
+  userName: z
+    .string()
+    .nonempty({
+      message: "User Name cannot be empty.",
+    }).superRefine(async (username, ctx) => {
+      const response = await checkUserNameAvailability(username, "90", "90");
 
-TnC: z.boolean().refine((val) => val === true, {
-  message: "You must accept the terms and conditions to proceed.",
-}),
-TnC2: z.boolean().refine((val) => val === true, {
-  message: "You must accept the terms and conditions to proceed.",
-}),
-confirmPassword: z.string().nonempty({
-  message: "Confirm Password cannot be empty.",
-})
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords must match.",
-  path: ["confirmPassword"], // Attach the error to `confirmPassword`
-})
+      // console.log("response=>=>",response,username,ctx)
 
+      // Add an error if the username is not available
+      if (!response?.status) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: response?.message || "User name already exists.",
+        });
+      }
+    }),
+    
+    // .refine(
+    //   async (username) => {
+    //     const name = await checkUserNameAvailability(username, "90", "90");
+    //     console.log("++++++++++++>", username, name);
+   
+    //     return name?.status;
+    //   },
+    //   {
+    //     message:(err:any)=> err.message|| "User name already exists", // Fallback message
+    //   },
+    // ),
+  // TnC: z.boolean().refine((val) => val === true, {
+  //   message: "You must accept the terms and conditions to proceed.",
+  // }),
+  // TnC2: z.boolean().refine((val) => val === true, {
+  //   message: "You must accept the terms and conditions to proceed.",
+  // }),
+  // confirmPassword: z.string().nonempty({
+  //   message: "Confirm Password cannot be empty.",
+  // })
+});
+// .refine((data) => data.password === data.confirmPassword, {
+//   message: "Passwords must match.",
+//   path: ["confirmPassword"], // Attach the error to `confirmPassword`
+// })
 
 export const combinedSchema = z.object({
   ...PersonalInfoFormSchema.shape,
