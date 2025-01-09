@@ -24,6 +24,7 @@ export interface BrandInfo {
   isFollow: boolean;
   // isVerified: boolean;
   rating: number;
+  businessPageOwner: string[]
   // rank: number;
 }
 

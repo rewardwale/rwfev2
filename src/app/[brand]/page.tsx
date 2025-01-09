@@ -23,6 +23,7 @@ import { Header } from "../(user)/home/components/header";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sidebar } from "../(user)/home/components/sidebar";
 import { Button } from "@/components/ui/button";
+import useIsOwner from "@/hooks/use-owner";
 
 // import SingleCategoryShorts from "./components/postSection";
 
@@ -33,14 +34,14 @@ interface BrandInfo {
   rating: number;
   banner: string;
   Id: string;
-  isFollow: boolean
+  isFollow: boolean;
+  businessPageOwner: string[];
   // rank: number;
 }
 
 export default function BrandPage({ params }: { params: any }) {
   const resolvedParams = React.useMemo(() => params, [params]);
   const contentRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   // const [userId, setUserId] = useState<any>(null);
   const [count, setCount] = useState<number>(0);
   const [videoData, setvideodata] = useState<VideoData[] | []>([]);
@@ -62,7 +63,7 @@ export default function BrandPage({ params }: { params: any }) {
 
     const data = await fetchbusinessPageData(handle);
     setBusinessID(data.data[0]._id);
-    
+
     const brandData: BrandInfo = {
       name: data.data[0]?.businessName || "Unknown Brand",
       rating: data.data[0]?.avgRating || 0,
@@ -70,8 +71,10 @@ export default function BrandPage({ params }: { params: any }) {
       logo: data.data[0].defaultBusinessImage.original || "",
       banner: data.data[0].defaultBusinessBanner.original || "",
       Id: data.data[0]._id,
+      businessPageOwner: data?.data[0]?.businessPageOwner || [],
+
       // isFollow: data.data[0]?.isFollow
-      isFollow: false
+      isFollow: false,
       // rank: data.data[0]?.rank || 0,
     };
 
@@ -79,6 +82,8 @@ export default function BrandPage({ params }: { params: any }) {
       setBrandInfo(brandData); // Store a single object
     }
   };
+
+  const isOwner = useIsOwner(brandInfo?.businessPageOwner || []);
 
   useEffect(() => {
     fetchBrandDetails();
@@ -174,9 +179,9 @@ export default function BrandPage({ params }: { params: any }) {
     <div className="flex h-screen bg-background">
       {/* post section */}
 
-      {!isMobile && <Sidebar />}
+      {!isMobile && isOwner && <Sidebar />}
       <div className="flex-1">
-        <Header />
+       {isOwner && <Header />}
 
         <div>
           {brandInfo ? <BrandHeader info={brandInfo} /> : <div>Loading...</div>}
@@ -212,7 +217,12 @@ export default function BrandPage({ params }: { params: any }) {
                       // ref={scrollContainerRef}
                       // onScroll={handleScrollEvent}
                     >
-                      <div className="flex flex-wrap w-full h-full gap-3 lg:gap-5">
+                      <div
+                        className="flex flex-wrap w-full h-full gap-3 lg:gap-5"
+                        style={{
+                          padding: "20px",
+                        }}
+                      >
                         {videoData.length > 0 || !videoData ? (
                           videoData.map((item: VideoData, index: number) => (
                             <ProfileItem
@@ -238,19 +248,21 @@ export default function BrandPage({ params }: { params: any }) {
                             className="flex-col w-full text-center"
                           >
                             <span>No Posts Yet</span>
-                            <Button
-                              variant="default"
-                              style={{
-                                width: "25%",
-                              }}
-                              onClick={() =>
-                                router.push(
-                                  `/post?data=${encodeURIComponent(businessId)}`,
-                                )
-                              }
-                            >
-                              Post now
-                            </Button>
+                            {isOwner && (
+                              <Button
+                                variant="default"
+                                style={{
+                                  width: "25%",
+                                }}
+                                onClick={() =>
+                                  router.push(
+                                    `/post?data=${encodeURIComponent(businessId)}`,
+                                  )
+                                }
+                              >
+                                Post now
+                              </Button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -307,8 +319,6 @@ export default function BrandPage({ params }: { params: any }) {
         </Suspense>
         {/* <Footer/> */}
       </div>
-
-  
     </div>
   );
 }
