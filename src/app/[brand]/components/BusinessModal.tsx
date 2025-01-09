@@ -56,7 +56,7 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
           <Tabs defaultValue="overview" className="mt-6">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="photos">Photos</TabsTrigger>
+              {/* <TabsTrigger value="photos">Photos</TabsTrigger> */}
               <TabsTrigger value="hours">Hours</TabsTrigger>
             </TabsList>
 
@@ -89,7 +89,7 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
               </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="photos">
+            {/* <TabsContent value="photos">
               <ScrollArea className="h-[calc(90vh-400px)]">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {business.businessImages.map((image:any, index:any) => (
@@ -106,7 +106,7 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
                   ))}
                 </div>
               </ScrollArea>
-            </TabsContent>
+            </TabsContent> */}
 
             <TabsContent value="hours">
               <ScrollArea className="h-[calc(90vh-400px)]">

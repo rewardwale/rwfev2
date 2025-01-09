@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { BusinessModal } from "./BusinessModal";
+import useIsOwner from "@/hooks/use-owner";
 
 export function BrandHeader({ info }: { info: BrandInfo }) {
   const followButtonRef = useRef<HTMLButtonElement>(null);
@@ -26,6 +27,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isFollowed, setIsFollowed] = useState(info?.isFollow);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  // const [isOwner, setIsOwner] = useState(false);
   const [selectedBannerFile, setSelectedBannerFile] = useState<File | null>(
     null,
   );
@@ -108,13 +110,10 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
     ],
   };
 
-  // const handleFollow = () => {
-  //   if (followButtonRef.current) {
-  //     animateFollow(followButtonRef.current);
-  //   }
-  // };
+  const isOwner = useIsOwner(info.businessPageOwner);
 
-  // console.log("checking info", info, isFollowed);
+
+  console.log("checking isOwner", isOwner);
 
   const handleFollow = async () => {
     try {
@@ -278,14 +277,16 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute bottom-0 top-2 right-3 cursor-pointer">
-          <Pencil
-            size={isMobile ? 28 : 38}
-            strokeWidth={1.5}
-            color="black"
-            onClick={() => setIsBannerModalOpen(true)}
-          />
-        </div>
+        {isOwner && (
+          <div className="absolute bottom-0 top-2 right-3 cursor-pointer">
+            <Pencil
+              size={isMobile ? 28 : 38}
+              strokeWidth={1.5}
+              color="black"
+              onClick={() => setIsBannerModalOpen(true)}
+            />
+          </div>
+        )}
         {!isMobile ? (
           <div className="absolute bottom-0 left-0 right-0 px-4 py-6">
             <div className="flex items-end justify-between">
@@ -365,13 +366,15 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 <Button onClick={() => setIsDetailsModalOpen(true)}>
                   More Details
                 </Button>
-                <Button
-                  onClick={() =>
-                    router.push(`/post?data=${encodeURIComponent(info.Id)}`)
-                  }
-                >
-                  Post Review
-                </Button>
+                {isOwner && (
+                  <Button
+                    onClick={() =>
+                      router.push(`/post?data=${encodeURIComponent(info.Id)}`)
+                    }
+                  >
+                    Post Review
+                  </Button>
+                )}
                 <Button
                   ref={followButtonRef}
                   onClick={isFollowed ? handleUnfollow : handleFollow}
@@ -456,7 +459,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
         )}
       </div>
       {/* Modal */}
-      {isModalOpen && (
+      {isModalOpen && isOwner &&(
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
             {/* Close Button */}
