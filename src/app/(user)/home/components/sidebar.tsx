@@ -106,7 +106,7 @@ export function Sidebar({ className }: SidebarProps) {
               My Profile
             </Button>
 
-            {hasPage && (
+            {/* {hasPage && (
               <Button
                 variant="ghost"
                 className="w-full justify-start"
@@ -115,7 +115,7 @@ export function Sidebar({ className }: SidebarProps) {
                 <UserRound className="mr-2 h-4 w-4" />
                 My Business Page
               </Button>
-            )}
+            )} */}
             {/* <Button variant="ghost" className="w-full justify-start">
               <CircleEllipsis className="mr-2 h-4 w-4" />
               More
