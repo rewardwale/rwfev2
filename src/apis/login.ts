@@ -139,13 +139,13 @@ export async function signInWithUserName(password: string, userName: string,  fi
 
 export async function signInWithProviders(provider: string, token: string,  
   fingerPrint:string,latitude:string,longitude:string) {
-  console.log("::::::login userName:::::");
+  console.log("::::::login userName:::::", provider,token);
   try {
      const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/loginWithSocialProivder`,
       {
         
-          "socialProviderType": provider,
+          "socialProviderType": provider.toLocaleUpperCase(),
           "socialProviderToken": token,
           "indPushNotify": true,
           "notificationObj": {

@@ -314,22 +314,15 @@ export const newSignupSchema = z.object({
       message: "Email cannot be empty.",
     })
     .email(),
-  // password: z
-  //   .string()
-  //   .nonempty({
-  //     message: "Password cannot be empty.",
-  //   })
-  //   .min(8, { message: "Password must be at least 8 characters long." })
-  //   .regex(/[A-Z]/, {
-  //     message: "Password must contain at least one uppercase letter.",
-  //   })
-  //   .regex(/[a-z]/, {
-  //     message: "Password must contain at least one lowercase letter.",
-  //   })
-  //   .regex(/\d/, { message: "Password must contain at least one number." })
-  //   .regex(/[\W_]/, {
-  //     message: "Password must contain at least one symbol.",
-  //   }),
+    mobile: z
+    .string()
+    .nonempty({
+      message: "Mobile Number cannot be empty.",
+    })
+    .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
+      message: "Must be a valid 10-digit number.",
+    }),
+  
   userName: z
     .string()
     .nonempty({
@@ -348,31 +341,98 @@ export const newSignupSchema = z.object({
       }
     }),
     
-    // .refine(
-    //   async (username) => {
-    //     const name = await checkUserNameAvailability(username, "90", "90");
-    //     console.log("++++++++++++>", username, name);
    
-    //     return name?.status;
-    //   },
-    //   {
-    //     message:(err:any)=> err.message|| "User name already exists", // Fallback message
-    //   },
-    // ),
-  // TnC: z.boolean().refine((val) => val === true, {
-  //   message: "You must accept the terms and conditions to proceed.",
-  // }),
-  // TnC2: z.boolean().refine((val) => val === true, {
-  //   message: "You must accept the terms and conditions to proceed.",
-  // }),
-  // confirmPassword: z.string().nonempty({
-  //   message: "Confirm Password cannot be empty.",
-  // })
 });
-// .refine((data) => data.password === data.confirmPassword, {
-//   message: "Passwords must match.",
-//   path: ["confirmPassword"], // Attach the error to `confirmPassword`
-// })
+
+
+export const newSignupRwSchema = z.object({
+  firstname: z
+    .string()
+    .nonempty({
+      message: "First name cannot be empty.",
+    })
+    .min(3, {
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
+    })
+    .max(30, {
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
+    })
+    .regex(/^[A-Za-z]+$/, {
+      message: "First name can only contain alphabets.",
+    }),
+  lastname: z
+    .string()
+    .nonempty({
+      message: "Last Name cannot be empty.",
+    })
+    .min(1, {
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
+    })
+    .max(30, {
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
+    })
+    .regex(/^[A-Za-z]+$/, {
+      message: "Last name can only contain alphabets.",
+    }),
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .nonempty({
+      message: "Email cannot be empty.",
+    })
+    .email(),
+  password: z
+    .string()
+    .nonempty({
+      message: "Password cannot be empty.",
+    })
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter.",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter.",
+    })
+    .regex(/\d/, { message: "Password must contain at least one number." })
+    .regex(/[\W_]/, {
+      message: "Password must contain at least one symbol.",
+    }),
+  userName: z
+    .string()
+    .nonempty({
+      message: "User Name cannot be empty.",
+    }).superRefine(async (username, ctx) => {
+      const response = await checkUserNameAvailability(username, "90", "90");
+      // Add an error if the username is not available
+      if (!response?.status) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: response?.message || "User name already exists.",
+        });
+      }
+    }),
+    mobile: z
+    .string()
+    .nonempty({
+      message: "Mobile Number cannot be empty.",
+    })
+    .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
+      message: "Must be a valid 10-digit number.",
+    }),
+    
+  TnC: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions to proceed.",
+  }),
+  TnC2: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions to proceed.",
+  }),
+});
+
 
 export const combinedSchema = z.object({
   ...PersonalInfoFormSchema.shape,

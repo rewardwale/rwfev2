@@ -102,7 +102,7 @@ export default function SignupForm() {
           <CardContent className="min-h-56 justify-center block space-y-10 ">
         <Button className="w-full" onClick={()=>{setCred(true)
           setToggle(true)
-        }}>Sign In With Email</Button>
+        }}>Sign Up With Email</Button>
         <Social />
         </CardContent>
         <CardFooter>

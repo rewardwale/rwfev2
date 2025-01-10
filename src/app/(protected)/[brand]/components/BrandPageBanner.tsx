@@ -8,7 +8,7 @@ import { BrandInfo } from "../types/brands";
 import { animateFollow } from "@/lib/animation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ResponsiveImages from "@/components/responsiveImages/images.component";
-import WhatsappLogo from "../../../../public/whatsApp-logo.png";
+import WhatsappLogo from "../../../../../public/whatsApp-logo.png";
 import { uploadBusinessProfile } from "@/apis/business";
 import { toast } from "sonner";
 

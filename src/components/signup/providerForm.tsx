@@ -100,9 +100,13 @@ export default function ProviderForm() {
 
           if (res?.success) {
             // form.reset();
-            setSuccess(res?.success);
-            router.push("/home")
-            
+            setSuccess("ogged in");
+            const data= res.success.data.indDetail;
+            localStorage.removeItem("uib");
+            localStorage.removeItem("token");
+            localStorage.setItem("uib", JSON.stringify(data));
+            localStorage.setItem("token", data.accessToken);
+            router.push("/home");          
           }
 
         })

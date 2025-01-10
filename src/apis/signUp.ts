@@ -1,39 +1,45 @@
-"use server"
+"use server";
 import axios, { AxiosError } from "axios";
-import {debounce} from "lodash";
+import { debounce } from "lodash";
 
-export const checkUserNameAvailability = debounce(async (userName: string, latitude: string, longitude: string) => { 
-  console.log("checkUserNameAvailability\t", userName);
-  try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?isBusinessUser=false&type=user`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          // fingerprint: fingerPrints,
-          latitude: latitude,
-          longitude: longitude,
-          // lan: "en",
+export const checkUserNameAvailability = debounce(
+  async (userName: string, latitude: string, longitude: string) => {
+    console.log("checkUserNameAvailability\t", userName);
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?isBusinessUser=false&type=user`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // fingerprint: fingerPrints,
+            latitude: latitude,
+            longitude: longitude,
+            // lan: "en",
+          },
+          timeout: 10000, // Include timeout as part of the Axios config
         },
-        timeout: 10000, // Include timeout as part of the Axios config
-      },
-    );
-    console.log("response:::", response.data.data);
-    if (response.status === 200) {
-      if (response.data.data.isAvailable) {
-        return  { status: true, message: response.data.message };
-      } else if (!response.data.data.isAvailable) {
-        return   { status: false, message: "User Name already exists!,try new" };
+      );
+      console.log("response:::", response.data.data);
+      if (response.status === 200) {
+        if (response.data.data.isAvailable) {
+          return { status: true, message: response.data.message };
+        } else if (!response.data.data.isAvailable) {
+          return {
+            status: false,
+            message: "User Name already exists!,try new",
+          };
+        }
+      } else {
+        return { status: false, message: response.data.message };
       }
-    } else {
-      return { status: false, message: response.data.message };
+    } catch (error: any) {
+      console.log("error\n\t", error);
+      console.error("error", error.response);
+      return { status: false, message: error.response.data.message };
     }
-  } catch (error: any) {
-    console.log("error\n\t", error);
-    console.error("error", error.response);
-    return  { status: false, message: error.response.data.message };
-  }
-},300)
+  },
+  300,
+);
 
 export async function validateEmail(
   email: string,
@@ -184,12 +190,9 @@ export async function signup(
   value: {
     firstName: string;
     lastName: string;
-    // dateOfBirth: string;
-    // city: string;
-    // gender: string;
     email: string;
-    // mobile: string;
     userName: string;
+    mobile: string;
     password: string;
     fingerPrints: string;
   },
@@ -205,22 +208,19 @@ export async function signup(
         indFirstName: value.firstName,
         indLastName: value.lastName,
         userName: value.userName,
-        // indGender: value.gender,
-        // indDob: value.dateOfBirth.replace(/^"|"$/g, ""),
-        // location: value.city,
         locationCoordinates: {
-          latitude: 90,
-          longitude: 180,
+          latitude: latitude,
+          longitude: longitude,
         },
         indEmail: value.email,
         indPwd: value.password,
-        // indCountryCode: "91",
-        // indMobileNum: value.mobile,
+        indCountryCode: "91",
+        indMobileNum: value.mobile,
+        indGender: "male",
         indEmailNotify: true,
         indMobileNotify: true,
         indPushNotify: true,
         indWhatsappNotify: true,
-        // categoryPref: ["string78wh36sfyeh8012347"],
         notificationObj: {
           endpoint: "/signup",
           expirationTime: "string",
@@ -229,7 +229,6 @@ export async function signup(
             auth: "string",
           },
         },
-        // socialProviderToken: "string",
       },
       {
         headers: {
@@ -325,15 +324,27 @@ export async function resendOTPMobile(
 }
 
 export async function signupWithProvider(
-   value:{ firstName: string;
+  value: {
+    firstName: string;
     lastName: string;
     email: string;
     userName: string;
     fingerPrints: string;
-}, latitude: string, longitude: string, providerToken: string, provider: string,
+  },
+  latitude: string,
+  longitude: string,
+  providerToken: string,
+  provider: string,
 ) {
   try {
-    console.log("Signup\n", value,latitude,longitude,providerToken,provider.toLocaleUpperCase());
+    console.log(
+      "Signup\n",
+      value,
+      latitude,
+      longitude,
+      providerToken,
+      provider.toLocaleUpperCase(),
+    );
     console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`);
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/signupWithSocialProvider`,
@@ -341,7 +352,7 @@ export async function signupWithProvider(
         indFirstName: value.firstName,
         indLastName: value.lastName,
         userName: value.userName,
-        location:"chennai",
+        location: "chennai",
         locationCoordinates: {
           latitude: latitude,
           longitude: longitude,
@@ -368,9 +379,9 @@ export async function signupWithProvider(
       },
     );
     if (response.status === 200) {
-      return {status:true, message: "successfully created" };
+      return { status: true, message: "successfully created" };
     } else {
-      return { status:false,message: "Signup isnt successful" };
+      return { status: false, message: "Signup isnt successful" };
     }
   } catch (error: any) {
     console.log("error\n\t", error.response.data);

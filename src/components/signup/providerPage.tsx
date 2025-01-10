@@ -5,9 +5,25 @@ import { signupWithProvider } from "@/apis/signUp";
 import { getSession, useSession } from "next-auth/react";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
 import { signInWithProviders } from "@/apis/login";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 export default function ProviderAuth() {
-  const [loggedIn, setoggedIn] = useState<boolean>(false);
+  const router = useRouter();
+  const [loggedIn, setloggedIn] = useState<boolean>(false);
+  const [diffProvider, setDiffProvider] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [err, seterr] = useState<boolean>(false);
   const { data, status, update } = useSession();
   const fingerPrints = getDeviceFingerprint();
   const isLocalStorageAvailable = localStorage;
@@ -26,44 +42,87 @@ export default function ProviderAuth() {
         init();
       }
     });
-
   }, []);
 
   const init = async () => {
+    //check if email exists or not
+    const availability: { status: boolean; provider: string | undefined } = {
+      status: true,
+      provider: "GOOGLE",
+    };
 
-    const signup = await signupWithProvider(
-      {
-        email: data?.user.email || "",
-        lastName: data?.user.lastname || "",
-        firstName: data?.user.firstname || "",
-        userName: "",
-        // password: password,
-        fingerPrints: fingerPrints,
-      },
-      latitude,
-      longitude,
-      data?.user.accessToken || "",
-      data?.user.provider || "",
-    );
+    //if doesnt exists
+    if (!availability.status) {
+      setloggedIn(true);
+    }
 
-    if (!signup.status) {
-      //login here
-      const login = await signInWithProviders(
-        data?.user.provider || "",
-        data?.user.accessToken || "",
-        fingerPrints,
-        latitude,
-        longitude,
-      );
-      if (login.status) {
-        return { success: login.message };
-      } else {
-        return { error: login.message };
+    if (availability.status) {
+      if (availability.provider === data?.user.provider?.toLocaleUpperCase()) {
+        const login = await signInWithProviders(
+          data?.user.provider || "",
+          data?.user.accessToken || "",
+          fingerPrints,
+          latitude,
+          longitude,
+        );
+        console.log("login", login);
+        if (login.status) {
+          const data= login.message.data.indDetail;
+          localStorage.removeItem("uib");
+          localStorage.removeItem("token");
+          localStorage.setItem("uib", JSON.stringify(data));
+          localStorage.setItem("token", data.accessToken);
+          router.push("/home");
+        } else {
+          seterr(true);
+          setMessage(login.message);
+        }
       }
-    } else {
-      return { error: signup.message };
+      if (availability.provider !== data?.user.provider?.toLocaleUpperCase()) {
+        setDiffProvider(true);
+      }
     }
   };
 
-  return <ProviderForm />;
+  return (
+    <>
+      {loggedIn && <ProviderForm />}
+      {diffProvider && (
+        <AlertDialog open={diffProvider} onOpenChange={setDiffProvider}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle></AlertDialogTitle>
+              <AlertDialogDescription>
+                Dear user you have already registered for <b>Rewardwale</b>{" "}
+                using <b>{data?.user.provider?.toLocaleUpperCase()}</b> Please
+                try again using the registered provider
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
+              <AlertDialogAction onClick={() => router.push("/login")}>
+                Login
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+      {err && (
+        <AlertDialog open={err} onOpenChange={seterr}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle></AlertDialogTitle>
+              <AlertDialogDescription>{message}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
+              <AlertDialogAction onClick={() => router.push("/login")}>
+                Login
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </>
+  );
 }

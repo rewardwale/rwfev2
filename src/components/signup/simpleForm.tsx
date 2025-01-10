@@ -1,9 +1,14 @@
 "use client";
 import { useForm, UseFormReturn } from "react-hook-form";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useSearchParams } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { newSignupSchema, PersonalInfoFormSchema } from "@/schema";
+import {
+  newSignupRwSchema,
+  newSignupSchema,
+  PersonalInfoFormSchema,
+} from "@/schema";
 import {
   Form,
   FormControl,
@@ -27,33 +32,56 @@ import { LocationInput } from "./locationFiled";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
 import { cn } from "@/lib/utils";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { EyeClosed } from "lucide-react";
+import { signup, verifyOTPEmail, verifyOTPMobile } from "@/apis/signUp";
+import { FcCancel } from "react-icons/fc";
+import { IoClose } from "react-icons/io5";
 
-interface Props {
-  stateChange: (one: boolean, two: boolean, three: boolean) => void;
-  data: (
-    firstName: string,
-    lastName: string,
-    email: string,
-    userName: string,
-    password: string,
-  ) => void;
-}
-
-export default function SimpleForm({ stateChange, data }: Props) {
+export default function SimpleForm() {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
-  const [showPassword, setShowpassword] = useState<boolean>(false);
+  const [error_1, setError_1] = useState<string | undefined>();
+  const [success_1, setSuccess_1] = useState<string | undefined>();
+  const [showOtp, setShowOtp] = useState<boolean>(false);
   const [showPassword_1, setShowpassword_1] = useState<boolean>(false);
+  const [otp, setOtp] = useState<string>("");
+  const [otpMobile, setOtpMobile] = useState<string>("");
   const searchParams = useSearchParams();
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
       : "";
 
-  const form = useForm<z.infer<typeof newSignupSchema>>({
-    resolver: zodResolver(newSignupSchema),
+  const fingerPrints = getDeviceFingerprint();
+  const isLocalStorageAvailable = localStorage;
+  // Safely access location data from localStorage
+  const latitude = isLocalStorageAvailable
+    ? (localStorage.getItem("loc-lat") ?? "90")
+    : "90";
+  const longitude = isLocalStorageAvailable
+    ? (localStorage.getItem("loc-lng") ?? "90")
+    : "90";
+
+  const form = useForm<z.infer<typeof newSignupRwSchema>>({
+    resolver: zodResolver(newSignupRwSchema),
     mode: "onChange",
     defaultValues: {
       email: "",
@@ -61,27 +89,18 @@ export default function SimpleForm({ stateChange, data }: Props) {
       firstname: "",
       userName: "",
       password: "",
-      confirmPassword: "",
+      mobile: "",
       TnC: false,
+      TnC2: false,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof newSignupSchema>) => {
+  const onSubmit = (values: z.infer<typeof newSignupRwSchema>) => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      const fingerPrints = getDeviceFingerprint();
-      const isLocalStorageAvailable = localStorage;
-      // Safely access location data from localStorage
-      const latitude = isLocalStorageAvailable
-        ? (localStorage.getItem("loc-lat") ?? "90")
-        : "90";
-      const longitude = isLocalStorageAvailable
-        ? (localStorage.getItem("loc-lng") ?? "90")
-        : "90";
       simpleForm(values, fingerPrints, latitude, longitude)
         .then((res) => {
-          //console.log("===res===", res);
           if (res?.error) {
             // form.reset();
             setError(res?.error);
@@ -89,15 +108,55 @@ export default function SimpleForm({ stateChange, data }: Props) {
 
           if (res?.success) {
             // form.reset();
+            setShowOtp(true);
             setSuccess(res?.success);
-            data(values.firstname, values.lastname, values.email,values.password,values.userName);
-            stateChange(false, true, false);
           }
-
-          //start transition will tell when the validation has ended till then the feilds will be disabled
         })
         .catch((error) => setError(error.message));
     });
+  };
+
+  const registerUser = async (values: z.infer<typeof newSignupRwSchema>) => {
+    const data = await newSignupRwSchema.parseAsync(values);
+    // const data = validatedFields.data;
+    let val = {
+      firstName: data?.firstname || "",
+      lastName: data?.lastname || "",
+      email: data?.email || "",
+      mobile:data?.mobile||"",
+      userName: data?.userName || "",
+      password: data?.password || "",
+      fingerPrints: fingerPrints || "",
+    };
+    //validate otp here
+    const validateOtp = await verifyOTPEmail(
+      otp,
+      val.email,
+      fingerPrints,
+      latitude,
+      longitude,
+    );
+
+    const validateOtpMobile = await verifyOTPMobile(
+      "91",
+      val.mobile,
+      otpMobile,
+      fingerPrints,
+      latitude,
+      longitude,
+    )
+
+    console.log("::::;;",validateOtp,validateOtpMobile)
+    if (validateOtp.status && validateOtpMobile.status) {
+      const register = await signup(val, latitude, longitude);
+      if (register.status) {
+        setSuccess_1(register.message);
+      } else {
+        setError_1(register.message);
+      }
+    } else {
+      setError_1(validateOtp.message || validateOtpMobile.message);
+    }
   };
 
   return (
@@ -164,6 +223,7 @@ export default function SimpleForm({ stateChange, data }: Props) {
                 )}
               />
             </div>
+            {/* <div className="flex" > */}
 
             <FormField
               control={form.control}
@@ -185,6 +245,34 @@ export default function SimpleForm({ stateChange, data }: Props) {
                         const lowerCase = value.toLocaleLowerCase();
 
                         field.onChange(lowerCase);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="mobile"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Phone Number<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="1234567890"
+                      type="text"
+                      maxLength={10}
+                      disabled={pending}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                        if (value.length <= 10) {
+                          field.onChange(value);
+                        }
                       }}
                     />
                   </FormControl>
@@ -264,54 +352,6 @@ export default function SimpleForm({ stateChange, data }: Props) {
               )}
             />
 
-            {/* <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Confirm Password<span className="text-red-600"> *</span>
-                  </FormLabel>
-                  <FormControl>
-                    {/* <Input
-                        {...field}
-                        placeholder="********"
-                        type="password"
-                        disabled={pending}
-                      /> */}
-                    {/* <div
-                      className={
-                        "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
-                      }
-                    >
-                      <Input
-                        {...field}
-                        placeholder="********"
-                        type={showPassword ? "text" : "password"}
-                        disabled={pending}
-                        maxLength={12}
-                        minLength={8}
-                        className={cn(
-                          " focus:border-none focus-visible:outline-none focus-visible:ring-0",
-                          "border-none",
-                        )}
-                      />
-                      <Button
-                        type="button"
-                        variant={"ghost"}
-                        className="hover:bg-transparent focus:ring-0"
-                        disabled={field.value.length === 0}
-                        onClick={() => setShowpassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOpenIcon /> : <EyeClosed />}
-                      </Button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />  */}
-
             <div className="text-sm">
               <FormField
                 control={form.control}
@@ -328,7 +368,7 @@ export default function SimpleForm({ stateChange, data }: Props) {
                         className="border-2 h-4 w-4 checked:bg-black"
                       />
                     </FormControl>
-                    <div className="space-y-1 leading-none ">
+                    <div className="space-y-1 leading-none">
                       {/* <FormLabel>
                             </FormLabel> */}
                       <FormDescription className="text-xs">
@@ -393,9 +433,81 @@ export default function SimpleForm({ stateChange, data }: Props) {
             <Button className="w-full" type="submit">
               Next
             </Button>
-          </div>
+            <AlertDialog open={showOtp} onOpenChange={setShowOtp}>
+              <AlertDialogContent className="w-full">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex justify-between">
+                    <p>
+                      {" "}
+                      Kindly enter the OTP sent to your email for verification.
+                    </p>
+                    <AlertDialogCancel
+                      className="rounded-full w-8 h-8"
+                      onClick={() => {
+                        setOtp("");
+                        setOtpMobile("")
+                        setError_1("");
+                        setSuccess_1("");
+                      }}
+                    >
+                      <IoClose />
+                    </AlertDialogCancel>
+                  </AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogDescription className="flex flex-col justify-center items-center space-y-3">
+                  <InputOTP
+                    maxLength={6}
+                    pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                    value={otp}
+                    onChange={(e) => setOtp(e)}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
 
-         
+                  <InputOTP
+                    maxLength={6}
+                    pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                    value={otpMobile}
+                    onChange={(e) => setOtpMobile(e)}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+
+                  {(error_1 || urlError) && (
+                    <FormError message={error_1 || urlError} />
+                  )}
+                  {success_1 && <FormSuccess message={success_1} />}
+                </AlertDialogDescription>
+
+                <AlertDialogFooter>
+                  {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
+                  <AlertDialogAction>
+                    <Button
+                      className="w-full"
+                      type="button"
+                      onClick={form.handleSubmit(registerUser)}
+                    >
+                      Register
+                    </Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </form>
       </Form>
 

@@ -32,10 +32,10 @@ export const Social = () => {
           onClick("google");
         }}
       >
-        <FcGoogle size={5} />
+        <FcGoogle size={12} /><b>Google</b>
       </Button>
 
-      <Button
+      {/* <Button
         className="w-full  border-black"
         size="lg"
         variant={"outline"}
@@ -44,7 +44,7 @@ export const Social = () => {
         }}
       >
         <FaGithub size={5} />
-      </Button>
+      </Button> */}
         </div>  
     </div>
   );
