@@ -1,5 +1,10 @@
 "use client";
-import { fetchProfilePosts, fetchTaggedVideos } from "@/apis/profile";
+import {
+  fetchProfilePosts,
+  fetchTaggedVideos,
+  followUser,
+  unFollowUser,
+} from "@/apis/profile";
 import { ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
@@ -17,6 +22,7 @@ import { ProfileDataProps, VideoData } from "./dataTypes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SocialMedia from "./SocialMedia";
 import EditProfile from "./edit-profile";
+import { FollowingList } from "./following";
 
 export async function generateMetadata(
   profileData: ProfileDataProps,
@@ -40,6 +46,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
   const router = useRouter();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [myProfile, setMyProfile] = useState<boolean>(false);
+  const [follower, setFollower] = useState<boolean>(false);
   const [data, setData] = useState<{
     fname: string;
     lname: string;
@@ -47,9 +54,18 @@ const ProfilePage = ({ profileData, id }: Props) => {
     title: string;
     dob: Date;
     gender: string;
-    email:string|undefined;
-    phone:string|undefined;
-  }>({ fname: "", lname: "", desc: "", title: "", dob: new Date(), gender: "" ,email:"",phone:""});
+    email: string | undefined;
+    phone: string | undefined;
+  }>({
+    fname: "",
+    lname: "",
+    desc: "",
+    title: "",
+    dob: new Date(),
+    gender: "",
+    email: "",
+    phone: "",
+  });
 
   useEffect(() => {
     if (profileData) {
@@ -57,6 +73,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
       const name = JSON.parse(data || "").userName;
       if (name === profileData.userName) {
         setMyProfile(true);
+        setFollower(profileData.isFollow || false);
       }
       init();
     }
@@ -71,11 +88,12 @@ const ProfilePage = ({ profileData, id }: Props) => {
           lname: profileData.indLastName,
           desc: profileData.desc,
           title: profileData.title,
-          dob:new Date(profileData.indDob),
+          dob: new Date(profileData.indDob),
           gender: profileData.indGender,
-          email:profileData?.indEmail,
-          phone:profileData?.indMobileNum
+          email: profileData?.indEmail,
+          phone: profileData?.indMobileNum,
         }));
+
         const responseData = await fetchProfilePosts(profileData?._id, count);
         setvideodata(responseData?.data);
         const responseDataTagged = await fetchTaggedVideos(
@@ -151,6 +169,22 @@ const ProfilePage = ({ profileData, id }: Props) => {
     }
   }
 
+  const handleUnfollowUser = async () => {
+    const response = await unFollowUser(profileData?._id || "");
+    if (response.message === "Success.") {
+      setFollower(false);
+      init();
+    }
+  };
+
+  const handlefollowUser = async () => {
+    const response = await followUser(profileData?._id || "");
+    if (response.message === "Success.") {
+      setFollower(true);
+      init();
+    }
+  };
+
   const reload = (
     fname: string,
     lname: string,
@@ -158,8 +192,8 @@ const ProfilePage = ({ profileData, id }: Props) => {
     title: string,
     dob: Date,
     gender: string,
-    email:string|undefined,
-    phone:string|undefined,
+    email: string | undefined,
+    phone: string | undefined,
   ) => {
     if (profileData) {
       setData((prev) => ({
@@ -170,12 +204,12 @@ const ProfilePage = ({ profileData, id }: Props) => {
         title: title,
         dob: new Date(dob),
         gender: gender,
-        email:email,
-        phone:phone,
+        email: email,
+        phone: phone,
       }));
     }
   };
-
+  console.log("follower state===>", follower);
   return (
     profileData && (
       <div className="min-h-screen p-4">
@@ -195,86 +229,155 @@ const ProfilePage = ({ profileData, id }: Props) => {
           </div>
 
           {/* Profile Details */}
-          <div className="flex flex-col gap-2 flex-grow">
-            <p className="font-bold text-lg sm:text-xl md:text-2xl">
-              {data.fname} {data.lname}
-            </p>
-            {/* <div className="flex items-center gap-2 text-sm sm:text-md md:text-base text-muted-foreground">
-              <span>{profileData?.userName}</span>
-              <span>{profileData?.totalFollowers}</span>
-              <span>{profileData?.totalPublishedPosts} Reviews</span>
-            </div> */}
+          <div className="flex flex-col gap-6 flex-grow">
+            <div className="flex flex-col px-4">
+              <p className="font-bold text-lg sm:text-xl md:text-2xl">
+                {data.fname} {data.lname}
+              </p>
+              <div 
+              style={{
+                paddingBlock:'4px'
+              }}
+              className="flex items-center gap-4">
+                <small className="text-base font-semibold text-gray-500">
+                  {profileData?.userName || "Username"}
+                </small>
 
-            <div className="flex flex-col justify-between items-start gap-4 w-[420px]">
-              <div className="text-base font-semibold text-gray-500">
-                {profileData?.userName || "Username"} , <b>{profileData?.totalPublishedPosts || 0}</b> Reviews
-              </div>
-              <div className="flex gap-3">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button>
-                    
-                 
-                      <b>{profileData?.totalFollowers || 0}</b> Followers
+                <div className="flex gap-3">
+                  {!myProfile && (
+                    <Button
+                      variant='outline'
+                      className="hover:bg-transparent"
+                      onClick={async () => {
+                        if (follower) {
+                          // await  handlefollowUser();
+                          await handleUnfollowUser();
+                        } else {
+                          // await  handleUnfollowUser();
+                          await handlefollowUser();
+                        }
+                      }}
+                    >
+                      {follower ? "UnFollow" : "Follow"}
                     </Button>
-                  </DialogTrigger>
-                  <FollowersList
-                    id={profileData._id}
-                    usern={profileData.userName}
-                  />
-                </Dialog>
-                {/* </div> */}
+                  )}
 
-                {/* <div className=" col-span-1 row-span-2 bg-purple-500"> */}
-                {/* <Button
-                  variant={"ghost"}
-                  className="hover:bg-transparent cursor-default hover:text-gray-500"
-                >
-                  <b>{profileData?.totalPublishedPosts || 0}</b> Reviews
-                </Button> */}
-                {myProfile && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>Edit</Button>
-                    </DialogTrigger>
-                    <EditProfile profileData={profileData} data={data} reload={reload} />
-                  </Dialog>
-                )}
+                  {myProfile && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant={"ghost"}
+                          className="hover:bg-transparent font-bold hover:underline"
+                        >
+                          Edit profile
+                        </Button>
+                      </DialogTrigger>
+                      <EditProfile
+                        profileData={profileData}
+                        data={data}
+                        reload={reload}
+                      />
+                    </Dialog>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div className="max-w-[650px] flex flex-col pb-4 ">
+            <div className="flex justify-between items-start gap-4">
+              <div className="flex gap-2 text-base font-semibold text-gray-500">
+                <Button
+                  variant={"ghost"}
+                  className="hover:bg-transparent disabled:text-black dark:disabled:text-white"
+                  disabled
+                >
+                  <div className="flex flex-col">
+                    <span>{profileData?.totalPublishedPosts || 0} </span>
+                    <span>Reviews</span>
+                  </div>
+                </Button>
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={"ghost"}
+                      className="hover:bg-transparent"
+                      disabled={!follower && !myProfile}
+                    >
+                      <div className="flex flex-col">
+                        <span>
+                          {!follower && !myProfile
+                            ? profileData?.totalFollowers || 0
+                            : profileData?.totalFollowers + 1}
+                        </span>
+                        <span> Followers</span>
+                      </div>
+                    </Button>
+                  </DialogTrigger>
+                  {follower && (
+                    <FollowersList
+                      id={profileData._id}
+                      usern={profileData.userName}
+                      followers={follower}
+                    />
+                  )}
+                </Dialog>
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={"ghost"}
+                      className="hover:bg-transparent"
+                      disabled={!follower && !myProfile}
+                    >
+                      <div className="flex flex-col">
+                        <span> {profileData?.totalFollowing || 0}</span>
+                        <span>Followings</span>
+                      </div>
+                    </Button>
+                  </DialogTrigger>
+                  {follower && (
+                    <FollowingList
+                      id={profileData._id}
+                      usern={profileData.userName}
+                      followers={follower}
+                    />
+                  )}
+                </Dialog>
+              </div>
+            </div>
+
+            <div className="max-w-[650px] flex flex-col px-4 pb-6">
               <p className="text-md font-normal sm:text-base md:text-lg leading-tight">
                 {data?.title}
               </p>
-              <p className="text-sm sm:text-md md:text-base text-muted-foreground mt-2">
+              <p className="text-sm sm:text-md md:text-base text-muted-foreground mb-2">
                 {data?.desc}
               </p>
 
+              {/* rating */}
               <div className="flex items-center mt-1 gap-2">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <Star
-                  key={index}
-                  className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${
-                  index < Math.round(profileData?.avgRating || 0)
-                      ? "text-orange-500"
-                      : "text-gray-500"
-                  }`}
-                />
-              ))}
-              <span className="text-xs sm:text-sm md:text-base">
-                <span className="text-green-500">
-                  {profileData?.avgRating}/5
-                </span>{" "}
-                on{" "}
-                <span className="text-red-500">
-                  {profileData?.totalRating || 0}
-                </span>{" "}
-                Ratings
-              </span>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star
+                    key={index}
+                    className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${
+                    index < Math.round(profileData?.avgRating || 0)
+                        ? "text-orange-500"
+                        : "text-gray-500"
+                    }`}
+                  />
+                ))}
+                <span className="text-xs sm:text-sm md:text-base">
+                  <span className="text-green-500">
+                    {profileData?.avgRating}/5
+                  </span>{" "}
+                  on{" "}
+                  <span className="text-red-500">
+                    {profileData?.totalRating || 0}
+                  </span>{" "}
+                  Ratings
+                </span>
+              </div>
             </div>
-            </div>
-            
           </div>
 
           {/* Social Icons */}
