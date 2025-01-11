@@ -11,16 +11,16 @@ import {
 
 import { FollowerList } from "./dataTypes";
 import { useEffect, useRef, useState } from "react";
-import { getfollowerList } from "@/apis/profile";
+import { getfollowerList, getfollowingList } from "@/apis/profile";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import FollowerItem from "./followerItem";
 
 interface Props {
   id: string;
   usern:string;
-  followers:boolean;
+  followers:boolean
 }
-export function FollowersList({ id ,usern,followers}: Props) {
+export function FollowingList({ id ,usern,followers}: Props) {
   const [follower, setFollower] = useState<FollowerList[]>([]);
   const [count, setCount] = useState<number>(0);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -29,7 +29,7 @@ export function FollowersList({ id ,usern,followers}: Props) {
 
   useEffect(() => {
 
-    if (id &&follower ) {
+    if (id&&followers) {
       init();
     }
   }, []);
@@ -41,7 +41,7 @@ export function FollowersList({ id ,usern,followers}: Props) {
     if (name === usern) {
       setMyProfile(true);
     }
-    const response = await getfollowerList(name === usern?"":id, count);
+    const response = await getfollowingList(name === usern?"":id, count);
     setFollower(response.data.data);
   };
 
@@ -49,7 +49,7 @@ export function FollowersList({ id ,usern,followers}: Props) {
     try {
       if (id) {
         setCount(count + 10);
-        const responseData = await getfollowerList(myProfile?"":id, count + 10);
+        const responseData = await getfollowingList(myProfile?"":id, count + 10);
 
         let newData = responseData?.data.data;
         if (newData.length > 0) {
@@ -76,9 +76,9 @@ export function FollowersList({ id ,usern,followers}: Props) {
   return (
     <DialogContent className="max-w-[375px] sm:max-w-[425px] rounded-md">
       <DialogHeader>
-        <DialogTitle>Followers</DialogTitle>
+        <DialogTitle>Following</DialogTitle>
         <DialogDescription>
-          You have {follower.length} followers
+          You are following {follower.length} people 
         </DialogDescription>
       </DialogHeader>
       <div className="py-6">

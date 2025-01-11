@@ -151,3 +151,30 @@ export const updateUserProfile = async (value:{
     
   }
 };
+
+export const getfollowingList = async (id: string,count:number) => {
+  console.log("::::::::::::::::",id,count)
+  let queryParams
+  if(id.length===0){
+    queryParams = new URLSearchParams({
+      limit: "10",
+      skip:JSON.stringify(count),
+      // userId: id,
+    }).toString();
+  }else{
+    queryParams = new URLSearchParams({
+      limit: "10",
+      skip:JSON.stringify(count),
+      userId: id,
+    }).toString();
+  }
+
+  const response = await apiClient(`/followingList?${queryParams}`, "GET");
+  console.log("followingList",response)
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch followingList data:", response.error);
+    return null;
+  }
+};

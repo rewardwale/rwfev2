@@ -106,7 +106,7 @@ export function ReviewForm() {
         isPlaces: category === "place",
         title,
         uploaderRating: ratingsObject,
-        businessPageId: businessID ? businessID: "",
+        ...(businessID && { businessPageId: businessID }),
       };
 
       // Get signed URL
@@ -201,7 +201,7 @@ export function ReviewForm() {
                   setThumbnailFile(file);
                 }}
                 onNext={() => setStep(3)}
-                setStep={setStep}
+                // setStep={setStep}
               />
               {/* <div className="flex justify-end gap-4">
                 <Button variant="outline" onClick={() => setStep(1)}>

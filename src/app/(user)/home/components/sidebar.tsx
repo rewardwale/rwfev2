@@ -14,14 +14,39 @@ import {
   UserRound,
   Bookmark,
   CircleHelp,
-  CirclePlus
+  CirclePlus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
+
+  const [hasPage, setHasPage] = useState<boolean | null>(null);
+
+  const checkMerchantPage = (): void => {
+    const data = localStorage.getItem("uib");
+    if (data) {
+      try {
+        const pageValue = JSON.parse(data);
+        const Pages = pageValue.hasPage;
+        setHasPage(Pages);
+      } catch (error) {
+        console.error("Error parsing localStorage data:", error);
+      }
+    } else {
+      setHasPage(null); // Default value if localStorage has no "uib"
+    }
+  };
+
+  // Automatically check localStorage when the component mounts
+  useEffect(() => {
+    checkMerchantPage();
+  }, []);
+
+  console.log("checking hasPage", hasPage);
 
   const SidebarContent = () => (
     <ScrollArea className="h-screen">
@@ -49,11 +74,17 @@ export function Sidebar({ className }: SidebarProps) {
               onClick={() => router.push("/post")}
             >
               {/* <Library className="mr-2 h-4 w-4" /> */}
-              <CirclePlus size={32} absoluteStrokeWidth className="mr-2 h-4 w-4"  />
+              <CirclePlus
+                size={32}
+                absoluteStrokeWidth
+                className="mr-2 h-4 w-4"
+              />
               Post
             </Button>
-            <Button variant="ghost" className="w-full justify-start" 
-            onClick={() => router.push('/bookmark')}
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => router.push("/bookmark")}
             >
               <Bookmark className="mr-2 h-4 w-4" />
               Bookmarks
@@ -74,6 +105,17 @@ export function Sidebar({ className }: SidebarProps) {
               <UserRound className="mr-2 h-4 w-4" />
               My Profile
             </Button>
+
+            {/* {hasPage && (
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => router.push("/profile")}
+              >
+                <UserRound className="mr-2 h-4 w-4" />
+                My Business Page
+              </Button>
+            )} */}
             {/* <Button variant="ghost" className="w-full justify-start">
               <CircleEllipsis className="mr-2 h-4 w-4" />
               More
@@ -81,7 +123,6 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
         <Separator />
-      
       </div>
     </ScrollArea>
   );
