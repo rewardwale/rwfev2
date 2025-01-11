@@ -28,7 +28,8 @@ export default {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
     Credentials({
-      async authorize(credentials) {
+      async authorize(credentials,request) {
+
         let cred: Cred = credentials;
         const validatedFields = LoginSchema.safeParse(credentials);
         if (validatedFields.success) {

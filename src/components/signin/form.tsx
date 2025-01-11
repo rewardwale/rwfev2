@@ -74,13 +74,13 @@ export default function LoginForm() {
           }
 
           // if (res?.success) {
-          form.reset();
-          router.push("/home");
-          localStorage.removeItem("uib");
-          localStorage.removeItem("token");
+          // form.reset();
+          // router.push("/home");
+          // localStorage.removeItem("uib");
+          // localStorage.removeItem("token");
           // localStorage.setItem("uib", JSON.stringify(res.success));
           // localStorage.setItem("token", res.success.accessToken);
-          setSuccess("logging In.....");
+          // setSuccess("logging In.....");
           // }
 
           // if (res?.twoFactor) {

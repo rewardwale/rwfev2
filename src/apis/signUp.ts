@@ -2,44 +2,45 @@
 import axios, { AxiosError } from "axios";
 import { debounce } from "lodash";
 
-export const checkUserNameAvailability = debounce(
-  async (userName: string, latitude: string, longitude: string) => {
-    console.log("checkUserNameAvailability\t", userName);
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?isBusinessUser=false&type=user`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            // fingerprint: fingerPrints,
-            latitude: latitude,
-            longitude: longitude,
-            // lan: "en",
-          },
-          timeout: 10000, // Include timeout as part of the Axios config
+export const checkUserNameAvailability = async (
+  userName: string,
+  latitude: string,
+  longitude: string,
+) => {
+  console.log("checkUserNameAvailability\t", userName);
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?isBusinessUser=false&type=user`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          // fingerprint: fingerPrints,
+          latitude: latitude,
+          longitude: longitude,
+          // lan: "en",
         },
-      );
-      console.log("response:::", response.data.data);
-      if (response.status === 200) {
-        if (response.data.data.isAvailable) {
-          return { status: true, message: response.data.message };
-        } else if (!response.data.data.isAvailable) {
-          return {
-            status: false,
-            message: "User Name already exists!,try new",
-          };
-        }
-      } else {
-        return { status: false, message: response.data.message };
+        timeout: 10000, // Include timeout as part of the Axios config
+      },
+    );
+    console.log("response:::", response.data.data);
+    if (response.status === 200) {
+      if (response.data.data.isAvailable) {
+        return { status: true, message: response.data.message };
+      } else if (!response.data.data.isAvailable) {
+        return {
+          status: false,
+          message: "User Name already exists!,try new",
+        };
       }
-    } catch (error: any) {
-      console.log("error\n\t", error);
-      console.error("error", error.response);
-      return { status: false, message: error.response.data.message };
+    } else {
+      return { status: false, message: response.data.message };
     }
-  },
-  300,
-);
+  } catch (error: any) {
+    console.log("error\n\t", error);
+    console.error("error", error.response);
+    return { status: false, message: error.response.data.message };
+  }
+};
 
 export async function validateEmail(
   email: string,
@@ -140,9 +141,9 @@ export async function verifyOTPMobile(
       },
     );
     if (response.status === 200) {
-      return { status: true, message: response.data };
+      return { status: true, message: response.data.message };
     } else {
-      return { status: false, message: response.data };
+      return { status: false, message: response.data.message };
     }
   } catch (error: any) {
     console.error("error\n\t", error);
@@ -176,9 +177,9 @@ export async function verifyOTPEmail(
       },
     );
     if (response.status === 200) {
-      return { status: true, message: response.data };
+      return { status: true, message: response.data.message };
     } else {
-      return { status: false, message: response.data };
+      return { status: false, message: response.data.me };
     }
   } catch (error: any) {
     console.error("error\n\t", error);
@@ -214,8 +215,10 @@ export async function signup(
         },
         indEmail: value.email,
         indPwd: value.password,
+        location:"banglure",
         indCountryCode: "91",
         indMobileNum: value.mobile,
+        indDob: "2000-01-11",
         indGender: "male",
         indEmailNotify: true,
         indMobileNotify: true,
@@ -242,9 +245,9 @@ export async function signup(
       },
     );
     if (response.status === 200) {
-      return { success: "successfully created" };
+      return { status: true, message: "successfully created" };
     } else {
-      return { error: "Signup isnt successful" };
+      return { status: false, message: response.data.message };
     }
   } catch (error: any) {
     console.log("error\n\t", error);
@@ -329,6 +332,7 @@ export async function signupWithProvider(
     lastName: string;
     email: string;
     userName: string;
+    mobile: string;
     fingerPrints: string;
   },
   latitude: string,
@@ -359,7 +363,9 @@ export async function signupWithProvider(
         },
         indEmail: value.email,
         indCountryCode: "91",
-        indMobileNum: "9888888888",
+        indDob: "2000-01-11",
+        indGender: "male",
+        indMobileNum: value.mobile,
         indEmailNotify: true,
         indMobileNotify: true,
         indPushNotify: true,

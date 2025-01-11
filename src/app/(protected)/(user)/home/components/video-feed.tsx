@@ -18,6 +18,8 @@ export function VideoFeed({ selectedCategories }: VideoFeedProps) {
 
 
   useEffect(() => {
+    const token =localStorage.getItem("token")||""
+    if(token.length>0){
     const loadHomePageData = async () => {
       try {
         const data = await fetchHomePageData(selectedCategories);
@@ -32,8 +34,10 @@ export function VideoFeed({ selectedCategories }: VideoFeedProps) {
         setLoading(false);
       }
     };
-
     loadHomePageData();
+  }
+
+  
   }, [selectedCategories]);
 
   if (loading) {

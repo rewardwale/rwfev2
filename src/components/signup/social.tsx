@@ -4,7 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { Button } from "../ui/button";
 import { FaGithub } from "react-icons/fa6";
 import { signIn } from "next-auth/react";
-import { PROVIDER_DEFAULT_LOGIN_REDIRECT } from "../../../routes";
+import { PROVIDER_DEFAULT_LOGIN_REDIRECT } from "../../routes";
 import { Separator } from "@/components/ui/separator";
 
 export const Social = () => {

@@ -69,7 +69,7 @@ export default function ResetForm() {
               className="w-[220px] inline dark:hidden"
             />
             <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
-              Sign In
+              Forget Password
             </h2>
           </div>
         </div>

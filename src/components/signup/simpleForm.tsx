@@ -1,7 +1,7 @@
 "use client";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -63,6 +63,7 @@ export default function SimpleForm() {
   const [showOtp, setShowOtp] = useState<boolean>(false);
   const [showPassword_1, setShowpassword_1] = useState<boolean>(false);
   const [otp, setOtp] = useState<string>("");
+  const router = useRouter();
   const [otpMobile, setOtpMobile] = useState<string>("");
   const searchParams = useSearchParams();
   const urlError =
@@ -123,7 +124,7 @@ export default function SimpleForm() {
       firstName: data?.firstname || "",
       lastName: data?.lastname || "",
       email: data?.email || "",
-      mobile:data?.mobile||"",
+      mobile: data?.mobile || "",
       userName: data?.userName || "",
       password: data?.password || "",
       fingerPrints: fingerPrints || "",
@@ -144,14 +145,16 @@ export default function SimpleForm() {
       fingerPrints,
       latitude,
       longitude,
-    )
+    );
 
-    console.log("::::;;",validateOtp,validateOtpMobile)
     if (validateOtp.status && validateOtpMobile.status) {
       const register = await signup(val, latitude, longitude);
       if (register.status) {
+        setError_1("");
         setSuccess_1(register.message);
+        router.push("/login")
       } else {
+        setSuccess_1("");
         setError_1(register.message);
       }
     } else {
@@ -437,15 +440,15 @@ export default function SimpleForm() {
               <AlertDialogContent className="w-full">
                 <AlertDialogHeader>
                   <AlertDialogTitle className="flex justify-between">
-                    <p>
+                    
                       {" "}
                       Kindly enter the OTP sent to your email for verification.
-                    </p>
+                    
                     <AlertDialogCancel
                       className="rounded-full w-8 h-8"
                       onClick={() => {
                         setOtp("");
-                        setOtpMobile("")
+                        setOtpMobile("");
                         setError_1("");
                         setSuccess_1("");
                       }}
@@ -454,13 +457,16 @@ export default function SimpleForm() {
                     </AlertDialogCancel>
                   </AlertDialogTitle>
                 </AlertDialogHeader>
-                <AlertDialogDescription className="flex flex-col justify-center items-center space-y-3">
+                <AlertDialogDescription ></AlertDialogDescription>
+                <div className="flex flex-col justify-center items-center gap-6">
+                Please enter your Email OTP
                   <InputOTP
                     maxLength={6}
                     pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                     value={otp}
                     onChange={(e) => setOtp(e)}
                   >
+                  
                     <InputOTPGroup>
                       <InputOTPSlot index={0} />
                       <InputOTPSlot index={1} />
@@ -471,6 +477,7 @@ export default function SimpleForm() {
                     </InputOTPGroup>
                   </InputOTP>
 
+                  Please enter your Phone number OTP
                   <InputOTP
                     maxLength={6}
                     pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
@@ -491,18 +498,16 @@ export default function SimpleForm() {
                     <FormError message={error_1 || urlError} />
                   )}
                   {success_1 && <FormSuccess message={success_1} />}
-                </AlertDialogDescription>
+                </div>
 
                 <AlertDialogFooter>
                   {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
-                  <AlertDialogAction>
-                    <Button
-                      className="w-full"
-                      type="button"
-                      onClick={form.handleSubmit(registerUser)}
-                    >
-                      Register
-                    </Button>
+                  <AlertDialogAction
+                    className="w-full"
+                    type={"button"}
+                    onClick={form.handleSubmit(registerUser)}
+                  >
+                    Register
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

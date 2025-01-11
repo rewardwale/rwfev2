@@ -43,6 +43,8 @@ export default function ProviderAuth() {
     });
   }, []);
 
+  console.log("psifsdojsdkfj")
+
   const init = async () => {
     //check if email exists or not
     const availability: { status: boolean; provider: string | undefined } = {

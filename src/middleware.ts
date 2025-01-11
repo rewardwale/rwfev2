@@ -11,7 +11,7 @@ import {
 } from "./routes";
 
 export default auth((req:any) => {
-  console.log("============>",req)
+  console.log("======vanathis======>")
 
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
@@ -26,6 +26,7 @@ export default auth((req:any) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
+      console.log("logged in with all values",isLoggedIn,nextUrl.pathname)
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return null;

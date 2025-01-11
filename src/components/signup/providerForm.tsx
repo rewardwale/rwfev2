@@ -19,39 +19,67 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { PersonalInfo, simpleForm, simpleProviderForm } from "../../actions/signup";
+import {
+  PersonalInfo,
+  registerSignupProvider,
+  simpleForm,
+  simpleProviderForm,
+} from "../../actions/signup";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
 import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import blackLogo from "../../../public/brand_logo/PNG/RW_Black_Name.png";
 import whiteLogo from "../../../public/brand_logo/PNG/RW_White_Name.png";
 import { useRouter } from "next/navigation";
-
-interface Props {
-  stateChange: (one: boolean, two: boolean, three: boolean) => void;
-  data: (
-    firstName: string,
-    lastName: string,
-    email: string,
-    userName: string,
-    password: string,
-  ) => void;
-}
+import { IoClose } from "react-icons/io5";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { verifyOTPMobile } from "@/apis/signUp";
 
 export default function ProviderForm() {
   const { data, status, update } = useSession();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
-  const [showPassword, setShowpassword] = useState<boolean>(false);
-  const [showPassword_1, setShowpassword_1] = useState<boolean>(false);
+  const [error_1, setError_1] = useState<string | undefined>();
+  const [success_1, setSuccess_1] = useState<string | undefined>();
+  const [otp, setOtp] = useState<string>("");
+  const [showOtp, setShowOtp] = useState<boolean>(false);
+  // const [showPassword, setShowpassword] = useState<boolean>(false);
+  // const [showPassword_1, setShowpassword_1] = useState<boolean>(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
       : "";
+
+  const fingerPrints = getDeviceFingerprint();
+  const isLocalStorageAvailable = localStorage;
+  // Safely access location data from localStorage
+  const latitude = isLocalStorageAvailable
+    ? (localStorage.getItem("loc-lat") ?? "90")
+    : "90";
+  const longitude = isLocalStorageAvailable
+    ? (localStorage.getItem("loc-lng") ?? "90")
+    : "90";
 
   const form = useForm<z.infer<typeof newSignupSchema>>({
     resolver: zodResolver(newSignupSchema),
@@ -61,28 +89,51 @@ export default function ProviderForm() {
       lastname: data?.user.lastname,
       firstname: data?.user.firstname,
       userName: "",
+      mobile: "",
       // password: "",
       // confirmPassword: "",
       // TnC: false,
     },
   });
 
-
-
   const onSubmit = (values: z.infer<typeof newSignupSchema>) => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      const fingerPrints = getDeviceFingerprint();
-      const isLocalStorageAvailable = localStorage;
-      // Safely access location data from localStorage
-      const latitude = isLocalStorageAvailable
-        ? (localStorage.getItem("loc-lat") ?? "90")
-        : "90";
-      const longitude = isLocalStorageAvailable
-        ? (localStorage.getItem("loc-lng") ?? "90")
-        : "90";
-      simpleProviderForm(values, fingerPrints, latitude, longitude,data?.user.accessToken||"",data?.user.provider||"")
+      simpleProviderForm(
+        values,
+        fingerPrints,
+        latitude,
+        longitude,
+      )
+        .then((res) => {
+          //console.log("===res===", res);
+          if (res?.error) {
+            // form.reset();
+            setError(res?.error);
+          }
+
+          if (res?.success) {
+            // form.reset();
+            setSuccess(res.success);
+          }
+        })
+        .catch((error) => setError(error.message));
+    });
+  };
+
+  const registerUser = async (values: z.infer<typeof newSignupSchema>) => {
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      registerSignupProvider(
+        values,
+        fingerPrints,
+        latitude,
+        longitude,
+       data?.user.accessToken||"",
+       data?.user.provider||""
+      )
         .then((res) => {
           //console.log("===res===", res);
           if (res?.error) {
@@ -93,17 +144,17 @@ export default function ProviderForm() {
           if (res?.success) {
             // form.reset();
             setSuccess("logged in");
-            const data= res.success.data.indDetail;
+            const data = res.success.data.indDetail;
             localStorage.removeItem("uib");
             localStorage.removeItem("token");
             localStorage.setItem("uib", JSON.stringify(data));
             localStorage.setItem("token", data.accessToken);
-            router.push("/home");          
+            router.push("/home");
           }
-
         })
         .catch((error) => setError(error.message));
     });
+
   };
 
   return (
@@ -257,6 +308,34 @@ export default function ProviderForm() {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="mobile"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Phone Number<span className="text-red-600"> *</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="1234567890"
+                            type="text"
+                            maxLength={10}
+                            disabled={pending}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                              if (value.length <= 10) {
+                                field.onChange(value);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
                 {(error || urlError) && (
                   <FormError message={error || urlError} />
@@ -264,8 +343,66 @@ export default function ProviderForm() {
                 {success && <FormSuccess message={success} />}
                 <div className="flex flex-row justify-center gap-12 w-full">
                   <Button className="w-full" type="submit">
-                    Submit
+                    Next
                   </Button>
+                  <AlertDialog open={showOtp} onOpenChange={setShowOtp}>
+                    <AlertDialogContent className="w-full">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex justify-between">
+                         
+                            {" "}
+                            Kindly enter the OTP sent to your email for
+                            verification.
+                         
+                          <AlertDialogCancel
+                            className="rounded-full w-8 h-8"
+                            onClick={() => {
+                              setOtp("");
+                              setError_1("");
+                              setSuccess_1("");
+                            }}
+                          >
+                            <IoClose />
+                          </AlertDialogCancel>
+                        </AlertDialogTitle>
+                      </AlertDialogHeader>
+                      <AlertDialogDescription className="flex flex-col justify-center items-center space-y-3">
+                        <InputOTP
+                          maxLength={6}
+                          pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                          value={otp}
+                          onChange={(e) => setOtp(e)}
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+
+                        {(error_1 || urlError) && (
+                          <FormError message={error_1 || urlError} />
+                        )}
+                        {success_1 && <FormSuccess message={success_1} />}
+                      </AlertDialogDescription>
+
+                      <AlertDialogFooter>
+                        {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
+                        <AlertDialogAction>
+                          <Button
+                            className="w-full"
+                            type="button"
+                            onClick={form.handleSubmit(registerUser)}
+                          >
+                            Register
+                          </Button>
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </form>
             </Form>

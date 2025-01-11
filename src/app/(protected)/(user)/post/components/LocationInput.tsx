@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useLocation } from '../../../../hooks/use-location';
+import { useLocation } from "@/hooks/use-location";
 import { Loader2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
