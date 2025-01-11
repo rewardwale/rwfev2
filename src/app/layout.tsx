@@ -5,7 +5,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ThemeDataProvider from "@/context/theme-data-provider";
 import { Header } from "@/components/layout";
 import LayoutWrapper from "@/components/layout/layout-wrapper";
-import { auth } from "../auth";
+import { auth } from "../../auth";
 import { SessionProvider } from "next-auth/react";
 
 import { Toaster } from "sonner";

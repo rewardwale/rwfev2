@@ -5,6 +5,7 @@ const { auth } = NextAuth(authConfig);
 
 import {
   DEFAULT_LOGIN_REDIRECT,
+  PROVIDER_DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
@@ -27,7 +28,7 @@ export default auth((req:any) => {
   if (isAuthRoute) {
     if (isLoggedIn) {
       console.log("logged in with all values",isLoggedIn,nextUrl.pathname)
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      return Response.redirect(new URL(PROVIDER_DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return null;
   }
