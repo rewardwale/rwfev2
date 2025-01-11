@@ -102,28 +102,28 @@ export const {
     },
   },
 
-  events: {
-    async signIn({ user, account, isNewUser }) {
-      console.log("🟢 [Event] signIn", {
-        time: new Date().toISOString(),
-        userId: user.id,
-        provider: account?.provider,
-        isNewUser,
-      });
-    },
+  // events: {
+  //   async signIn({ user, account, isNewUser }) {
+  //     console.log("🟢 [Event] signIn", {
+  //       time: new Date().toISOString(),
+  //       userId: user.id,
+  //       provider: account?.provider,
+  //       isNewUser,
+  //     });
+  //   },
 
-    async signOut() {
-      console.log("🟢 [Event] signOut", {
-        time: new Date().toISOString(),
-      });
-    },
+  //   async signOut() {
+  //     console.log("🟢 [Event] signOut", {
+  //       time: new Date().toISOString(),
+  //     });
+  //   },
 
-    async session({ session, token }) {
-      console.log("🟢 [Event] session", {
-        time: new Date().toISOString(),
-      });
-    },
-  },
+  //   async session({ session, token }) {
+  //     console.log("🟢 [Event] session", {
+  //       time: new Date().toISOString(),
+  //     });
+  //   },
+  // },
 
   session: {
     strategy: "jwt",

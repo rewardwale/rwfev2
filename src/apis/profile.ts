@@ -1,4 +1,3 @@
-import { ProfileDataProps } from "@/app/(user)/profile/components/dataTypes";
 import { apiClient } from "@/lib/apiClient";
 
 export async function fetchProfileData() {
@@ -22,18 +21,6 @@ console.log("response::::::::::;",response)
     return null;
   }
 }
-
-// export async function fetchProfilePosts(id: string,count:number) {
-//   console.log("fetchProfilePosts==>",id,count,`/uploadedVideos?limit=10&skip=${count}&flag=1&userId=672b4a14f7f2f5ada4ee34eb`)
-//   const response = await apiClient(`/uploadedVideos?limit=10&skip=${count}&flag=1&userId=672b4a14f7f2f5ada4ee34eb`, "GET");
-//   console.log("fetchProfilePosts::",response)
-//   if (response.success && response.data) {
-//     return response.data.data;
-//   } else {
-//     console.error("Failed to fetch fetchProfilePosts data:", response.error);
-//     return null;
-//   }
-// }
 
 export async function fetchProfilePosts(id: string,count?:number) {
   const queryParams = new URLSearchParams({

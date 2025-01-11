@@ -4,5 +4,5 @@ import {logout} from "../apis/home"
 
 export const logoutAction = async () => {
   await logout()
-  await signOut();
+  await signOut({redirectTo:"/login"});
 };

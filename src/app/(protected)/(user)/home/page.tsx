@@ -8,24 +8,40 @@ import { Footer } from "@/components/layout";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getSession, useSession } from "next-auth/react";
 import { useAuthRedirect } from "../watch/hooks/use-auth-redirect";
+import { fetchProfileData } from "@/apis/profile";
 
 export default function HomePage() {
   const { data, status, update } = useSession();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const handleCategoriesChange = (categories: string[]) => {
-    setSelectedCategories(categories);
-  };
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     getSession().then((session) => {
-      if (session) {
-        localStorage.setItem("token", session?.user?.accessToken||"");
+      if (session && data?.user.provider==="credentials") {
+        if(data?.user.accessToken){
+          localStorage.setItem("token",data?.user.accessToken||"")
+          init()
+        }
       }
     });
   }, []);
 
-  const isMobile = useIsMobile();
+  const init=async()=>{
+    const token =localStorage.getItem("token")||""
+    console.log("::::::::::::::::::::::::::",token.length)
+    if(token.length>0){
+      const profileInfo = await fetchProfileData()
+      if(profileInfo){
+        localStorage.setItem("uib",JSON.stringify(profileInfo.data))
+      }
+    }
+
+  }
+
+  const handleCategoriesChange = (categories: string[]) => {
+    setSelectedCategories(categories);
+  };
 
   console.log("checking selectedCategories", selectedCategories);
   return (

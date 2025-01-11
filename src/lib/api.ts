@@ -14,7 +14,7 @@ const getLocalStorageValue = (key: string, defaultValue: string | number) => {
 
 function getCoordinatesFromLocalStorage() {
   if (typeof window !== "undefined" && window.localStorage) {
-    const storedData = localStorage.getItem("ubi");
+    const storedData = localStorage.getItem("uib");
 
     if (storedData) {
       const data = JSON.parse(storedData); // Parse the JSON string to an object

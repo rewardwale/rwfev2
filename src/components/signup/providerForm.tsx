@@ -53,14 +53,6 @@ export default function ProviderForm() {
       ? "Email already in use with different provider "
       : "";
 
-  useEffect(() => {
-    getSession().then((session) => {
-      if (session) {
-        localStorage.setItem("token", session?.user?.accessToken || "");
-      }
-    });
-  }, []);
-
   const form = useForm<z.infer<typeof newSignupSchema>>({
     resolver: zodResolver(newSignupSchema),
     mode: "onChange",
@@ -100,7 +92,7 @@ export default function ProviderForm() {
 
           if (res?.success) {
             // form.reset();
-            setSuccess("ogged in");
+            setSuccess("logged in");
             const data= res.success.data.indDetail;
             localStorage.removeItem("uib");
             localStorage.removeItem("token");

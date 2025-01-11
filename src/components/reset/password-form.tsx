@@ -17,7 +17,7 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useEffect, useState, useTransition } from "react";
 import { reset } from "../../actions/reset";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { newPassword } from "../../actions/new-password";
 import { validateToken } from "@/apis/resetPassword";
 
@@ -29,6 +29,7 @@ export default function NewPasswordForm() {
   const [success, setSuccess] = useState<string | undefined>();
   const [tokenVerification, setTokenVerification] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("....Loading");
+  const router= useRouter();
 
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
@@ -43,7 +44,11 @@ export default function NewPasswordForm() {
     startTransition(() => {
       newPassword(values, token).then((res) => {
         setError(res?.error);
-        setSuccess(res?.success);
+        if(res?.success){
+          setSuccess(res?.success)
+          router.push("/login")
+        }
+        
         //start transition will tell when the validation has ended till then the feilds will be disabled
       });
     });
@@ -91,7 +96,7 @@ export default function NewPasswordForm() {
               className="w-[220px] inline dark:hidden"
             />
             <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
-              Sign In
+              Reset Password
             </h2>
           </div>
         </div>{" "}
@@ -127,7 +132,7 @@ export default function NewPasswordForm() {
           </Form>
         )}
         {!tokenVerification && (
-          <div className="justify-center items-center flex my-20">
+          <div className="justify-center items-center w-full flex my-20 text-sm font-bold">
             <p>{message}</p>
           </div>
         )}

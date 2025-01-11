@@ -38,7 +38,6 @@ export default function ProviderAuth() {
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
-        localStorage.setItem("token", session?.user?.accessToken || "");
         init();
       }
     });
@@ -52,9 +51,9 @@ export default function ProviderAuth() {
     };
 
     //if doesnt exists
-    if (!availability.status) {
-      setloggedIn(true);
-    }
+    // if (!availability.status) {
+    //   setloggedIn(true);
+    // }
 
     if (availability.status) {
       if (availability.provider === data?.user.provider?.toLocaleUpperCase()) {
@@ -67,15 +66,16 @@ export default function ProviderAuth() {
         );
         console.log("login", login);
         if (login.status) {
-          const data= login.message.data.indDetail;
+          const datas= login.message.data.indDetail;
           localStorage.removeItem("uib");
           localStorage.removeItem("token");
-          localStorage.setItem("uib", JSON.stringify(data));
-          localStorage.setItem("token", data.accessToken);
+          localStorage.setItem("uib", JSON.stringify(datas));
+          localStorage.setItem("token", datas.accessToken);
           router.push("/home");
         } else {
-          seterr(true);
-          setMessage(login.message);
+          // seterr(true);
+          // setMessage(login.message);
+          setloggedIn(true);
         }
       }
       if (availability.provider !== data?.user.provider?.toLocaleUpperCase()) {
@@ -86,6 +86,7 @@ export default function ProviderAuth() {
 
   return (
     <>
+    {!loggedIn && <p>Loading........</p>}
       {loggedIn && <ProviderForm />}
       {diffProvider && (
         <AlertDialog open={diffProvider} onOpenChange={setDiffProvider}>

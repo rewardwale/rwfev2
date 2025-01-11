@@ -37,6 +37,17 @@ export const ResetSchema = z.object({
   }),
 });
 
+export const ForgotEmailSchema = z.object({
+  mobile: z
+    .string()
+    .nonempty({
+      message: "Mobile Number cannot be empty.",
+    })
+    .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
+      message: "Must be a valid 10-digit number.",
+    }),
+});
+
 export const NewPasswordSchema = z.object({
   password: z.string().min(1, {
     message: "Password is required",

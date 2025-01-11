@@ -28,6 +28,7 @@ import whiteLogo from "../../../public/brand_logo/PNG/RW_White_Name.png";
 import Image from "next/image";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
 import { Social } from "./social";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -73,13 +74,13 @@ export default function LoginForm() {
           }
 
           // if (res?.success) {
-            // form.reset();
-            router.push("/home");
-            localStorage.removeItem("uib");
-            localStorage.removeItem("token");
-            // localStorage.setItem("uib", JSON.stringify(res.success));
-            // localStorage.setItem("token", res.success.accessToken);
-            setSuccess("logging In.....");
+          form.reset();
+          router.push("/home");
+          localStorage.removeItem("uib");
+          localStorage.removeItem("token");
+          // localStorage.setItem("uib", JSON.stringify(res.success));
+          // localStorage.setItem("token", res.success.accessToken);
+          setSuccess("logging In.....");
           // }
 
           // if (res?.twoFactor) {
@@ -104,124 +105,138 @@ export default function LoginForm() {
           // inset-0 size-full object-cover
         />
       </div>
-      <div
-        className="flex-1 flex-col w-1/3 space-y-14 px-4 py-12 sm:px-6 xl:flex-none xl:px-20
-          min-h-screen"
-      >
-        <div className="mx-auto py-4">
-          <div className="flex flex-col items-center">
-            <Image
-              alt="Rewardwale"
-              src={whiteLogo}
-              className="w-[220px] hidden dark:inline"
-            />
-            <Image
-              alt="Rewardwale"
-              src={blackLogo}
-              className="w-[220px] inline dark:hidden"
-            />
-            <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
-              Sign In
-            </h2>
+      <Card className="flex-1 flex-col w-1/3 xl:flex-none min-h-screen px-2">
+        <CardHeader>
+          <div className="mx-auto pt-2">
+            <div className="flex flex-col items-center">
+              <Image
+                alt="Rewardwale"
+                src={whiteLogo}
+                className="w-[220px] hidden dark:inline"
+              />
+              <Image
+                alt="Rewardwale"
+                src={blackLogo}
+                className="w-[220px] inline dark:hidden"
+              />
+              <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
+                Sign In
+              </h2>
+            </div>
           </div>
-        </div>
-
-        <div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-4">
-                <>
-                  <FormField
-                    control={form.control}
-                    name="userIdentity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          Login with Email, Mobile Number or Username
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Enter username,mobile number or Email"
-                            type="text"
-                            disabled={pending}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <div
-                            className={
-                              "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
-                            }
-                          >
+        </CardHeader>
+        <CardContent className="justify-center block">
+          <div className="w-full">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <div className="space-y-4">
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="userIdentity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
                             <Input
                               {...field}
-                              placeholder="********"
-                              type={showPassword ? "password" : "text"}
+                              placeholder="Enter email here"
+                              type="text"
                               disabled={pending}
-                              className={cn(
-                                " focus:border-none focus-visible:outline-none focus-visible:ring-0",
-                                "border-none",
-                              )}
                             />
-                            <Button
-                              type="button"
-                              variant={"ghost"}
-                              className="hover:bg-transparent focus:ring-0"
-                              disabled={field.value.length === 0}
-                              onClick={() => setShowpassword(!showPassword)}
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <div
+                              className={
+                                "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
+                              }
                             >
-                              {showPassword ? <EyeClosed /> : <EyeOpenIcon />}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-                {/* )} */}
+                              <Input
+                                {...field}
+                                placeholder="********"
+                                type={showPassword ? "password" : "text"}
+                                disabled={pending}
+                                className={cn(
+                                  " focus:border-none focus-visible:outline-none focus-visible:ring-0",
+                                  "border-none",
+                                )}
+                              />
+                              <Button
+                                type="button"
+                                variant={"ghost"}
+                                className="hover:bg-transparent focus:ring-0"
+                                disabled={field.value.length === 0}
+                                onClick={() => setShowpassword(!showPassword)}
+                              >
+                                {showPassword ? <EyeClosed /> : <EyeOpenIcon />}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                  {/* )} */}
+                  <div className="flex justify-between">
+                    <Button
+                      variant="link"
+                      size="sm"
+                      asChild
+                      className="px-0 font-normal"
+                    >
+                      <Link href="/reset">Forgot Password?</Link>
+                    </Button>
 
-                <Button
-                  variant="link"
-                  size="sm"
-                  asChild
-                  className="px-0 font-normal"
-                >
-                  <Link href="/reset">Forgot Password?</Link>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      asChild
+                      className="px-0 font-normal"
+                    >
+                      <Link href="/forgot-email">Forgot Email?</Link>
+                    </Button>
+                  </div>
+                </div>
+                {(error || urlError) && (
+                  <FormError message={error || urlError} />
+                )}
+                {success && <FormSuccess message={success} />}
+                <Button type="submit" className="w-full">
+                  {/* {shwoTwoFactor ? "Confirm" : "login"} */}
+                  login
                 </Button>
-              </div>
-              {(error || urlError) && <FormError message={error || urlError} />}
-              {success && <FormSuccess message={success} />}
-              <Button type="submit" className="w-full">
-                {/* {shwoTwoFactor ? "Confirm" : "login"} */}
-                login
-              </Button>
+              </form>
+            </Form>
+          </div>
+        </CardContent>
+        <CardFooter className="block space-y-4">
+          <Social />
 
-              <Social />
-
-              <Button
-                variant={"link"}
-                className="font-normal w-full hover:text-blue-500"
-                size="sm"
-                asChild
-              >
-                <Link href={"/signup"}>Dont have an account ? </Link>
-              </Button>
-            </form>
-          </Form>
-        </div>
-      </div>
+          <Button
+            variant={"link"}
+            className="w-full hover:text-blue-500 font-bold"
+            size="sm"
+            asChild
+          >
+            <Link href={"/signup"}>Dont have an account ? </Link>
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
