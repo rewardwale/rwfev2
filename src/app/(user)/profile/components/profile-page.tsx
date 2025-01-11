@@ -46,7 +46,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
   const router = useRouter();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [myProfile, setMyProfile] = useState<boolean>(false);
-  const [follower, setFollower] = useState<boolean>(false);
+  const [follower, setFollower] = useState<boolean>();
   const [data, setData] = useState<{
     fname: string;
     lname: string;
@@ -66,18 +66,22 @@ const ProfilePage = ({ profileData, id }: Props) => {
     email: "",
     phone: "",
   });
-
+console.log("profile data::::",profileData)
   useEffect(() => {
+  
     if (profileData) {
+      console.log("profile data::1::")
       const data = localStorage.getItem("uib");
       const name = JSON.parse(data || "").userName;
       if (name === profileData.userName) {
         setMyProfile(true);
-        setFollower(profileData.isFollow || false);
+  
+       
       }
       init();
+      setFollower(profileData?.isFollow||false );
     }
-  }, [profileData]);
+  }, []);
 
   const init = async () => {
     try {
@@ -100,7 +104,9 @@ const ProfilePage = ({ profileData, id }: Props) => {
           profileData?._id,
           count,
         );
+
         setTaggedVideo(responseDataTagged?.data);
+        // setFollower(profileData.isFollow)
       }
     } catch (error) {
       console.error(error);
@@ -184,7 +190,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
       init();
     }
   };
-
+console.log("dfplll",follower,profileData?.isFollow)
   const reload = (
     fname: string,
     lname: string,
