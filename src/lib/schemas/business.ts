@@ -17,6 +17,9 @@ const websiteUrlSchema = z.string().refine(
   }
 );
 
+// Helper function to prevent continuous spaces
+const preventContinuousSpaces = (value: string) => !value.includes("  ");
+
 // Social media URL validation schemas
 const socialUrlSchemas = {
   whatsapp: z.string().refine(
@@ -57,7 +60,10 @@ const socialUrlSchemas = {
 };
 
 export const businessFormSchema = z.object({
-  businessName: z.string().min(3).max(100),
+  businessName: z.string()
+    .min(3, "Business name must be at least 3 characters")
+    .max(100, "Business name must not exceed 100 characters")
+    .refine(preventContinuousSpaces, "Continuous spaces are not allowed"),
   contactUsDetails: z.object({
     indEmail: z.string().email(),
     indCountryCode: z.string().default("+91"),
@@ -67,11 +73,20 @@ export const businessFormSchema = z.object({
     open: z.string(),
     close: z.string(),
   }))),
-  handle: z.string().min(3).max(30).regex(/^(?![.-])([a-zA-Z0-9.-]+(?! {2,}) ?)$/, "Invalid handle format"),
-  title: z.string().optional(),
-  desc: z.string().min(1, "Description is required"),
+  handle: z.string()
+    .min(3, "Handle must be at least 3 characters")
+    .max(30, "Handle must not exceed 30 characters")
+    .regex(/^[a-zA-Z0-9._-]+$/, "Handle can only contain letters, numbers, dots, underscores, and hyphens"),
+  title: z.string()
+    .min(3, "Title must be at least 3 characters")
+    .max(30, "Title must not exceed 30 characters")
+    .refine(preventContinuousSpaces, "Continuous spaces are not allowed"),
+  desc: z.string()
+    .min(20, "Description must be at least 20 characters")
+    .max(1000, "Description must not exceed 1000 characters")
+    .refine(preventContinuousSpaces, "Continuous spaces are not allowed"),
   websiteUrl: websiteUrlSchema.optional(),
-  location: z.string(),
+  location: z.string().min(1, "Location is required"),
   locationCoordinates: z.object({
     latitude: z.number().min(-90).max(90),
     longitude: z.number().min(-180).max(180),
