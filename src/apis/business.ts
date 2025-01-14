@@ -119,9 +119,18 @@ export const unFollowMerchant = async (id: string) => {
   if (response.success && response.data) {
     return response.data;
   } else {
-    console.error("Failed to fetch landing page data:", response.error);
+    console.error("Failed to fetch data:", response.error);
     return null;
   }
 };
 
-// data.data.indDetail.accessToken
+export const getBusinessPageList = async () => {
+
+  const res = await apiClient(`/businessPageList?pageNum=1`, "GET");
+  if (res.success) {
+    return res.data;
+  } else {
+    console.error("Failed to fetch data;", res.error);
+    return null;
+  }
+};
