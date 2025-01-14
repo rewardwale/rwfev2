@@ -21,9 +21,10 @@ import {
 import { useRouter } from "next/navigation";
 import { Header } from "../(user)/home/components/header";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Sidebar } from "../(user)/home/components/sidebar";
+import {Sidebar} from "../(user)/home/components/sidebar";
 import { Button } from "@/components/ui/button";
 import useIsOwner from "@/hooks/use-owner";
+import { isUserLoggedIn } from "@/lib/utils";
 
 // import SingleCategoryShorts from "./components/postSection";
 
@@ -47,16 +48,11 @@ export default function BrandPage({ params }: { params: any }) {
   const [videoData, setvideodata] = useState<VideoData[] | []>([]);
   const [taggedVideo, setTaggedVideo] = useState<VideoData[] | []>([]);
   const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [businessId, setBusinessID] = useState("");
   const [profileData, setProfilePageData] = useState<
     ProfileDataProps | undefined
   >(undefined);
-
-  // const init = async () => {
-  //   const data = await fetchProfileData();
-  //   setProfilePageData(data.data);
-  //   setUserId(data.data._id);
-  // };
 
   const fetchBrandDetails = async () => {
     const handle = window.location.pathname.split("/")[1];
@@ -88,6 +84,16 @@ export default function BrandPage({ params }: { params: any }) {
   useEffect(() => {
     fetchBrandDetails();
   }, []);
+
+  
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      setIsLoggedIn(isUserLoggedIn());
+    };
+
+    checkLoginStatus();
+  }, []);
+
 
   useEffect(() => {
     if (contentRef.current) {
@@ -175,13 +181,15 @@ export default function BrandPage({ params }: { params: any }) {
 
   const router = useRouter();
 
+
+
   return (
     <div className="flex h-screen bg-background">
       {/* post section */}
 
-      {!isMobile && isOwner && <Sidebar />}
+      {isLoggedIn && <Sidebar />}
       <div className="flex-1">
-       {isOwner && <Header />}
+       {isLoggedIn && <Header />}
 
         <div>
           {brandInfo ? <BrandHeader info={brandInfo} /> : <div>Loading...</div>}
