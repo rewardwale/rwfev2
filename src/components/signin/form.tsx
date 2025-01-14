@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
-import * as z from "zod";
+import type * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schema";
 import { GoogleLogin } from "@react-oauth/google"; // Ensure this is properly imported
@@ -140,7 +140,10 @@ export default function LoginForm() {
           // form.reset();
           localStorage.removeItem("uib");
           localStorage.removeItem("token");
-          localStorage.setItem("uib", JSON.stringify(result.data.data.indDetail));
+          localStorage.setItem(
+            "uib",
+            JSON.stringify(result.data.data.indDetail),
+          );
           localStorage.setItem("token", result.data.data.indDetail.accessToken);
           // setSuccess("logging In.....");
 
@@ -211,79 +214,78 @@ export default function LoginForm() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-4">
-                <>
-                  <FormField
-                    control={form.control}
-                    name="userIdentity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          Login with Email, Mobile Number or Username
-                        </FormLabel>
-                        <FormControl>
+                <FormField
+                  control={form.control}
+                  name="userIdentity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Login with Email, Mobile Number or Username
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Enter username,mobile number or Email"
+                          type="text"
+                          disabled={pending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div
+                          className={
+                            "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
+                          }
+                        >
                           <Input
                             {...field}
-                            placeholder="Enter username,mobile number or Email"
-                            type="text"
+                            placeholder="********"
+                            type={showPassword ? "password" : "text"}
                             disabled={pending}
+                            className={cn(
+                              " focus:border-none focus-visible:outline-none focus-visible:ring-0",
+                              "border-none",
+                            )}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <div
-                            className={
-                              "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
-                            }
+                          <Button
+                            type="button"
+                            variant={"ghost"}
+                            className="hover:bg-transparent focus:ring-0"
+                            disabled={field.value.length === 0}
+                            onClick={() => setShowpassword(!showPassword)}
                           >
-                            <Input
-                              {...field}
-                              placeholder="********"
-                              type={showPassword ? "password" : "text"}
-                              disabled={pending}
-                              className={cn(
-                                " focus:border-none focus-visible:outline-none focus-visible:ring-0",
-                                "border-none",
-                              )}
-                            />
-                            <Button
-                              type="button"
-                              variant={"ghost"}
-                              className="hover:bg-transparent focus:ring-0"
-                              disabled={field.value.length === 0}
-                              onClick={() => setShowpassword(!showPassword)}
-                            >
-                              {showPassword ? <EyeClosed /> : <EyeOpenIcon />}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-                {/* )} */}
+                            {showPassword ? <EyeClosed /> : <EyeOpenIcon />}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {(error || urlError) && (
+                  <FormError message={error || urlError} />
+                )}
+                {success && <FormSuccess message={success} />}
 
-                <Button
+                {/* <Button
                   variant="link"
                   size="sm"
                   asChild
                   className="px-0 font-normal"
                 >
                   <Link href="/reset">Forgot Password?</Link>
-                </Button>
+                </Button> */}
               </div>
-              {(error || urlError) && <FormError message={error || urlError} />}
-              {success && <FormSuccess message={success} />}
               <Button type="submit" className="w-full">
                 {/* {shwoTwoFactor ? "Confirm" : "login"} */}
                 login
@@ -300,11 +302,12 @@ export default function LoginForm() {
                     </span>
                   </div>
                 </div>
-
-                <GoogleLogin
-                  onSuccess={(response) => handleLoginSuccess(response)}
-                  onError={() => handleLoginFailure("Google login failed")} // Pass a string or handle it as needed
-                />
+                <div className="w-full bg-green-300 flex justify-center space-x-4">
+                  {/* <GoogleLogin
+                    onSuccess={(response) => handleLoginSuccess(response)}
+                    onError={() => handleLoginFailure("Google login failed")} // Pass a string or handle it as needed
+                  /> */}
+                </div>
               </div>
 
               <Button
