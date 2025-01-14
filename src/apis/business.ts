@@ -123,3 +123,5 @@ export const unFollowMerchant = async (id: string) => {
     return null;
   }
 };
+
+// data.data.indDetail.accessToken
