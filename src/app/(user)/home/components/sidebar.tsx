@@ -15,38 +15,33 @@ import {
   Bookmark,
   CircleHelp,
   CirclePlus,
+  ChevronDown,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getBusinessPageList } from "@/apis/business";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
+  const [businessPageData, setBusinessPageData] = useState<any[]>([]);
+  const [isBusinessPageOpen, setIsBusinessPageOpen] = useState(false);
 
-  const [hasPage, setHasPage] = useState<boolean | null>(null);
-
-  const checkMerchantPage = (): void => {
-    const data = localStorage.getItem("uib");
-    if (data) {
-      try {
-        const pageValue = JSON.parse(data);
-        const Pages = pageValue.hasPage;
-        setHasPage(Pages);
-      } catch (error) {
-        console.error("Error parsing localStorage data:", error);
-      }
-    } else {
-      setHasPage(null); // Default value if localStorage has no "uib"
-    }
-  };
-
-  // Automatically check localStorage when the component mounts
   useEffect(() => {
-    checkMerchantPage();
+    const getBusinessPages = async () => {
+      try {
+        const res = await getBusinessPageList();
+        setBusinessPageData(res.data.data || []);
+      } catch (error) {
+        console.error("Error fetching business pages", error);
+      }
+    };
+
+    getBusinessPages();
   }, []);
 
-  console.log("checking hasPage", hasPage);
+  console.log("checking business Page data", businessPageData);
 
   const SidebarContent = () => (
     <ScrollArea className="h-screen">
@@ -106,16 +101,38 @@ export function Sidebar({ className }: SidebarProps) {
               My Profile
             </Button>
 
-            {/* {hasPage && (
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => router.push("/profile")}
-              >
-                <UserRound className="mr-2 h-4 w-4" />
-                My Business Page
-              </Button>
-            )} */}
+            {businessPageData.length > 0 && (
+              <div>
+                <button
+                  onClick={() => setIsBusinessPageOpen(!isBusinessPageOpen)}
+                  className="flex items-center justify-between w-full px-4 py-2"
+                >
+                  My Business Page
+                  <span
+                    className={`transform transition-transform duration-300 ${
+                    isBusinessPageOpen ? "rotate-180" : "rotate-0" }`}
+                  >
+                    <ChevronDown/>
+                  </span>
+                </button>
+                <div
+                  className={`transition-[max-height] duration-500 overflow-hidden ${
+                  isBusinessPageOpen ? "max-h-96" : "max-h-0" }`}
+                >
+                  <div className="pl-6 space-y-2">
+                    {businessPageData.map((business) => (
+                      <button
+                        key={business._id}
+                        onClick={() => router.push(`/${business.handle}`)}
+                        className="block w-full text-left px-4 py-2 "
+                      >
+                        {business.businessName}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
             {/* <Button variant="ghost" className="w-full justify-start">
               <CircleEllipsis className="mr-2 h-4 w-4" />
               More
@@ -128,20 +145,8 @@ export function Sidebar({ className }: SidebarProps) {
   );
 
   return (
-    <>
-      <aside className={cn("pb-12 w-64 hidden md:block", className)}>
-        <SidebarContent />
-      </aside>
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
-          <SidebarContent />
-        </SheetContent>
-      </Sheet>
-    </>
+    <div className={`sidebar ${className}`}>
+      <SidebarContent />
+    </div>
   );
 }

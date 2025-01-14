@@ -68,12 +68,12 @@ export default function SignupForm() {
         : "90";
       const signUp = await signup(signupForm,latitude,longitude);
       console.log(":::::::=>", signUp);
-      if (signUp.success) {
+      if (signUp.status) {
         router.push("/login");
       }
 
-      if (signUp.error) {
-        setMessage(signUp.error);
+      if (!signUp.status) {
+        setMessage(signUp.message);
       }
     } else {
       setStep({

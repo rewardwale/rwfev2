@@ -26,7 +26,15 @@ export function BusinessStep({ form }: BusinessStepProps) {
           <FormItem>
             <FormLabel>Business Name*</FormLabel>
             <FormControl>
-              <Input placeholder="Enter your business name" {...field} />
+              <Input
+                placeholder="Enter your business name"
+                maxLength={100}
+                {...field}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\s+/g, " ");
+                  field.onChange(value);
+                }}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -40,7 +48,15 @@ export function BusinessStep({ form }: BusinessStepProps) {
           <FormItem>
             <FormLabel>Business Handle*</FormLabel>
             <FormControl>
-              <Input placeholder="your-business-handle" {...field} />
+              <Input
+                placeholder="your-business-handle"
+                maxLength={30}
+                {...field}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^a-zA-Z0-9._-]/g, "");
+                  field.onChange(value);
+                }}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -52,16 +68,24 @@ export function BusinessStep({ form }: BusinessStepProps) {
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Title</FormLabel>
+            <FormLabel>Title*</FormLabel>
             <FormControl>
-              <Input placeholder="Business title" {...field} />
+              <Input
+                placeholder="Business title"
+                maxLength={30}
+                {...field}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\s+/g, " ");
+                  field.onChange(value);
+                }}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <FormField
+<FormField
         control={form.control}
         name="desc"
         render={({ field }) => (
@@ -69,9 +93,14 @@ export function BusinessStep({ form }: BusinessStepProps) {
             <FormLabel>Description*</FormLabel>
             <FormControl>
               <Textarea
-                placeholder="Describe your business"
+                placeholder="Describe your business (minimum 20 characters)"
                 className="resize-none"
+                maxLength={1000}
                 {...field}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\s+/g, ' ');
+                  field.onChange(value);
+                }}
               />
             </FormControl>
             <FormMessage />

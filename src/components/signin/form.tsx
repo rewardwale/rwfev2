@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schema";
+import { GoogleLogin } from "@react-oauth/google"; // Ensure this is properly imported
 import {
   Form,
   FormControl,
@@ -27,6 +28,8 @@ import blackLogo from "../../../public/brand_logo/PNG/RW_Black_Name.png";
 import whiteLogo from "../../../public/brand_logo/PNG/RW_White_Name.png";
 import Image from "next/image";
 import { getDeviceFingerprint } from "@/lib/fingerPrint";
+import { useToast } from "@/hooks/use-toast";
+import { apiClient } from "@/lib/apiClient";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -35,6 +38,8 @@ export default function LoginForm() {
   const [success, setSuccess] = useState<string | undefined>();
   const searchParams = useSearchParams();
   const [showPassword, setShowpassword] = useState<boolean>(true);
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
@@ -88,6 +93,83 @@ export default function LoginForm() {
           //start transition will tell when the validation has ended till then the feilds will be disabled
         })
         .catch((error) => setError(error.message));
+    });
+  };
+
+  const handleLoginSuccess = async (response: any) => {
+    console.log("Google login successful:1", response);
+    try {
+      setLoading(true);
+      {
+        const result = await apiClient("/loginWithSocialProivder", "PUT", {
+          socialProviderType: "GOOGLE",
+          socialProviderToken: response.credential,
+          indPushNotify: true,
+          notificationObj: {
+            endpoint: "string",
+            expirationTime: "string",
+            keys: {
+              p256dh: "string",
+              auth: "string",
+            },
+          },
+        });
+
+        console.log("Google login successful:2", result);
+
+        if (result.success) {
+          router.push("/home");
+
+          const fingerPrint = getDeviceFingerprint();
+          const isLocalStorageAvailable = localStorage;
+          // Safely access location data from localStorage
+          const latitude = isLocalStorageAvailable
+            ? (localStorage.getItem("loc-lat") ?? "90")
+            : "90";
+          const longitude = isLocalStorageAvailable
+            ? (localStorage.getItem("loc-lng") ?? "90")
+            : "90";
+          // Newlogin(values, fingerPrint, latitude, longitude)
+          //   .then((res) => {
+          //     console.log("===res===", res);
+          //     if (res?.error) {
+          //       // form.reset();
+          //       setError(res?.error);
+          //     }
+
+          // form.reset();
+          localStorage.removeItem("uib");
+          localStorage.removeItem("token");
+          localStorage.setItem("uib", JSON.stringify(result.data.data.indDetail));
+          localStorage.setItem("token", result.data.data.indDetail.accessToken);
+          // setSuccess("logging In.....");
+
+          // if (res?.twoFactor) {
+          //   setShowTwoFactor(true);
+          // }
+          // setSuccess(res?.success);
+          //start transition will tell when the validation has ended till then the feilds will be disabled
+          // })
+          // .catch((error) => setError(error.message));
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to authenticate with Google",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoginFailure = (error: any) => {
+    console.error("Google login failed:", error);
+    toast({
+      title: "Error",
+      description: "Google login failed",
+      variant: "destructive",
     });
   };
 
@@ -206,6 +288,24 @@ export default function LoginForm() {
                 {/* {shwoTwoFactor ? "Confirm" : "login"} */}
                 login
               </Button>
+
+              <div className="space-y-4">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <GoogleLogin
+                  onSuccess={(response) => handleLoginSuccess(response)}
+                  onError={() => handleLoginFailure("Google login failed")} // Pass a string or handle it as needed
+                />
+              </div>
 
               <Button
                 variant={"link"}
