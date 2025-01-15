@@ -302,11 +302,11 @@ export default function LoginForm() {
                     </span>
                   </div>
                 </div>
-                <div className="w-full bg-green-300 flex justify-center space-x-4">
-                  {/* <GoogleLogin
+                <div className="w-fullflex justify-center">
+                  <GoogleLogin
                     onSuccess={(response) => handleLoginSuccess(response)}
                     onError={() => handleLoginFailure("Google login failed")} // Pass a string or handle it as needed
-                  /> */}
+                  />
                 </div>
               </div>
 
