@@ -29,9 +29,9 @@ export default function HomePage() {
   // console.log("checking for profile data----myProfile", data);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex bg-background  h-screen ">
       {!isMobile && <Sidebar />}
-      <div className="flex-1">
+      <div className="flex-1 h-full ">
         <Header />
         {/* <div className="flex justify-center w-full"><SearchInputContainer/></div> */}
         <Suspense fallback={<div>Loading...</div>}>

@@ -264,7 +264,31 @@ export const EditPersonalInfoFormSchema = z.object({
         "Must be a valid 10-digit number.",
     }),
     title:z.string().optional(),
-    desc:z.string().optional()
+    desc:z.string().optional(),
+    watsapp:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid WhatsApp URL" }
+    ),
+    twitter:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid Twitter URL" }
+    ),
+    instagram:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid Instagram URL" }
+    ),
+    facebook:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid Facebook URL" }
+    ),
+    linkdin:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid Linkedin URL" }
+    ),
+    github:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid GitHub URL" }
+    )
 });
 
 export const combinedSchema = z.object({
