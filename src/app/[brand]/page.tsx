@@ -187,7 +187,7 @@ export default function BrandPage({ params }: { params: any }) {
     <div className="flex h-screen bg-background">
       {/* post section */}
 
-      {isLoggedIn && <Sidebar />}
+      {isLoggedIn && isMobile &&  <Sidebar />}
       <div className="flex-1">
        {isLoggedIn && <Header />}
 
