@@ -112,7 +112,7 @@ export function Sidebar({ className }: SidebarProps) {
                     className={`transform transition-transform duration-300 ${
                     isBusinessPageOpen ? "rotate-180" : "rotate-0" }`}
                   >
-                    <ChevronDown/>
+                    <ChevronDown />
                   </span>
                 </button>
                 <div
@@ -124,7 +124,7 @@ export function Sidebar({ className }: SidebarProps) {
                       <button
                         key={business._id}
                         onClick={() => router.push(`/${business.handle}`)}
-                        className="block w-full text-left px-4 py-2 "
+                        className="block w-full text-left px-4 py-2"
                       >
                         {business.businessName}
                       </button>
@@ -145,8 +145,20 @@ export function Sidebar({ className }: SidebarProps) {
   );
 
   return (
-    <div className={`sidebar ${className}`}>
-      <SidebarContent />
-    </div>
+    <>
+      <aside className={cn("pb-12 w-64 hidden md:block", className)}>
+        <SidebarContent />
+      </aside>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-64 p-0">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
