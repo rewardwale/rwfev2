@@ -38,7 +38,7 @@ export default function RootLayout({
               <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID!}>
                 <div className="container mx-auto">{children}</div>
               </GoogleOAuthProvider>{" "}
-              F
+              
             </LayoutWrapper>
           </ThemeDataProvider>
         </NextThemesProvider>

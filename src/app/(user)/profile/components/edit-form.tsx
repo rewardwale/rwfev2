@@ -21,6 +21,13 @@ import FormSuccess from "./form-success";
 import { useRouter } from "next/navigation";
 import { DialogFooter } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { FaWhatsapp } from "react-icons/fa";
+import { BsWhatsapp } from "react-icons/bs";
+import { MdFacebook, MdWhatsapp } from "react-icons/md";
+import { Badge } from "@/components/ui/badge";
+import { IoLogoInstagram, IoLogoTwitter } from "react-icons/io5";
+import { LinkedInLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
+import { FaXTwitter } from "react-icons/fa6";
 interface Props {
   data: {
     fname: string;
@@ -31,6 +38,13 @@ interface Props {
     gender: string;
     email: string | undefined;
     phone: string | undefined;
+    SocialUrls: {
+      whatsapp: string;
+      linkedin: string;
+      facebook: string;
+      instagram: string;
+      twitter: string;
+    };
   };
   profileData: ProfileDataProps;
   reload: (
@@ -42,6 +56,11 @@ interface Props {
     gender: string,
     email: string,
     phone: string,
+    whatsapp: string,
+    linkedin: string,
+    facebook: string,
+    instagram: string,
+    twitter: string,
   ) => void;
 }
 export default function EditForm({ data, reload, profileData }: Props) {
@@ -58,10 +77,15 @@ export default function EditForm({ data, reload, profileData }: Props) {
       lastname: data.lname,
       firstname: data.fname,
       mobile: data.phone,
-      dob: new Date(data.dob),
+      dob: new Date(data.dob)??new Date(),
       gender: data.gender,
       title: data.title,
       desc: data.desc,
+      watsapp: data.SocialUrls.whatsapp,
+      instagram: data.SocialUrls.instagram,
+      twitter: data.SocialUrls.twitter,
+      linkdin: data.SocialUrls.linkedin,
+      facebook: data.SocialUrls.facebook,
     },
   });
 
@@ -89,6 +113,11 @@ export default function EditForm({ data, reload, profileData }: Props) {
               values.gender,
               values.email,
               values.mobile,
+              values.watsapp || "",
+              values.instagram || "",
+              values.twitter || "",
+              values.linkdin || "",
+              values.facebook || "",
             );
           }
 
@@ -99,7 +128,6 @@ export default function EditForm({ data, reload, profileData }: Props) {
   };
 
   return (
-
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
@@ -174,6 +202,117 @@ export default function EditForm({ data, reload, profileData }: Props) {
                   )}
                 />
               </div>
+            </div>
+          </div>
+
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 mt-6 border border-gray-600 p-4
+              rounded-lg"
+          >
+            <div className="space-y-1">
+              <FormField
+                control={form.control}
+                name="watsapp"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-10 w-full">
+                    <FormLabel className="col-span-1">
+                      <Badge className="flex h-9 w-full md:text-sm mt-2 rounded-l-md rounded-r-none">
+                        <MdWhatsapp className="h-7 w-7" />
+                      </Badge>
+                    </FormLabel>
+                    <FormControl className="col-span-9">
+                      <Input
+                        {...field}
+                        placeholder="Enter Valid Watsapp Url"
+                        type="text"
+                        className="rounded-l-none rounded-r-md"
+                        disabled={pending}
+                        // value={data.indFirstName}
+                      />
+                    </FormControl>
+                    <FormMessage className="col-span-9" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <FormField
+                control={form.control}
+                name="instagram"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-10 w-full">
+                    <FormLabel className="col-span-1">
+                      <Badge className="flex h-9 w-full md:text-sm mt-2 rounded-l-md rounded-r-none">
+                        <IoLogoInstagram className="h-7 w-7" />
+                      </Badge>
+                    </FormLabel>
+                    <FormControl className="col-span-9">
+                      <Input
+                        {...field}
+                        placeholder="Enter Valid Instagram Url"
+                        type="text"
+                        disabled={pending}
+                        className="rounded-l-none rounded-r-md"
+                        // value={data.indFirstName}
+                      />
+                    </FormControl>
+                    <FormMessage className="col-span-9" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-y-1">
+              <FormField
+                control={form.control}
+                name="twitter"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-10 w-full">
+                    <FormLabel className="col-span-1">
+                      <Badge className="flex h-9 w-full md:text-sm mt-2 rounded-l-md rounded-r-none">
+                        <FaXTwitter className="h-7 w-7" />
+                      </Badge>
+                    </FormLabel>
+                    <FormControl className="col-span-9">
+                      <Input
+                        {...field}
+                        placeholder="Enter Valid Twitter Url"
+                        type="text"
+                        className="rounded-l-none rounded-r-md"
+                        disabled={pending}
+                        // value={data.indFirstName}
+                      />
+                    </FormControl>
+                    <FormMessage className="col-span-9" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-y-1">
+              <FormField
+                control={form.control}
+                name="linkdin"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-10 w-full">
+                    <FormLabel className="col-span-1">
+                      <Badge className="flex h-9 w-full md:text-sm mt-2 rounded-l-md rounded-r-none">
+                        <LinkedInLogoIcon className="h-7 w-7" />
+                      </Badge>
+                    </FormLabel>
+                    <FormControl className="col-span-9">
+                      <Input
+                        {...field}
+                        placeholder="Enter Valid Linkdein Url"
+                        type="text"
+                        className="rounded-l-none rounded-r-md"
+                        disabled={pending}
+                        // value={data.indFirstName}
+                      />
+                    </FormControl>
+                    <FormMessage className="col-span-9" />
+                  </FormItem>
+                )}
+              />
             </div>
           </div>
 
@@ -358,7 +497,7 @@ export default function EditForm({ data, reload, profileData }: Props) {
         {error && <FormError message={error} />}
         {success && <FormSuccess message={success} />}
         <div className="flex flex-row justify-center gap-12 w-full">
-          <DialogFooter  className="w-full">
+          <DialogFooter className="w-full">
             <DialogClose />
             <Button className="w-full" type="submit">
               Save

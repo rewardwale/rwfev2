@@ -15,7 +15,7 @@ export const EditPersonalInfo = async (
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
-  const { email, mobile, firstname, lastname, dob ,title,desc,gender} =
+  const { email, mobile, firstname, lastname, dob ,title,desc,gender,watsapp,instagram,twitter,facebook,linkdin} =
     validatedFields.data;
 
 //   const validatedEmail = await validateEmail(email,fingerPrints,latitude,longitude);
@@ -33,7 +33,8 @@ export const EditPersonalInfo = async (
 //     return { success: "OTP has been sent to your email id and mobile number" };
 //   }
 
-const updateProfile = await updateUserProfile({email,mobile,firstname,lastname,dob,title,desc,gender})
+const updateProfile = await updateUserProfile({email,mobile,firstname,lastname,dob,title,desc,gender
+  ,watsapp,instagram,twitter,facebook,linkdin})
 
 if(updateProfile.status){
   return {success:updateProfile.message}

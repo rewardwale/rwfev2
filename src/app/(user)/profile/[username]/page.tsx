@@ -40,10 +40,11 @@ export default function OthersPage() {
   // };
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex bg-background  h-screen  overflow-hidden ">
       {!isMobile && <Sidebar />}
-      <div className="flex-1">
-        <Header />
+      
+      <div className="flex-1 h-full overflow-y-scroll">
+      <Header />
         {/* <div className="flex justify-center w-full"><SearchInputContainer/></div> */}
         <Suspense fallback={<div>Loading...</div>}>
         {data  &&  <ProfilePage profileData={data} id={userId} />}

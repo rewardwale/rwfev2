@@ -3,11 +3,14 @@ import { FollowerList } from "./dataTypes";
 import { Button } from "@/components/ui/button";
 import { followUser, unFollowUser } from "@/apis/profile";
 import { useEffect, useState } from "react";
+import { UserRoundCheckIcon, UserRoundPlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   item: FollowerList;
 }
 export default function FollowerItem({ item }: Props) {
+  const router = useRouter();
   const [follow, setFollow] = useState<boolean>(false);
   const [myProfile, setMyProfile] = useState<boolean>(false);
   useEffect(() => {
@@ -20,7 +23,7 @@ export default function FollowerItem({ item }: Props) {
   }, []);
   return (
     <div className="flex items-center justify-between space-x-4 w-full">
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 sm:space-x-4">
         <Avatar>
           <AvatarImage src={item?.profilePic?.original} />
           <AvatarFallback>
@@ -29,7 +32,8 @@ export default function FollowerItem({ item }: Props) {
           </AvatarFallback>
         </Avatar>
         <div>
-          <p className="text-sm font-medium leading-none">
+          <p className="text-xs sm:text-sm font-medium leading-none" 
+            onClick={() => router.push("/profile/" + item.userName)}>
             {item?.firstName} {item?.lastName}
           </p>
         </div>
@@ -56,7 +60,7 @@ export default function FollowerItem({ item }: Props) {
                   });
           }}
         >
-          {follow ? "Un Follow" : "Follow"}
+          {follow ? <UserRoundCheckIcon/> : <UserRoundPlusIcon/>}
         </Button>
       )}
     </div>

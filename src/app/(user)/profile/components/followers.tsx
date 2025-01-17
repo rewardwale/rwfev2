@@ -74,7 +74,7 @@ export function FollowersList({ id ,usern,followers}: Props) {
   }
 
   return (
-    <DialogContent className="max-w-[375px] sm:max-w-[425px] rounded-md">
+    <DialogContent className=" max-w-[280px] sm:max-w-[425px] rounded-md">
       <DialogHeader>
         <DialogTitle>Followers</DialogTitle>
         <DialogDescription>
