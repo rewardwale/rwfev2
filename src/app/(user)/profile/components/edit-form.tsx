@@ -77,7 +77,7 @@ export default function EditForm({ data, reload, profileData }: Props) {
       lastname: data.lname,
       firstname: data.fname,
       mobile: data.phone,
-      dob: new Date(data.dob),
+      dob: new Date(data.dob)??new Date(),
       gender: data.gender,
       title: data.title,
       desc: data.desc,

@@ -25,13 +25,24 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ProfileItem from "./profileItem";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { FollowersList } from "./followers";
 import { ProfileDataProps, VideoData } from "./dataTypes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SocialMedia from "./SocialMedia";
 import EditProfile from "./edit-profile";
 import { FollowingList } from "./following";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+// import EditProfilePicture from "./profilePicture";
 
 export async function generateMetadata(
   profileData: ProfileDataProps,
@@ -65,13 +76,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
     gender: string;
     email: string | undefined;
     phone: string | undefined;
-    SocialUrls :{
+    SocialUrls: {
       whatsapp: string;
       linkedin: string;
       facebook: string;
       instagram: string;
       twitter: string;
-    }
+    };
   }>({
     fname: "",
     lname: "",
@@ -81,13 +92,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
     gender: "",
     email: "",
     phone: "",
-    SocialUrls :{
+    SocialUrls: {
       whatsapp: "",
       linkedin: "",
       facebook: "",
       instagram: "",
       twitter: "",
-    }
+    },
   });
   console.log("profile data::::", profileData);
   useEffect(() => {
@@ -117,13 +128,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
           gender: profileData.indGender,
           email: profileData?.indEmail,
           phone: profileData?.indMobileNum,
-          SocialUrls:{
-            whatsapp:profileData?.socialUrls.whatsapp,
+          SocialUrls: {
+            whatsapp: profileData?.socialUrls.whatsapp,
             linkedin: profileData?.socialUrls.linkedin,
             facebook: profileData?.socialUrls.facebook,
             instagram: profileData?.socialUrls.instagram,
             twitter: profileData?.socialUrls.twitter,
-          }
+          },
         }));
 
         const responseData = await fetchProfilePosts(profileData?._id, count);
@@ -230,7 +241,11 @@ const ProfilePage = ({ profileData, id }: Props) => {
     gender: string,
     email: string | undefined,
     phone: string | undefined,
-    whatsapp: string, linkedin: string, facebook: string, instagram: string, twitter: string,
+    whatsapp: string,
+    linkedin: string,
+    facebook: string,
+    instagram: string,
+    twitter: string,
   ) => {
     if (profileData) {
       setData((prev) => ({
@@ -243,13 +258,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
         gender: gender,
         email: email,
         phone: phone,
-        SocialUrls:{
-          whatsapp:whatsapp,
-          linkedin:linkedin,
-          facebook:facebook,
-          instagram:instagram,
-          twitter:twitter
-        }
+        SocialUrls: {
+          whatsapp: whatsapp,
+          linkedin: linkedin,
+          facebook: facebook,
+          instagram: instagram,
+          twitter: twitter,
+        },
       }));
     }
   };
@@ -396,14 +411,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
                     </div>
                   </Button>
                 </DialogTrigger>
-                {(follower ||
-                  myProfile) && (
-                    <FollowingList
-                      id={profileData._id}
-                      usern={profileData.userName}
-                      followers={follower || myProfile}
-                    />
-                  )}
+                {(follower || myProfile) && (
+                  <FollowingList
+                    id={profileData._id}
+                    usern={profileData.userName}
+                    followers={follower || myProfile}
+                  />
+                )}
               </Dialog>
             </div>
 
@@ -441,6 +455,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
             </div>
           </div>
 
+          {/* <EditProfilePicture  profileData={profileData}/> */}
           {/* Social Icons */}
           <SocialMedia profileData={data} />
         </div>
@@ -482,8 +497,8 @@ const ProfilePage = ({ profileData, id }: Props) => {
             <div className="py-6">
               <div className="flex w-full justify-center">
                 <div
-                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 
-                    gap-x-1 gap-y-1 h-[700px]"
+                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-1 gap-y-1
+                    h-[700px]"
                   ref={scrollContainerRef}
                   onScroll={handleScrollEvent}
                   onMouseEnter={(e) =>
