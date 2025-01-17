@@ -57,10 +57,12 @@ export const PersonalInfoFormSchema = z.object({
       message: "First name cannot be empty.",
     })
     .min(3, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .max(30, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "First name can only contain alphabets.",
@@ -71,10 +73,12 @@ export const PersonalInfoFormSchema = z.object({
       message: "Last Name cannot be empty.",
     })
     .min(1, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .max(30, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "Last name can only contain alphabets.",
@@ -112,8 +116,7 @@ export const PersonalInfoFormSchema = z.object({
       message: "Mobile Number cannot be empty.",
     })
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
-      message:
-        "Must be a valid 10-digit number.",
+      message: "Must be a valid 10-digit number.",
     }),
 });
 
@@ -189,7 +192,6 @@ export const OTPFormSchema = z.object({
     .max(6),
 });
 
-
 export const EditPersonalInfoFormSchema = z.object({
   gender: z.string({ message: "choose your gender" }).nonempty({
     message: "Gender cannot be empty.",
@@ -205,10 +207,12 @@ export const EditPersonalInfoFormSchema = z.object({
       message: "First name cannot be empty.",
     })
     .min(3, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .max(30, {
-      message: "Invalid first name. It must be between 3 and 30 characters long.",
+      message:
+        "Invalid first name. It must be between 3 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "First name can only contain alphabets.",
@@ -219,10 +223,12 @@ export const EditPersonalInfoFormSchema = z.object({
       message: "Last Name cannot be empty.",
     })
     .min(1, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .max(30, {
-      message:  "Invalid Last name. It must be between 1 and 30 characters long.",
+      message:
+        "Invalid Last name. It must be between 1 and 30 characters long.",
     })
     .regex(/^[A-Za-z]+$/, {
       message: "Last name can only contain alphabets.",
@@ -260,40 +266,49 @@ export const EditPersonalInfoFormSchema = z.object({
       message: "Mobile Number cannot be empty.",
     })
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
-      message:
-        "Must be a valid 10-digit number.",
+      message: "Must be a valid 10-digit number.",
     }),
-    title:z.string().optional(),
-    desc:z.string().optional(),
-    watsapp:z.string().optional()          .refine(
+  title: z.string().optional(),
+  desc: z.string().optional(),
+  watsapp: z
+    .string()
+    .refine(
       (value) => !value || /^https?:\/\/(www\.)?wa\.me\/[0-9]+.*$/.test(value),
-      { message: "Enter a valid WhatsApp URL (e.g., https://wa.me/1234567890)" }
-    ),
-    twitter:z.string().optional()     .refine(
+      {
+        message: "Enter a valid WhatsApp URL (e.g., https://wa.me/1234567890)",
+      },
+    ).optional(),
+  twitter: z
+    .string()
+    .refine(
       (value) =>
         !value || /^https?:\/\/(www\.)?x\.com\/[a-zA-Z0-9_]+\/?$/.test(value),
-      { message: "Enter a valid Twitter URL (e.g., https://twitter.com/username)" }
-    ),
-    instagram:z.string().optional()    .refine(
-      (value) =>
-        !value || /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
-      { message: "Enter a valid Instagram URL (e.g., https://instagram.com/username)" }
-    ),
-    facebook:z.string().optional()     .refine(
-      (value) =>
-        !value || /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
-      { message: "Enter a valid Facebook URL (e.g., https://facebook.com/username)" }
-    ),
-    linkdin:z.string().optional()    .refine(
+      { message: "Enter a valid Twitter URL (e.g., https://x.com/username)" },
+    ).optional(),
+  instagram: z
+    .string()
+    .refine(
       (value) =>
         !value ||
-        /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/.test(value),
-      { message: "Enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)" }
-    ),
-    github:z.string().optional()    .refine(
-      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
-      { message: "Enter a valid GitHub URL" }
-    )
+        /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
+      {
+        message:
+          "Enter a valid Instagram URL (e.g., https://instagram.com/username)",
+      },
+    ).optional(),
+  linkdin: z
+    .string()
+    .refine(
+      (value) =>
+        !value ||
+        /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/.test(
+          value,
+        ),
+      {
+        message:
+          "Enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)",
+      },
+    ).optional()
 });
 
 export const combinedSchema = z.object({

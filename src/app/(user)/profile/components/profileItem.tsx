@@ -26,9 +26,9 @@ export default function ProfileItem({
 }: videoProps) {
   const router = useRouter();
   return (
-    <div className={cn(" relative h-full w-full p-1", className)} {...props}>
+    <div className={cn(" relative h-full w-full p-0.5", className)} {...props}>
       <div
-        className="overflow-hidden relative cursor-pointer h-full rounded-md"
+        className="overflow-hidden relative cursor-pointer h-full rounded-sm"
         onClick={() => router.push("/watch?v=" + data.videoId)}
       >
         <Image
@@ -36,7 +36,8 @@ export default function ProfileItem({
           alt={data.title}
           width={width}
           height={height}
-          className={`w-auto h-full object-cover transition-all hover:scale-105`}
+          className={`w-full h-full object-cover 
+            transition-all hover:scale-105`}
         />
             <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/90" />
 
