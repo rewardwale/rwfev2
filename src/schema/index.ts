@@ -281,8 +281,37 @@ export const EditPersonalInfoFormSchema = z.object({
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
       message: "Must be a valid 10-digit number.",
     }),
-  title: z.string().optional(),
-  desc: z.string().optional(),
+    title:z.string().optional(),
+    desc:z.string().optional(),
+    watsapp:z.string().optional()          .refine(
+      (value) => !value || /^https?:\/\/(www\.)?wa\.me\/[0-9]+.*$/.test(value),
+      { message: "Enter a valid WhatsApp URL (e.g., https://wa.me/1234567890)" }
+    ),
+    twitter:z.string().optional()     .refine(
+      (value) =>
+        !value || /^https?:\/\/(www\.)?x\.com\/[a-zA-Z0-9_]+\/?$/.test(value),
+      { message: "Enter a valid Twitter URL (e.g., https://twitter.com/username)" }
+    ),
+    instagram:z.string().optional()    .refine(
+      (value) =>
+        !value || /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
+      { message: "Enter a valid Instagram URL (e.g., https://instagram.com/username)" }
+    ),
+    facebook:z.string().optional()     .refine(
+      (value) =>
+        !value || /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
+      { message: "Enter a valid Facebook URL (e.g., https://facebook.com/username)" }
+    ),
+    linkdin:z.string().optional()    .refine(
+      (value) =>
+        !value ||
+        /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/.test(value),
+      { message: "Enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)" }
+    ),
+    github:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid GitHub URL" }
+    )
 });
 
 const checkUsername = debounce(async (username, ctx) => {
@@ -350,22 +379,12 @@ export const newSignupSchema = z.object({
     .string()
     .nonempty({
       message: "User Name cannot be empty.",
-    }).superRefine(async (username, ctx) => {
-      // const response = await checkUserNameAvailability(username, "90", "90");
-      await checkUsername(username, ctx);
-
-      // console.log("response=>=>",response,username,ctx)
-
-      // Add an error if the username is not available
-      // if (!response?.status) {
-      //   ctx.addIssue({
-      //     code: z.ZodIssueCode.custom,
-      //     message: response?.message || "User name already exists.",
-      //   });
-      // }
-    }),
-    
-   
+    }).min(3, { message: "Username must be at least 3 characters." })
+    .max(30, { message: "Username must not be longer than 30 characters." })
+    .regex(/^(?![._-])(?!.*[._-]{2})[a-zA-Z0-9._-]+$/, {
+      message:
+        "Username can only contain letters, numbers, underscores, dots, and hyphens.\n It cannot start with special characters or \nhave consecutive special characters.",
+    })
 });
 
 
@@ -397,40 +416,66 @@ export const newSignupRwSchema = z.object({
     })
     .max(30, {
       message:
-        "Must be a valid 10-digit number.",
+        "Invalid Last name. It must be between 1 and 30 characters long.",
+    })
+    .regex(/^[A-Za-z]+$/, {
+      message: "Last name can only contain alphabets.",
     }),
-    title:z.string().optional(),
-    desc:z.string().optional(),
-    watsapp:z.string().optional()          .refine(
-      (value) => !value || /^https?:\/\/(www\.)?wa\.me\/[0-9]+.*$/.test(value),
-      { message: "Enter a valid WhatsApp URL (e.g., https://wa.me/1234567890)" }
-    ),
-    twitter:z.string().optional()     .refine(
-      (value) =>
-        !value || /^https?:\/\/(www\.)?x\.com\/[a-zA-Z0-9_]+\/?$/.test(value),
-      { message: "Enter a valid Twitter URL (e.g., https://twitter.com/username)" }
-    ),
-    instagram:z.string().optional()    .refine(
-      (value) =>
-        !value || /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
-      { message: "Enter a valid Instagram URL (e.g., https://instagram.com/username)" }
-    ),
-    facebook:z.string().optional()     .refine(
-      (value) =>
-        !value || /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
-      { message: "Enter a valid Facebook URL (e.g., https://facebook.com/username)" }
-    ),
-    linkdin:z.string().optional()    .refine(
-      (value) =>
-        !value ||
-        /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/.test(value),
-      { message: "Enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)" }
-    ),
-    github:z.string().optional()    .refine(
-      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
-      { message: "Enter a valid GitHub URL" }
-    )
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .nonempty({
+      message: "Email cannot be empty.",
+    })
+    .email(),
+  password: z
+    .string()
+    .nonempty({
+      message: "Password cannot be empty.",
+    })
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter.",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter.",
+    })
+    .regex(/\d/, { message: "Password must contain at least one number." })
+    .regex(/[\W_]/, {
+      message: "Password must contain at least one symbol.",
+    }),
+  userName: z
+    .string()
+    .nonempty({
+      message: "User Name cannot be empty.",
+    }).superRefine(async (username, ctx) => {
+      const response = await checkUserNameAvailability(username, "90", "90");
+      // Add an error if the username is not available
+      if (!response?.status) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: response?.message || "User name already exists.",
+        });
+      }
+    }),
+    mobile: z
+    .string()
+    .nonempty({
+      message: "Mobile Number cannot be empty.",
+    })
+    .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
+      message: "Must be a valid 10-digit number.",
+    }),
+    
+  TnC: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions to proceed.",
+  }),
+  TnC2: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions to proceed.",
+  }),
 });
+
 
 export const combinedSchema = z.object({
   ...PersonalInfoFormSchema.shape,

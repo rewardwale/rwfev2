@@ -9,7 +9,7 @@ export const checkUserNameAvailability = async (
   console.log("checkUserNameAvailability\t", userName);
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?isBusinessUser=false&type=user`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?type=user`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -213,11 +213,11 @@ export async function signup(
         },
         indEmail: value.email,
         indPwd: value.password,
-        location:"banglure",
+        location:"karnataka",
         indCountryCode: "91",
         indMobileNum: value.mobile,
-        indDob: "2000-01-11",
-        indGender: "male",
+        indDob: "",
+        indGender: "",
         indEmailNotify: true,
         indMobileNotify: true,
         indPushNotify: true,

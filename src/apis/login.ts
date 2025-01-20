@@ -61,7 +61,7 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
         indEmail: email,
         indPwd: password,
         // userName: "",
-        isBusinessUser: false,
+        // isBusinessUser: false,ss
         indPushNotify: true,
         notificationObj: {
           endpoint: "signin",
@@ -86,12 +86,12 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
     console.log("response::::::::",response)
     if (response.status === 200) {
 
-      return { status: true, message: response.data };
+      return { status: true, message: response.data.message };
     } else {
       return { status: false, message: response.data.message };
     }
   } catch (error: any) {
-    console.error("error", error);
+    console.error("error", error.response.data.message);
     return {status:false,message:error.response.data.message};  }
 }
 

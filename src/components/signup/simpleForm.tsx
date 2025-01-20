@@ -50,13 +50,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { EyeClosed } from "lucide-react";
-import { signup, verifyOTPEmail, verifyOTPMobile } from "@/apis/signUp";
+import {
+  checkUserNameAvailability,
+  signup,
+  verifyOTPEmail,
+  verifyOTPMobile,
+} from "@/apis/signUp";
 import { FcCancel } from "react-icons/fc";
 import { IoClose } from "react-icons/io5";
 
 export default function SimpleForm() {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
+  const [message, setMessage] = useState<string>("");
   const [success, setSuccess] = useState<string | undefined>();
   const [error_1, setError_1] = useState<string | undefined>();
   const [success_1, setSuccess_1] = useState<string | undefined>();
@@ -152,13 +158,14 @@ export default function SimpleForm() {
       if (register.status) {
         setError_1("");
         setSuccess_1(register.message);
-        router.push("/login")
+        router.push("/login");
       } else {
         setSuccess_1("");
         setError_1(register.message);
       }
     } else {
-      setError_1(validateOtp.message || validateOtpMobile.message);
+      validateOtp.status?"":setError_1("Email : "+validateOtp.message)
+     validateOtpMobile.status?"": setError_1("Phone Number : "+ validateOtpMobile.message);
     }
   };
 
@@ -166,19 +173,20 @@ export default function SimpleForm() {
     <div className="w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
+          <div className="space-y-2 sm:space-y-4">
             <div className="flex gap-2 w-full">
               <FormField
                 control={form.control}
                 name="firstname"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="max-sm:text-xs">
                       First Name<span className="text-red-600"> *</span>
                     </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
+                        className="max-sm:text-xs max-sm:p-2 max-sm:h-7"
                         placeholder="Jhon"
                         type="text"
                         maxLength={30}
@@ -202,13 +210,14 @@ export default function SimpleForm() {
                 name="lastname"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="max-sm:text-xs">
                       Last Name<span className="text-red-600"> *</span>
                     </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         placeholder="Doe"
+                        className="max-sm:text-xs max-sm:p-2 max-sm:h-7"
                         type="text"
                         maxLength={30}
                         minLength={3}
@@ -233,13 +242,14 @@ export default function SimpleForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="max-sm:text-xs">
                     Email<span className="text-red-600"> *</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="name@domain.com"
+                      className="max-sm:text-xs max-sm:p-2 max-sm:h-7"
                       type="email"
                       disabled={pending}
                       onBlur={(e) => {
@@ -261,12 +271,13 @@ export default function SimpleForm() {
               name="mobile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="max-sm:text-xs">
                     Phone Number<span className="text-red-600"> *</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
+                      className="max-sm:text-xs max-sm:p-2 max-sm:h-7"
                       placeholder="1234567890"
                       type="text"
                       maxLength={10}
@@ -289,19 +300,34 @@ export default function SimpleForm() {
               name="userName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="max-sm:text-xs">
                     User Name<span className="text-red-600"> *</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="user name"
+                      className="max-sm:text-xs max-sm:p-2 max-sm:h-7"
                       disabled={pending}
                       minLength={3}
                       maxLength={30}
+                      onChange={async (e) => {
+                        field.onChange(e.target.value);
+                        await checkUserNameAvailability(
+                          e.target.value,
+                          latitude,
+                          longitude,
+                        )
+                          .then((res) => {
+                            //  setMessage(res?.message)
+                          })
+                          .catch((err) => {
+                            setMessage(err.message);
+                          });
+                      }}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage>{message}</FormMessage>
                 </FormItem>
               )}
             />
@@ -311,7 +337,7 @@ export default function SimpleForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="max-sm:text-xs">
                     Password<span className="text-red-600"> *</span>
                   </FormLabel>
                   <FormControl>
@@ -323,9 +349,10 @@ export default function SimpleForm() {
                       /> */}
 
                     <div
-                      className={
-                        "flex border shadow-sm focus:ring-1 active:ring-1 selection:ring-1 rounded-sm "
-                      }
+                      className="flex border shadow-sm 
+                      focus:ring-1 max-sm:text-xs max-sm:p-2 
+                      max-sm:h-7 justify-center items-center
+                        active:ring-1 selection:ring-1 rounded-sm"
                     >
                       <Input
                         {...field}
@@ -333,7 +360,8 @@ export default function SimpleForm() {
                         type={showPassword_1 ? "text" : "password"}
                         disabled={pending}
                         className={cn(
-                          " focus:border-none focus-visible:outline-none focus-visible:ring-0",
+                          ` focus:border-none focus-visible:outline-none max-sm:text-xs max-sm:p-2
+                          max-sm:h-7 focus-visible:ring-0`,
                           "border-none",
                         )}
                         maxLength={12}
@@ -437,13 +465,10 @@ export default function SimpleForm() {
               Next
             </Button>
             <AlertDialog open={showOtp} onOpenChange={setShowOtp}>
-              <AlertDialogContent className="w-full">
+              <AlertDialogContent className="w-[300px] rounded-xl sm:w-full">
                 <AlertDialogHeader>
                   <AlertDialogTitle className="flex justify-between">
-                    
-                      {" "}
-                      Kindly enter the OTP sent to your email for verification.
-                    
+                    OTP Verification
                     <AlertDialogCancel
                       className="rounded-full w-8 h-8"
                       onClick={() => {
@@ -457,16 +482,20 @@ export default function SimpleForm() {
                     </AlertDialogCancel>
                   </AlertDialogTitle>
                 </AlertDialogHeader>
-                <AlertDialogDescription ></AlertDialogDescription>
-                <div className="flex flex-col justify-center items-center gap-6">
-                Please enter your Email OTP
+                <AlertDialogDescription className="text-xs sm:text-sm">
+                  Kindly enter the OTP sent to your Email and Phone number for
+                  verification.
+                </AlertDialogDescription>
+                <div className="flex flex-col items-start gap-3 w-full">
+                  <p className="text-sm font-medium">
+                    Please enter your Email OTP
+                  </p>
                   <InputOTP
                     maxLength={6}
                     pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                     value={otp}
                     onChange={(e) => setOtp(e)}
                   >
-                  
                     <InputOTPGroup>
                       <InputOTPSlot index={0} />
                       <InputOTPSlot index={1} />
@@ -477,7 +506,9 @@ export default function SimpleForm() {
                     </InputOTPGroup>
                   </InputOTP>
 
-                  Please enter your Phone number OTP
+                  <p className="text-sm font-medium">
+                    Please enter your Phone number OTP
+                  </p>
                   <InputOTP
                     maxLength={6}
                     pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
@@ -515,7 +546,14 @@ export default function SimpleForm() {
           </div>
         </form>
       </Form>
-
+      <Button
+          variant={"link"}
+          className="w-full hover:text-blue-500 font-bold"
+          size="sm"
+          asChild
+        >
+          <Link href={"/login"}>Already have an account ? </Link>
+        </Button>
       {/* </CardWrapper> */}
     </div>
   );
