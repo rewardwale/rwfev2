@@ -281,10 +281,6 @@ export const EditPersonalInfoFormSchema = z.object({
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
       message: "Must be a valid 10-digit number.",
     }),
-<<<<<<< HEAD
-  title: z.string().optional(),
-  desc: z.string().optional(),
-=======
     title:z.string().optional(),
     desc:z.string().optional(),
     watsapp:z.string().optional()          .refine(
@@ -316,7 +312,6 @@ export const EditPersonalInfoFormSchema = z.object({
       (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
       { message: "Enter a valid GitHub URL" }
     )
->>>>>>> cc00aeb08166abe7f67a55f318794acc2ba54bd8
 });
 
 const checkUsername = debounce(async (username, ctx) => {

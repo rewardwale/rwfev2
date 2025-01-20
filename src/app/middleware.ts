@@ -12,8 +12,7 @@ import {
 } from "./routes";
 
 export default auth((req:any) => {
-  console.log("======vanathis======>")
-
+  console.log("===path===")
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);

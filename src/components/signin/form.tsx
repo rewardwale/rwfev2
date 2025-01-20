@@ -179,22 +179,22 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-1">
+    <div className="min-h-screen flex flex-1 justify-center">
       <div className="relative hidden w-0 xl:block xl:flex-1 hue-rotate-30">
         <Image
           alt="Share your Experiences, Review and Rate"
           src="/images/iStock-1409730706.jpg"
-          className="absolute h-full w-full"
+          className="absolute h-full w-full top-0 left-0"
           width={10000}
           height={10000}
           // inset-0 size-full object-cover
         />
       </div>
       <div
-        className="flex-1 flex-col w-1/3 space-y-14 px-4 py-12 sm:px-6 xl:flex-none xl:px-20
-          min-h-screen"
+        className=" w-[500px] space-y-9 
+        sm:px-6  min-h-screen  m-5 lg:m-2"
       >
-        <div className="mx-auto py-4">
+        <div className="mx-auto pt-12">
           <div className="flex flex-col items-center">
             <Image
               alt="Rewardwale"
@@ -295,36 +295,35 @@ export default function LoginForm() {
             </form>
           </Form>
 
-          <div className="space-y-4">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
-                <div className="w-fullflex justify-center">
-                  <GoogleLogin
-                    onSuccess={(response) => handleLoginSuccess(response)}
-                    onError={() => handleLoginFailure("Google login failed")} // Pass a string or handle it as needed
-                  />
-                </div>
+          <div className="space-y-4 pt-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <div className="w-fullflex justify-center">
+              <GoogleLogin
+                onSuccess={(response) => handleLoginSuccess(response)}
+                onError={() => handleLoginFailure("Google login failed")} // Pass a string or handle it as needed
+              />
+            </div>
           </div>
-
         </div>
 
-          <Button
-            variant={"link"}
-            className="w-full hover:text-blue-500 font-bold"
-            size="sm"
-            asChild
-          >
-            <Link href={"/signup"}>Dont have an account ? </Link>
-          </Button>
-          </div>
-          </div>
+        <Button
+          variant={"link"}
+          className="w-full hover:text-blue-500 font-bold"
+          size="sm"
+          asChild
+        >
+          <Link href={"/signup"}>Dont have an account ? </Link>
+        </Button>
+      </div>
+    </div>
   );
 }

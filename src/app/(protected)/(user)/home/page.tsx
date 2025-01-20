@@ -13,30 +13,24 @@ import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const { data, status, update } = useSession();
+  const session = getSession()
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const router= useRouter();
 
   const isMobile = useIsMobile();
 
-  getSession().then((session) => {
-    if (session && data?.user.provider==="credentials" ) {
-      if(data?.user.accessToken){
-        localStorage.setItem("token",data?.user.accessToken||"")
-        init()
-      }
-    }
-  });
+ 
 
   useEffect(() => {
     console.log("data:::::",data?.user)
-    // getSession().then((session) => {
-    //   if (session && data?.user.provider==="credentials" ) {
-    //     if(data?.user.accessToken){
-    //       localStorage.setItem("token",data?.user.accessToken||"")
-    //       init()
-    //     }
-    //   }
-    // });
+    session.then((session) => {
+      if (session && data?.user.provider==="credentials" ) {
+        if(data?.user.accessToken){
+          localStorage.setItem("token",data?.user.accessToken||"")
+          init()
+        }
+      }
+    });
   }, []);
 
   const init=async()=>{

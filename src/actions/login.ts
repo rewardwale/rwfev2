@@ -6,8 +6,8 @@ import {
 } from "../apis/login";
 import { LoginSchema } from "@/schema";
 import * as z from "zod";
-import { DEFAULT_LOGIN_REDIRECT } from "../../routes";
-import { signIn } from "../../auth";
+import { DEFAULT_LOGIN_REDIRECT } from "../app/routes";
+import { signIn } from "../app/auth";
 import { AuthError } from "next-auth";
 
 

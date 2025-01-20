@@ -86,7 +86,7 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
     console.log("response::::::::",response)
     if (response.status === 200) {
 
-      return { status: true, message: response.data.message };
+      return { status: true, message: response.data };
     } else {
       return { status: false, message: response.data.message };
     }

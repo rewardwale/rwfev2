@@ -5,7 +5,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ThemeDataProvider from "@/context/theme-data-provider";
 import { Header } from "@/components/layout";
 import LayoutWrapper from "@/components/layout/layout-wrapper";
-import { auth } from "../../auth";
+import { auth } from "../app/auth";
 import { SessionProvider } from "next-auth/react";
 
 import { Toaster } from "sonner";
@@ -25,7 +25,7 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} refetchInterval={0}>
 
     <html
       lang="en"

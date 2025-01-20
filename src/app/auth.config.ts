@@ -44,6 +44,7 @@ export default {
               cred.latitude,
               cred.longitude,
             );
+            console.log("=========>",email)
             if (email.status) {
               // window.localStorage.setItem("UID", email.message.data.indDetail);
 
