@@ -1,6 +1,5 @@
 "use server";
 import axios, { AxiosError } from "axios";
-import { debounce } from "lodash";
 
 export const checkUserNameAvailability = async (
   userName: string,
@@ -38,9 +37,8 @@ export const checkUserNameAvailability = async (
   } catch (error: any) {
     console.log("error\n\t", error);
     console.error("error", error.response);
-    return { status: false, message: error.response.data.message };
-  }
-};
+    return {status:false,message:error.response.data.message}  }
+}
 
 export async function validateEmail(
   email: string,
@@ -179,7 +177,7 @@ export async function verifyOTPEmail(
     if (response.status === 200) {
       return { status: true, message: response.data.message };
     } else {
-      return { status: false, message: response.data.me };
+      return { status: false, message: response.data.message };
     }
   } catch (error: any) {
     console.error("error\n\t", error);
@@ -245,9 +243,9 @@ export async function signup(
       },
     );
     if (response.status === 200) {
-      return { status: true, message: "successfully created" };
+      return {status:true,message:"successfully created"} 
     } else {
-      return { status: false, message: response.data.message };
+      return {status:false,message:response.data.message}; 
     }
   } catch (error: any) {
     console.log("error\n\t", error);
@@ -255,13 +253,8 @@ export async function signup(
   }
 }
 
-export async function resendOTPEmail(
-  email: string,
-  fingerPrints: string,
-  latitude: string,
-  longitude: string,
-) {
-  console.log("resendOTPEmail\n", email, fingerPrints, latitude, longitude);
+export async function resendOTPEmail( email: string,  fingerPrints:string,latitude:string,longitude:string) {
+  console.log("resendOTPEmail\n",email,fingerPrints,latitude,longitude);
   try {
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?emailId=${email}`,

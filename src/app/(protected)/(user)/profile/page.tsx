@@ -13,7 +13,6 @@ const ProfilePage = lazy(() => import("./components/profile-page"));
 export default function HomePage() {
   const [data, setData] = useState<ProfileDataProps | undefined>(undefined);
   const [userId, setUserId] = useState<any>(null);
-  const [postData, setPostData] = useState([]);
 
   const isMobile = useIsMobile();
 
@@ -27,12 +26,12 @@ export default function HomePage() {
     init();
   }, []);
 
-  console.log("checking for profile data----myProfile", data);
+  // console.log("checking for profile data----myProfile", data);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex bg-background  h-screen ">
       {!isMobile && <Sidebar />}
-      <div className="flex-1">
+      <div className="flex-1 h-full ">
         <Header />
         {/* <div className="flex justify-center w-full"><SearchInputContainer/></div> */}
         <Suspense fallback={<div>Loading...</div>}>

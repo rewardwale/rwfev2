@@ -79,3 +79,18 @@ body {
   transform: translateY(40px);
   filter: blur(12px);
 }
+
+/* custom scroll bar */
+::-webkit-scrollbar{
+  width:7px;
+}
+::-webkit-scrollbar-track{
+  background: #e0e5eb;
+}
+
+::-webkit-scrollbar-thumb{
+  background: rgb(196, 195, 195);
+  border-radius: 10px;
+  
+}
+

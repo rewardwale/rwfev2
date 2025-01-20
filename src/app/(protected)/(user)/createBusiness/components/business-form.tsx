@@ -24,6 +24,16 @@ import {
   FileText,
 } from "lucide-react";
 import { addBusiness } from "@/apis/business";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { AlertDialogHeader } from "@/components/ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 const STEPS: { title: string; icon: React.ReactNode; id: FormStep }[] = [
   {
@@ -85,6 +95,8 @@ const DEFAULT_VALUES: BusinessFormData = {
 export function BusinessForm() {
   const [currentStep, setCurrentStep] = useState<FormStep>("business");
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const router = useRouter();
 
   const form = useForm<BusinessFormData>({
     resolver: zodResolver(businessFormSchema),
@@ -154,12 +166,14 @@ export function BusinessForm() {
         console.log("checking res of add bussines", response);
         if (response?.data?.statusCode) {
           toast.success("Business information submitted successfully!");
-          <Toaster position="top-right" />;
+          setShowSuccessModal(true)
         }
       } catch (error: any) {
         console.error("Submission error:", error.message || error);
         // alert(`${error.message}, "Failed to submit form. Please try again"`);
-        toast.error(error.message || "Failed to submit form. Please try again.");
+        toast.error(
+          error.message || "Failed to submit form. Please try again.",
+        );
       }
     }
   };
@@ -237,6 +251,20 @@ export function BusinessForm() {
           </form>
         </Form>
       </Card>
+
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registration Successful!</DialogTitle>
+            <DialogDescription>
+              Your business has been successfully registered.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => router.push("/home")}>Return to Home</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

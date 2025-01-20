@@ -9,60 +9,52 @@ import { ScrollBar } from "@/components/ui/scroll-area";
 import { VideoData } from "./dataTypes";
 import { cn } from "@/lib/utils";
 
-  export interface videoProps extends React.HTMLAttributes<HTMLDivElement> {
-    data: VideoData;
-    width: number;
-    height: number;
-    aspectRatio: "portrait";
-  }
-
+export interface videoProps extends React.HTMLAttributes<HTMLDivElement> {
+  data: VideoData;
+  width: number;
+  height: number;
+  aspectRatio: "portrait";
+}
 
 export default function ProfileItem({
-    data,
-    height,
-    width,
-    aspectRatio,
-    className,
-    ...props
-  }: videoProps) {
-    const router = useRouter();
-    return (
-    <div className={cn(" relative h-full border rounded-md", className)} {...props}>
-        <div className="overflow-hidden relative cursor-pointer h-full" 
+  data,
+  height,
+  width,
+  aspectRatio,
+  className,
+  ...props
+}: videoProps) {
+  const router = useRouter();
+  return (
+    <div className={cn(" relative h-full w-full p-1", className)} {...props}>
+      <div
+        className="overflow-hidden relative cursor-pointer h-full rounded-md"
         onClick={() => router.push("/watch?v=" + data.videoId)}
-  >
-          <Image
-            src={data.cdnThumbPath[0]}
-            alt={data.title}
-            width={width}
-            height={height}
-            className={
-              "h-full w-auto object-cover transition-all hover:scale-105 rounded-md"
-            }
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/90
-              rounded-md"
-          />
-  
-          <div className="flex-1 min-w-0 absolute bottom-0 p-2">
-            <p
-              className={`font-semibold text-xs  sm:text-sm text-md text-ellipsis overflow-hidden whitespace-nowrap
-                text-pretty w-full h-5 hover:h-auto text-white cursor-pointer`}
-            >
-              {data.title}
-            </p>
-  
-            <div className="flex items-center gap-1 sm:text-xs text-[8px] text-white/70">
-              <span>{data.totalViewCount.toLocaleString()} views</span>
-              <span>•</span>
-              <span>{data.avgRating} ★</span>
-            </div>
+      >
+        <Image
+          src={data.cdnThumbPath[0]}
+          alt={data.title}
+          width={width}
+          height={height}
+          className={`w-auto h-full object-cover transition-all hover:scale-105`}
+        />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/90" />
+
+        <div className="flex-1 w-full absolute bottom-0 p-3">
+          <p
+            className={`font-semibold text-xs sm:text-sm text-md text-ellipsis overflow-hidden
+              whitespace-nowrap text-pretty w-full h-5 hover:h-auto text-white cursor-pointer`}
+          >
+            {data.title}
+          </p>
+
+          <div className="flex items-center gap-1 sm:text-xs text-[8px] text-white/70">
+            <span>{data.totalViewCount.toLocaleString()} views</span>
+            <span>•</span>
+            <span>{data.avgRating} ★</span>
           </div>
         </div>
       </div>
-    );
-  }
-  
-
-
+    </div>
+  );
+}

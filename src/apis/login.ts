@@ -45,7 +45,7 @@ export async function signInWithMobile(
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {
-      return { status: false, message: response.data };
+      return { status: false, message: response.data.message };
     }
   } catch (error: any) {
     // console.error("error", error.response);
@@ -88,7 +88,7 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
 
       return { status: true, message: response.data };
     } else {
-      return { status: false, message: response.data };
+      return { status: false, message: response.data.message };
     }
   } catch (error: any) {
     console.error("error", error);
@@ -130,7 +130,7 @@ export async function signInWithUserName(password: string, userName: string,  fi
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {
-      return { status: false, message: response.data };
+      return { status: false, message: response.data.message};
     }
   } catch (error: any) {
     // console.error("error", error.response);
