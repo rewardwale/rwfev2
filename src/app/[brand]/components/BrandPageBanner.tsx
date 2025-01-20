@@ -269,7 +269,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
   return (
     <div className="relative w-full">
       <div
-        className="w-full h-[350px] relative bg-gradient-to-b from-gray-200 to-white"
+        className="w-full h-[350px] relative  bg-gradient-to-b from-gray-200 to-white"
         style={{
           backgroundImage: info?.banner
             ? `url(${info.banner})`
@@ -312,8 +312,8 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                     objectFitProp="contain"
                     layout="fixed"
                     classname="circularImage"
-                    width={isMobile ? 70 : 180}
-                    height={isMobile ? 70 : 180}
+                    width={isMobile ? 90 : 180}
+                    height={isMobile ? 90 : 180}
                   />
                 </div>
                 <div className="h-10 mb-4 ">
@@ -403,14 +403,14 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
               paddingTop: "40px",
             }}
           >
-            {/* <div> */}
+            <div className="mt-52">
             <div
-              className="bg-white"
+              className="bg-white dark:bg-black"
               style={{
                 borderRadius: "50%",
-                minWidth: "70px",
-                width: "70px",
-                height: "70px",
+                minWidth: "150px",
+                width: "150px",
+                height: "150px",
                 display: "flex",
                 alignContent: "center",
                 padding: "5px",
@@ -423,18 +423,28 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 objectFitProp="contain"
                 layout="fixed"
                 classname="circularImage"
-                width={70}
-                height={70}
+                width={150}
+                height={150}
               />
             </div>
-            {/* </div> */}
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-black">{info.name}</h1>
+            </div>
+            <div >
+              <div className="flex-col justify-center text-center items-center gap-2">
+                <div className="text-2xl font-bold text-black dark:text-white mb-3">{info.name}</div>
                 {/* {info.isVerified && (
                     <Badge variant="secondary">Verified Brand</Badge>
                   )} */}
+                <div className="text-lg font-bold text-black dark:text-white ">{info.title} </div>
+                <div className="text-md text-black dark:text-white"> {info.desc} </div>
+                <div className="flex gap-2 justify-center w-full">
+                  <div className="font-semibold flex gap-1 text-zinc-500">
+                        Rating : { }<StarRating rating={info.rating} />
+                  </div>
+                  <div className="font-semibold text-zinc-500 ">Rank:
+                  </div>
+                </div>
               </div>
+              
             </div>
             <div>
               <Button
@@ -454,6 +464,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 onClick={() =>
                   router.push(`/post?data=${encodeURIComponent(info.Id)}`)
                 }
+                className=""
               >
                 Post Review
               </Button>

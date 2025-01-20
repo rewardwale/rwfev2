@@ -40,6 +40,7 @@ interface BrandInfo {
   // rank: number;
   title?: string;
   desc?: string;
+  
 }
 
 export default function BrandPage({ params }: { params: any }) {
@@ -77,6 +78,7 @@ export default function BrandPage({ params }: { params: any }) {
       // rank: data.data[0]?.rank || 0,
       
       desc: data.data[0]?.desc ?? "Default Description",
+      
     };
 
     if (data.data) {
@@ -201,8 +203,8 @@ export default function BrandPage({ params }: { params: any }) {
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <div className="container">
-            <Tabs defaultValue="posts" className="w-full mt-44 md:mt-52 p-2  font-bold">
-              <TabsList className="w-full flex items-center justify-center  bg-black dark:text-white text-white rounded-lg ">
+            <Tabs defaultValue="posts" className="w-full mt-44 md:mt-52 max-sm:mt-80 p-2  font-bold">
+              <TabsList className="w-full flex items-center justify-center0 dark:bg-white bg-black dark:text-white text-white rounded-lg ">
                 <TabsTrigger
                   value="posts"
                   // style={{
@@ -210,8 +212,11 @@ export default function BrandPage({ params }: { params: any }) {
                   // }}
                   onClick={() => setSelectedTab("posts")}
                   className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2 min-md:py-3 ${
-                    selectedTab === "posts" ? "bg-white text-black" : "bg-black text-gray-200"
+                    selectedTab === "posts"
+                      ? "bg-white text-black dark:bg-gray-800 dark:text-white"
+                      : "bg-black text-gray-200 dark:bg-black dark:text-gray-400"
                   }`}
+                  
                 >
                   POSTS
 
@@ -219,9 +224,12 @@ export default function BrandPage({ params }: { params: any }) {
                 <TabsTrigger
                   value="tag"
                   onClick={() => setSelectedTab("tag")}
-                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-1 w-full px-2 min-md:m-2 min-md:py-3  ${
-                    selectedTab === "tag" ? "bg-white text-black" : "bg-black text-gray-200"
+                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2 min-md:py-3 ${
+                    selectedTab === "tag"
+                      ? "bg-white text-black dark:bg-gray-800 dark:text-white"
+                      : "bg-black text-gray-200 dark:bg-black dark:text-gray-400" 
                   }`}
+                  
                 >
                   TAGGED
                 </TabsTrigger>
@@ -239,9 +247,9 @@ export default function BrandPage({ params }: { params: any }) {
                       // onScroll={handleScrollEvent}
                     >
                       <div
-                        className="flex flex-wrap w-full h-full gap-3 lg:gap-5"
+                        className="flex flex-wrap w-full h-full gap-4 justify-center lg:gap-5"
                         style={{
-                          padding: "20px",
+                          padding: "10px",
                         }}
                       >
                         {videoData.length > 0 || !videoData ? (
@@ -251,7 +259,7 @@ export default function BrandPage({ params }: { params: any }) {
                               key={index}
                               height={1000}
                               width={1000}
-                              className="w-[127px] h-[200px] sm:w-[140px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
+                              className="w-[127px] h-[200px] max-sm:w-[160px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
                               aspectRatio="portrait"
                             />
                           ))

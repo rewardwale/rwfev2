@@ -28,6 +28,7 @@ export interface BrandInfo {
   // rank: number;
   title? : string;
   desc?: string;
+ 
 }
 
 export interface BusinessHours {
