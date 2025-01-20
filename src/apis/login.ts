@@ -129,7 +129,7 @@ export async function signInWithUserName(password: string, userName: string,  fi
       return { status: false, message: response.data.message};
     }
   } catch (error: any) {
-    // console.error("error", error.response);
+    console.error("error", error);
     return {status:false,message:error.response.data.message}
   }
 }

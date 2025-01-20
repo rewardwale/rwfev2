@@ -36,6 +36,8 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
     if (email.status) {
       // window.localStorage.setItem("UID", email.message.data.indDetail);
       return { success: email.message.data.indDetail };
+    }else{
+      return{error:email.message}
     }
   }
 
@@ -44,6 +46,8 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
     if (mobile.status) {
       // window.localStorage.setItem("UID", mobile.message.data.indDetail);
       return { success: mobile.message.data.indDetail };
+    }else{
+      return{error:mobile.message}
     }
   }
 
@@ -55,6 +59,8 @@ export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:s
       //   username.message.data.indDetail
       // );
       return { success: username.message.data.indDetail };
+    }else{
+      return{error:username.message}
     }
   }
 

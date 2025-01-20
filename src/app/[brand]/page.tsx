@@ -38,6 +38,8 @@ interface BrandInfo {
   isFollow: boolean;
   businessPageOwner: string[];
   // rank: number;
+  title?: string;
+  desc?: string;
 }
 
 export default function BrandPage({ params }: { params: any }) {
@@ -50,6 +52,7 @@ export default function BrandPage({ params }: { params: any }) {
   const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [businessId, setBusinessID] = useState("");
+  const [selectedTab, setSelectedTab] = useState("posts");
   const [profileData, setProfilePageData] = useState<
     ProfileDataProps | undefined
   >(undefined);
@@ -68,10 +71,12 @@ export default function BrandPage({ params }: { params: any }) {
       banner: data.data[0].defaultBusinessBanner.original || "",
       Id: data.data[0]._id,
       businessPageOwner: data?.data[0]?.businessPageOwner || [],
-
+      title : data.data[0]?.title || "Default Title", 
       // isFollow: data.data[0]?.isFollow
       isFollow: false,
       // rank: data.data[0]?.rank || 0,
+      
+      desc: data.data[0]?.desc ?? "Default Description",
     };
 
     if (data.data) {
@@ -196,24 +201,32 @@ export default function BrandPage({ params }: { params: any }) {
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <div className="container">
-            <Tabs defaultValue="posts" className="w-full">
-              <TabsList className="w-full flex items-center justify-center bg-black mb-7">
+            <Tabs defaultValue="posts" className="w-full mt-44 md:mt-52 p-2  font-bold">
+              <TabsList className="w-full flex items-center justify-center  bg-black dark:text-white text-white rounded-lg ">
                 <TabsTrigger
                   value="posts"
-                  style={{
-                    marginBlock: "12px",
-                  }}
-                  className="text-xs sm:text-sm md:text-base w-full"
+                  // style={{
+                  //   marginBlock: "5px",
+                  // }}
+                  onClick={() => setSelectedTab("posts")}
+                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2 min-md:py-3 ${
+                    selectedTab === "posts" ? "bg-white text-black" : "bg-black text-gray-200"
+                  }`}
                 >
                   POSTS
+
                 </TabsTrigger>
                 <TabsTrigger
                   value="tag"
-                  className="text-xs sm:text-sm md:text-base w-full"
+                  onClick={() => setSelectedTab("tag")}
+                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-1 w-full px-2 min-md:m-2 min-md:py-3  ${
+                    selectedTab === "tag" ? "bg-white text-black" : "bg-black text-gray-200"
+                  }`}
                 >
                   TAGGED
                 </TabsTrigger>
               </TabsList>
+              
               <TabsContent value="posts">
                 <Separator />
 

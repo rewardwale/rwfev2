@@ -26,6 +26,8 @@ export interface BrandInfo {
   rating: number;
   businessPageOwner: string[]
   // rank: number;
+  title? : string;
+  desc?: string;
 }
 
 export interface BusinessHours {
