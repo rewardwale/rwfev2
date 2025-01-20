@@ -1,4 +1,4 @@
-"use server";
+
 import { sendForgotPassword } from "@/apis/resetPassword";
 import { ResetSchema } from "@/schema";
 import * as z from "zod";
