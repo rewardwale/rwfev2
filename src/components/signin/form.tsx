@@ -277,22 +277,22 @@ export default function LoginForm() {
                 )}
                 {success && <FormSuccess message={success} />}
 
-                {/* <Button
+                <Button
                   variant="link"
                   size="sm"
                   asChild
                   className="px-0 font-normal"
                 >
                   <Link href="/reset">Forgot Password?</Link>
-                </Button> */}
+                </Button>
               </div>
               <Button type="submit" className="w-full">
                 {/* {shwoTwoFactor ? "Confirm" : "login"} */}
-                login
+                Login
               </Button>
 
               <div className="space-y-4">
-                <div className="relative">
+                <div className="relative flex justify-center items-center">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                   </div>
@@ -302,7 +302,7 @@ export default function LoginForm() {
                     </span>
                   </div>
                 </div>
-                <div className="w-fullflex justify-center">
+                <div className="w-fullflex flex justify-center">
                   <GoogleLogin
                     onSuccess={(response) => handleLoginSuccess(response)}
                     onError={() => handleLoginFailure("Google login failed")} // Pass a string or handle it as needed
