@@ -447,6 +447,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
               </div>
               
             </div>
+            <div className="flex gap-5">
             <div>
               <Button
                 ref={followButtonRef}
@@ -461,13 +462,17 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
               <Button onClick={() => setIsDetailsModalOpen(true)}>
                 More Details
               </Button>
-              <Button
-                onClick={() =>
-                  router.push(`/post?data=${encodeURIComponent(info.Id)}`)
-                }
-              >
-                Post Review
-              </Button>
+              {isOwner && (
+                  <Button
+                    onClick={() =>
+                      router.push(`/post?data=${encodeURIComponent(info.Id)}`)
+                    }
+                    className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                  >
+                    Post Review
+                  </Button>
+                )}
+            </div>
             </div>
             </div>
             {/* <div>5</div>

@@ -203,7 +203,7 @@ export default function BrandPage({ params }: { params: any }) {
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <div className="container">
-            <Tabs defaultValue="posts" className="w-full mt-44 md:mt-52 max-sm:mt-80 p-2  font-bold">
+            <Tabs defaultValue="posts" className="w-full mt-44 md:mt-52 max-sm:mt-72 p-2  font-bold">
               <TabsList className="w-full flex items-center justify-center0 dark:bg-white bg-black dark:text-white text-white rounded-lg ">
                 <TabsTrigger
                   value="posts"
