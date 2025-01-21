@@ -27,6 +27,12 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
 import { followUser, unFollowUser } from "@/apis/profile";
 import AuthModal from "@/components/ui/AuthModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface VideoDetails {
   _id: string;
@@ -40,6 +46,18 @@ interface VideoDetails {
       thumbnail: string;
     };
   };
+  businessDetails?: {
+    businessName: string;
+    handle: string;
+    defaultBusinessBanner: {
+      original: string;
+      thumbnail: string;
+    };
+    defaultBusinessImage: {
+      original: string;
+      thumbnail: string;
+    };
+  };
   title: string;
   hashtags: string[];
   totalLikes: number;
@@ -47,6 +65,11 @@ interface VideoDetails {
   isLiked: boolean;
   isFollowed: boolean;
   isBookmarked: boolean;
+  contactUs?: {
+    indCountryCode: string;
+    indMobileNum: string;
+    indEmail: string;
+  };
 }
 
 interface VideoControlsProps {
@@ -71,10 +94,10 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [userId, setUserId] = useState("");
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showContactUs, setShowContactUs] = useState(false);
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
-
   const checkToken = async () => {
     const token = localStorage.getItem("token");
 
@@ -215,7 +238,7 @@ export function VideoControls({ video }: VideoControlsProps) {
     }
   }
 
-  console.log("checking isPlaying", isPlaying);
+  console.log("checking videoDetails", videoDetails);
   return (
     <>
       {/* Like/Dislike Animations */}
@@ -267,7 +290,7 @@ export function VideoControls({ video }: VideoControlsProps) {
         <div
           className="absolute top-4"
           style={{
-            top: '2%',
+            top: "2%",
             right: "21rem",
             height: "50px",
             width: "50px",
@@ -379,22 +402,35 @@ export function VideoControls({ video }: VideoControlsProps) {
           <div
             className="flex-1"
             onClick={() =>
-              router.push("/profile/" + videoDetails?.userDetails.userName)
+              router.push(
+                videoDetails?.businessDetails
+                  ? "/" + videoDetails.businessDetails.handle
+                  : "/profile/" + videoDetails?.userDetails.userName,
+              )
             }
           >
             <h3 className="font-semibold cursor-pointer">
-              {videoDetails?.userDetails?.indFirstName}{" "}
-              {videoDetails?.userDetails?.indLastName}
+              {videoDetails?.businessDetails
+                ? videoDetails.businessDetails.handle
+                : `${videoDetails?.userDetails.indFirstName} ${videoDetails?.userDetails.indLastName}`}
             </h3>
             <p className="text-sm text-white/80">{videoDetails?.title}</p>
           </div>
+
           {
             <div
-              className="flex justify-end"
-              style={{
-                width: "60px",
-              }}
+              className="flex gap-4 mt-5"
+              // style={{
+              //   width: "60px",
+              // }}
             >
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowContactUs(true)}
+              >
+                Contact Business
+              </Button>
               <Button
                 variant="secondary"
                 size="sm"
@@ -407,7 +443,7 @@ export function VideoControls({ video }: VideoControlsProps) {
         </div>
         <div className="flex gap-2">
           {videoDetails?.hashtags?.map(
-            (tag, index) =>
+            (tag: any, index: any) =>
               index < 2 && (
                 <div key={tag} className="flex flex-wrap gap-2">
                   <Badge variant="secondary">{tag}</Badge>
@@ -423,6 +459,18 @@ export function VideoControls({ video }: VideoControlsProps) {
         ownerName={videoDetails?.userDetails.userName || ""}
         onClose={() => setShowComments(false)}
       />
+
+      <Dialog open={showContactUs} onOpenChange={setShowContactUs}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-center">
+              Contact Business
+            </DialogTitle>
+          </DialogHeader>
+          <p>Call : {videoDetails?.contactUs?.indMobileNum}</p>
+          <p>Email : {videoDetails?.contactUs?.indEmail}</p>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

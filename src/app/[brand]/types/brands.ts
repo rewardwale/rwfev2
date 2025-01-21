@@ -25,7 +25,7 @@ export interface BrandInfo {
   // isVerified: boolean;
   rating: number;
   businessPageOwner: string[]
-  rank: number;
+  // rank: number;
   title? : string;
   desc?: string;
  

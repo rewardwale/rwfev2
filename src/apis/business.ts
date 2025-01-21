@@ -125,8 +125,13 @@ export const unFollowMerchant = async (id: string) => {
 };
 
 export const getBusinessPageList = async () => {
+  const queryParams = new URLSearchParams({
+    limit: "10",
+    skip: "0",
+    // flag: "1",
+  }).toString();
 
-  const res = await apiClient(`/businessPageList?pageNum=1`, "GET");
+  const res = await apiClient(`/businessPageList?${queryParams}`, "GET");
   if (res.success) {
     return res.data;
   } else {

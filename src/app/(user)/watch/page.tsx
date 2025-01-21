@@ -135,7 +135,7 @@ export default function WatchPage() {
       <main className="flex-1 relative">
         <div className="absolute inset-0 flex items-center justify-center">
           <div
-            className="relative w-full max-w-[400px] md:max-w-fit transition-all duration-400
+            className="relative w-full md:max-w-fit transition-all duration-400
               ease-in-out"
             style={{
               height: "-webkit-fill-available",
@@ -157,39 +157,41 @@ export default function WatchPage() {
             </div>
           </div>
         </div>
-        {/* 
-        <div
-          style={{
-            zIndex: "9999",
-          }}
-        >
+
+        {!isMobile && (
           <div
-            className="absolute"
             style={{
-              top: "45%",
-              left: "95%",
+              zIndex: "9999",
             }}
           >
-            <ScrollButton
-              direction="up"
-              onClick={() => handleScroll("up")}
-              disabled={currentIndex === 0}
-            />
+            <div
+              className="absolute"
+              style={{
+                top: "45%",
+                left: "95%",
+              }}
+            >
+              <ScrollButton
+                direction="up"
+                onClick={() => handleScroll("up")}
+                disabled={currentIndex === 0}
+              />
+            </div>
+            <div
+              className="absolute"
+              style={{
+                top: "55%",
+                left: "95%",
+              }}
+            >
+              <ScrollButton
+                direction="down"
+                onClick={() => handleScroll("down")}
+                disabled={currentIndex === videos.length - 1 && !hasMore}
+              />
+            </div>
           </div>
-          <div
-            className="absolute"
-            style={{
-              top: "55%",
-              left: "95%",
-            }}
-          >
-            <ScrollButton
-              direction="down"
-              onClick={() => handleScroll("down")}
-              disabled={currentIndex === videos.length - 1 && !hasMore}
-            />
-          </div>
-        </div> */}
+        )}
       </main>
     </div>
   );

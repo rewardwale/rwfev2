@@ -21,7 +21,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Header } from "../(user)/home/components/header";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {Sidebar} from "../(user)/home/components/sidebar";
+import { Sidebar } from "../(user)/home/components/sidebar";
 import { Button } from "@/components/ui/button";
 import useIsOwner from "@/hooks/use-owner";
 import { isUserLoggedIn } from "@/lib/utils";
@@ -37,10 +37,12 @@ interface BrandInfo {
   Id: string;
   isFollow: boolean;
   businessPageOwner: string[];
-  rank: number;
+  // rank: {
+  //   country: string; 
+  //   city: string
+  // };
   title?: string;
   desc?: string;
-  
 }
 
 export default function BrandPage({ params }: { params: any }) {
@@ -72,13 +74,12 @@ export default function BrandPage({ params }: { params: any }) {
       banner: data.data[0].defaultBusinessBanner.original || "",
       Id: data.data[0]._id,
       businessPageOwner: data?.data[0]?.businessPageOwner || [],
-      title : data.data[0]?.title || "Default Title", 
+      title: data.data[0]?.title || "Default Title",
       // isFollow: data.data[0]?.isFollow
       isFollow: false,
-      rank: data.data[0]?.rank || 0,
-      
+      // rank: data.data[0]?.rank || 0,
+
       desc: data.data[0]?.desc ?? "Default Description",
-      
     };
 
     if (data.data) {
@@ -92,7 +93,6 @@ export default function BrandPage({ params }: { params: any }) {
     fetchBrandDetails();
   }, []);
 
-  
   useEffect(() => {
     const checkLoginStatus = () => {
       setIsLoggedIn(isUserLoggedIn());
@@ -100,7 +100,6 @@ export default function BrandPage({ params }: { params: any }) {
 
     checkLoginStatus();
   }, []);
-
 
   useEffect(() => {
     if (contentRef.current) {
@@ -188,53 +187,56 @@ export default function BrandPage({ params }: { params: any }) {
 
   const router = useRouter();
 
-
-
   return (
     <div className="flex h-screen bg-background">
       {/* post section */}
 
-      {isLoggedIn && !isMobile  &&  <Sidebar />}
+      {isLoggedIn && !isMobile && <Sidebar />}
       <div className="flex-1">
-       {isLoggedIn && <Header />}
+        {isLoggedIn && <Header />}
 
         <div>
           {brandInfo ? <BrandHeader info={brandInfo} /> : <div>Loading...</div>}
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <div className="container">
-            <Tabs defaultValue="posts" className="w-full mt-44 md:mt-52 max-sm:mt-72 p-2  font-bold">
-              <TabsList className="w-full flex items-center justify-center0 dark:bg-white bg-black dark:text-white text-white rounded-lg ">
+            <Tabs
+              defaultValue="posts"
+              className="w-full mt-44 md:mt-52 max-sm:mt-72 p-2 font-bold"
+            >
+              <TabsList className="w-full flex items-center justify-center dark:text-white text-white rounded-lg">
                 <TabsTrigger
                   value="posts"
-                  // style={{
-                  //   marginBlock: "5px",
-                  // }}
+                  style={{
+                    padding: "5px",
+                  }}
                   onClick={() => setSelectedTab("posts")}
-                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2 min-md:py-3 ${
+                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2
+                    min-md:py-3 ${
                     selectedTab === "posts"
-                      ? "bg-white text-black dark:bg-gray-800 dark:text-white"
-                      : "bg-black text-gray-200 dark:bg-black dark:text-gray-400"
-                  }`}
-                  
+                        ? "text-black dark:bg-gray-800 dark:text-white"
+                        : "text-gray-200 dark:bg-black dark:text-gray-400"
+                    }`}
                 >
                   POSTS
-
                 </TabsTrigger>
                 <TabsTrigger
                   value="tag"
+                  style={{
+                    padding: "5px",
+                  }}
                   onClick={() => setSelectedTab("tag")}
-                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2 min-md:py-3 ${
+                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2
+                    min-md:py-3 ${
                     selectedTab === "tag"
-                      ? "bg-white text-black dark:bg-gray-800 dark:text-white"
-                      : "bg-black text-gray-200 dark:bg-black dark:text-gray-400" 
-                  }`}
-                  
+                        ? "text-black dark:bg-gray-800 dark:text-white"
+                        : "text-gray-200 dark:bg-black dark:text-gray-400"
+                    }`}
                 >
                   TAGGED
                 </TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="posts">
                 <Separator />
 
@@ -247,7 +249,7 @@ export default function BrandPage({ params }: { params: any }) {
                       // onScroll={handleScrollEvent}
                     >
                       <div
-                        className="flex flex-wrap w-full h-full gap-4 justify-center lg:gap-5"
+                        className="flex flex-wrap w-full h-full gap-4 lg:gap-5"
                         style={{
                           padding: "10px",
                         }}

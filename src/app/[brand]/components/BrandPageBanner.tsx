@@ -332,10 +332,10 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                       </span>
                       <StarRating rating={info.rating} />
                     </div>
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <span className="font-semibold text-zinc-500 ">Rank:</span>
                        <span>#{info.rank}</span> 
-                    </div>
+                    </div> */}
                     <div className="flex-col items-center gap-1">
                       <div className="font-semibold text-black dark:text-white text-lg">{info.title} </div>
                       <div className=" text-black dark:text-white pb-3 w-60 h-10 text-sm">{info.desc} </div>
@@ -364,7 +364,11 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                   <IoLogoWhatsapp className="text-green-500 text-4xl lg:text-3xl" />
                 </div>
              </div> */}
-              <div className="flex lg:absolute top-44 lg:r-20 lg:justify-end lg:items-center gap-2">
+              <div className="flex lg:absolute top-44 lg:r-20 lg:justify-end lg:items-center gap-2"
+              style={{
+                left:'150%'
+              }}
+              >
                 <Button onClick={() => setIsDetailsModalOpen(true)} className="lg:text-xs lg:p-2 xl:text-sm xl:p-3 ">
                   More Details
                 </Button>
@@ -440,9 +444,9 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                   <div className="font-semibold flex gap-1 text-zinc-500">
                         Rating : { }<StarRating rating={info.rating} />
                   </div>
-                  <div className="font-semibold text-zinc-500  ">Rank:{ }
+                  {/* <div className="font-semibold text-zinc-500  ">Rank:{ }
                     <span className="gap-2">#{info.rank}</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               

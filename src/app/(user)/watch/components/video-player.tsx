@@ -20,7 +20,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const [showOverlay, setShowOverlay] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
   const [countdown, setCountdown] = useState(10);
-  const [hoverRating, setHoverRating] = useState(0);
   const isVideoEnded = useRef(false);
   const [rating, setRating] = useState(0);
 
