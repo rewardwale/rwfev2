@@ -308,7 +308,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
 
   return (
     profileData && (
-      <div className=" p-4">
+      <div className="p-4">
         {/* Profile Header Section */}
         <div className="flex flex-col sm:flex-row items-start">
           {/* Profile Image */}
@@ -330,7 +330,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
           </div>
 
           {/* Profile Details */}
-          <div className="grid grid-cols-1 sm:flex-1 mt-4 sm:mt-0 ">
+          <div className="grid grid-cols-1 sm:flex-1 mt-4 sm:mt-0">
             <div className="col-span-1 flex items-end align-baseline gap-2 px-4">
               <p className="dark:text-white font-bold text-lg sm:text-xl md:text-2xl">
                 {data.fname} {data.lname}
@@ -343,7 +343,6 @@ const ProfilePage = ({ profileData, id }: Props) => {
               </small>
             </div>
 
-           
             <div className="flex col-span-1 pb-1 text-xs sm:text-base font-semibold text-gray-500">
               <Dialog>
                 <DialogTrigger asChild>
@@ -398,25 +397,23 @@ const ProfilePage = ({ profileData, id }: Props) => {
               }}
               className="flex items-end gap-2 px-4 col-span-1"
             >
-              <div className="flex items-center align-baseline">
+              <div className="flex items-center">
                 {!myProfile && (
                   <Button
                     variant={"default"}
                     className="font-bold"
-                    // size={"default"}
+                    size={"default"}
                     onClick={async () => {
                       if (follower) {
-                        // await  handlefollowUser();
                         await handleUnfollowUser();
                       } else {
-                        // await  handleUnfollowUser();
                         await handlefollowUser();
                       }
                     }}
                   >
                     {follower ? (
                       <>
-                        <UserRoundCheckIcon /> <small>Following</small>{" "}
+                        <UserRoundCheckIcon /> <small>Following</small>
                       </>
                     ) : (
                       <>
@@ -523,10 +520,10 @@ const ProfilePage = ({ profileData, id }: Props) => {
 
             {/* Posts Section */}
             <div className="py-6">
-              <div className="flex w-full justify-center  ">
+              <div className="flex w-full justify-center">
                 <div
                   className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-1 gap-y-1
-                    h-[700px] "
+                    h-[700px]"
                   ref={scrollContainerRef}
                   onScroll={handleScrollEvent}
                   onMouseEnter={(e) =>

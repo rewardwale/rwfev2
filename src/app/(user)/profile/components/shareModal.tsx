@@ -44,7 +44,16 @@ export default function ShareLinkModal({ shareLink, link }: Props) {
             <Label htmlFor="link" className="sr-only">
               Link
             </Label>
-            <Input id="link" defaultValue={profileLink} readOnly />
+            {/* <Input id="link" defaultValue={profileLink} readOnly /> */}
+            <div
+              style={{
+                border: "1px solid grey",
+                borderRadius: '6px',
+                padding: '2px'
+              }}
+            >
+              {profileLink}
+            </div>
           </div>
           <Button
             type="submit"
