@@ -17,7 +17,7 @@ import {
   verifyOTPEmail,
   verifyOTPMobile,
 } from "@/apis/signUp";
-import { signInWithProviders } from "@/apis/login";
+// import { signInWithProviders } from "@/apis/login";
 
 export const NewSignUp = async (values: z.infer<typeof combinedSchema>) => {
   const validatedFields = combinedSchema.safeParse(values);
@@ -187,55 +187,55 @@ export const simpleProviderForm = async (
 };
 
 
-export const registerSignupProvider = async (
-  values: z.infer<typeof newSignupSchema>,
-  fingerPrints: string,
-  latitude: string,
-  longitude: string,
-  providerToken: string,
-  provider: string,
-) => {
-  const validatedFields =await newSignupSchema.parseAsync(values);
+// export const registerSignupProvider = async (
+//   values: z.infer<typeof newSignupSchema>,
+//   fingerPrints: string,
+//   latitude: string,
+//   longitude: string,
+//   providerToken: string,
+//   provider: string,
+// ) => {
+//   const validatedFields =await newSignupSchema.parseAsync(values);
 
-  console.log(":::::::::!!!!", validatedFields);
-  if (!validatedFields) {
-    return { error: "Invalid fields!" };
-  }
-  const { firstname, lastname, email, userName ,mobile} =
-    validatedFields;
+//   console.log(":::::::::!!!!", validatedFields);
+//   if (!validatedFields) {
+//     return { error: "Invalid fields!" };
+//   }
+//   const { firstname, lastname, email, userName ,mobile} =
+//     validatedFields;
 
-  const signup = await signupWithProvider(
-    {
-      firstName: firstname,
-      lastName: lastname,
-      email: email,
-      userName: userName,
-      mobile:mobile,
-      // password: password,
-      fingerPrints: fingerPrints,
-    },
-    latitude,
-    longitude,
-    providerToken,
-    provider,
-  );
+//   const signup = await signupWithProvider(
+//     {
+//       firstName: firstname,
+//       lastName: lastname,
+//       email: email,
+//       userName: userName,
+//       mobile:mobile,
+//       // password: password,
+//       fingerPrints: fingerPrints,
+//     },
+//     latitude,
+//     longitude,
+//     providerToken,
+//     provider,
+//   );
 
-  if (signup.status) {
-    //login here
-    const login = await signInWithProviders(
-      provider,
-      providerToken,
-      fingerPrints,
-      latitude,
-      longitude,
-    );
-    if (login.status) {
-      return { success: login.message };
-    } else {
-      return { error: login.message };
-    }
-  } else {
-    return { error: signup.message };
-  }
-};
+//   if (signup.status) {
+//     //login here
+//     const login = await signInWithProviders(
+//       provider,
+//       providerToken,
+//       fingerPrints,
+//       latitude,
+//       longitude,
+//     );
+//     if (login.status) {
+//       return { success: login.message };
+//     } else {
+//       return { error: login.message };
+//     }
+//   } else {
+//     return { error: signup.message };
+//   }
+// };
 
