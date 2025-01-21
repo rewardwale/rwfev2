@@ -334,7 +334,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="font-semibold text-zinc-500 ">Rank:</span>
-                      {/* <span>#{info.rank}</span> */}
+                       <span>#{info.rank}</span> 
                     </div>
                     <div className="flex-col items-center gap-1">
                       <div className="font-semibold text-black dark:text-white text-lg">{info.title} </div>
@@ -440,7 +440,8 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                   <div className="font-semibold flex gap-1 text-zinc-500">
                         Rating : { }<StarRating rating={info.rating} />
                   </div>
-                  <div className="font-semibold text-zinc-500 ">Rank:
+                  <div className="font-semibold text-zinc-500  ">Rank:{ }
+                    <span className="gap-2">#{info.rank}</span>
                   </div>
                 </div>
               </div>
@@ -464,7 +465,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 onClick={() =>
                   router.push(`/post?data=${encodeURIComponent(info.Id)}`)
                 }
-                className=""
               >
                 Post Review
               </Button>

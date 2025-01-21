@@ -37,7 +37,7 @@ interface BrandInfo {
   Id: string;
   isFollow: boolean;
   businessPageOwner: string[];
-  // rank: number;
+  rank: number;
   title?: string;
   desc?: string;
   
@@ -75,7 +75,7 @@ export default function BrandPage({ params }: { params: any }) {
       title : data.data[0]?.title || "Default Title", 
       // isFollow: data.data[0]?.isFollow
       isFollow: false,
-      // rank: data.data[0]?.rank || 0,
+      rank: data.data[0]?.rank || 0,
       
       desc: data.data[0]?.desc ?? "Default Description",
       
