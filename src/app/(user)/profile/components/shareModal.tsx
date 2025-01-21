@@ -22,11 +22,14 @@ interface Props {
 
 export default function ShareLinkModal({ shareLink, link }: Props) {
   const [copy, setCopy] = useState<boolean>(false);
+
+  const profileLink = `${window.location.host}${window.location.pathname}`;
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default"   onClick={shareLink}>
-          <Share2Icon/> <small>share</small>
+        <Button variant="default" onClick={shareLink}>
+          <Share2Icon /> <small>share</small>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -41,20 +44,19 @@ export default function ShareLinkModal({ shareLink, link }: Props) {
             <Label htmlFor="link" className="sr-only">
               Link
             </Label>
-            <Input id="link" defaultValue={link} readOnly />
+            <Input id="link" defaultValue={profileLink} readOnly />
           </div>
           <Button
             type="submit"
             size="sm"
             className="px-3"
             onClick={() => {
-              navigator.clipboard.writeText(link);
+              navigator.clipboard.writeText(profileLink);
               setCopy(true);
-             const timer=  setTimeout(() => {
+              const timer = setTimeout(() => {
                 setCopy(false);
-                       clearTimeout(timer);
+                clearTimeout(timer);
               }, 1000);
-       
             }}
           >
             <span className="sr-only">Copy</span>
