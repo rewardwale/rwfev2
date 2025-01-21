@@ -37,7 +37,10 @@ interface BrandInfo {
   Id: string;
   isFollow: boolean;
   businessPageOwner: string[];
-  // rank: number;
+  rank: number;
+  title?: string;
+  desc?: string;
+  
 }
 
 export default function BrandPage({ params }: { params: any }) {
@@ -50,6 +53,7 @@ export default function BrandPage({ params }: { params: any }) {
   const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [businessId, setBusinessID] = useState("");
+  const [selectedTab, setSelectedTab] = useState("posts");
   const [profileData, setProfilePageData] = useState<
     ProfileDataProps | undefined
   >(undefined);
@@ -68,10 +72,13 @@ export default function BrandPage({ params }: { params: any }) {
       banner: data.data[0].defaultBusinessBanner.original || "",
       Id: data.data[0]._id,
       businessPageOwner: data?.data[0]?.businessPageOwner || [],
-
+      title : data.data[0]?.title || "Default Title", 
       // isFollow: data.data[0]?.isFollow
       isFollow: false,
-      // rank: data.data[0]?.rank || 0,
+      rank: data.data[0]?.rank || 0,
+      
+      desc: data.data[0]?.desc ?? "Default Description",
+      
     };
 
     if (data.data) {
@@ -196,24 +203,38 @@ export default function BrandPage({ params }: { params: any }) {
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <div className="container">
-            <Tabs defaultValue="posts" className="w-full">
-              <TabsList className="w-full flex items-center justify-center bg-black mb-7">
+            <Tabs defaultValue="posts" className="w-full mt-44 md:mt-52 max-sm:mt-72 p-2  font-bold">
+              <TabsList className="w-full flex items-center justify-center0 dark:bg-white bg-black dark:text-white text-white rounded-lg ">
                 <TabsTrigger
                   value="posts"
-                  style={{
-                    marginBlock: "12px",
-                  }}
-                  className="text-xs sm:text-sm md:text-base w-full"
+                  // style={{
+                  //   marginBlock: "5px",
+                  // }}
+                  onClick={() => setSelectedTab("posts")}
+                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2 min-md:py-3 ${
+                    selectedTab === "posts"
+                      ? "bg-white text-black dark:bg-gray-800 dark:text-white"
+                      : "bg-black text-gray-200 dark:bg-black dark:text-gray-400"
+                  }`}
+                  
                 >
                   POSTS
+
                 </TabsTrigger>
                 <TabsTrigger
                   value="tag"
-                  className="text-xs sm:text-sm md:text-base w-full"
+                  onClick={() => setSelectedTab("tag")}
+                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2 min-md:py-3 ${
+                    selectedTab === "tag"
+                      ? "bg-white text-black dark:bg-gray-800 dark:text-white"
+                      : "bg-black text-gray-200 dark:bg-black dark:text-gray-400" 
+                  }`}
+                  
                 >
                   TAGGED
                 </TabsTrigger>
               </TabsList>
+              
               <TabsContent value="posts">
                 <Separator />
 
@@ -226,9 +247,9 @@ export default function BrandPage({ params }: { params: any }) {
                       // onScroll={handleScrollEvent}
                     >
                       <div
-                        className="flex flex-wrap w-full h-full gap-3 lg:gap-5"
+                        className="flex flex-wrap w-full h-full gap-4 justify-center lg:gap-5"
                         style={{
-                          padding: "20px",
+                          padding: "10px",
                         }}
                       >
                         {videoData.length > 0 || !videoData ? (
@@ -238,7 +259,7 @@ export default function BrandPage({ params }: { params: any }) {
                               key={index}
                               height={1000}
                               width={1000}
-                              className="w-[127px] h-[200px] sm:w-[140px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
+                              className="w-[127px] h-[200px] max-sm:w-[160px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
                               aspectRatio="portrait"
                             />
                           ))

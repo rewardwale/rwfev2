@@ -8,7 +8,7 @@ import { BrandInfo } from "../types/brands";
 import { animateFollow } from "@/lib/animation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ResponsiveImages from "@/components/responsiveImages/images.component";
-import WhatsappLogo from "../../../../public/whatsApp-logo.png";
+// import WhatsappLogo from "../../../../public/whatsApp-logo.png";
 import {
   followMerchant,
   unFollowMerchant,
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { BusinessModal } from "./BusinessModal";
 import useIsOwner from "@/hooks/use-owner";
+import { IoLogoWhatsapp } from "react-icons/io";
 
 export function BrandHeader({ info }: { info: BrandInfo }) {
   const followButtonRef = useRef<HTMLButtonElement>(null);
@@ -213,7 +214,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
     const hasHalfStar = rating % 1 !== 0;
 
     return (
-      <div className="flex items-center">
+      <div className="flex items-center ">
         {[...Array(5)].map((_, index) => {
           if (index < fullStars) {
             return (
@@ -268,7 +269,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
   return (
     <div className="relative w-full">
       <div
-        className="w-full h-[400px] relative bg-gradient-to-b from-gray-200 to-white"
+        className="w-full h-[350px] relative  bg-gradient-to-b from-gray-200 to-white"
         style={{
           backgroundImage: info?.banner
             ? `url(${info.banner})`
@@ -288,16 +289,17 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
           </div>
         )}
         {!isMobile ? (
-          <div className="absolute bottom-0 left-0 right-0 px-4 py-6">
-            <div className="flex items-end justify-between">
-              <div className="flex items-center gap-4">
+          <div className="absolute bottom-0 top-48 min-md:top-68 px-4 py-4 text-black dark:text-white">
+            <div className="flex items-end lg:justify-between md:justify-center md:items-center gap-5 h-64 lg:space-x-96 md:flex-col md:gap-12 md:p-4 md:mt-16 md:m-3 xl:space-x-96">
+             <div className="md:top-68  ">
+             <div className="flex items-center lg:text-sm gap-4   ">
                 <div
-                  className="bg-white"
+                  className="bg-black"
                   style={{
-                    borderRadius: "50%",
-                    minWidth: "70px",
-                    width: "120px",
-                    height: "120px",
+                    borderRadius: "80%",
+                    minWidth: "120px",
+                    width: "190px",
+                    height: "190px",
                     display: "flex",
                     alignContent: "center",
                     padding: "5px",
@@ -310,60 +312,60 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                     objectFitProp="contain"
                     layout="fixed"
                     classname="circularImage"
-                    width={isMobile ? 70 : 120}
-                    height={isMobile ? 70 : 120}
+                    width={isMobile ? 90 : 180}
+                    height={isMobile ? 90 : 180}
                   />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-2xl font-bold text-black">
+                <div className="h-10 mb-4 ">
+                  <div className="flex md:mt-4 lg:top-48 h-10 items-center gap-2  ">
+                    <div className="text-2xl font-bold text-black dark:text-white lg:text-xl">
                       {info.name}
-                    </h1>
+                    </div>
                     {/* {info.isVerified && (
                     <Badge variant="secondary">Verified Brand</Badge>
                   )} */}
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-4 text-sm text-gray-300 mt-1">
+                  <div className="flex-col sm:flex-row gap-4 text-sm max-lg:text-xs text-zinc-500">
                     <div className="flex items-center gap-1">
-                      <span className="font-semibold text-gray-300">
+                      <span className="font-semibold text-zinc-500">
                         Rating:
                       </span>
                       <StarRating rating={info.rating} />
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="font-semibold">Rank:</span>
-                      {/* <span>#{info.rank}</span> */}
+                      <span className="font-semibold text-zinc-500 ">Rank:</span>
+                       <span>#{info.rank}</span> 
+                    </div>
+                    <div className="flex-col items-center gap-1">
+                      <div className="font-semibold text-black dark:text-white text-lg">{info.title} </div>
+                      <div className=" text-black dark:text-white pb-3 w-60 h-10 text-sm">{info.desc} </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div>
+              
+             </div>
+             <div className="flex mb:justify-center  mb:items-center lg:flex-col md:-mb-1">
+             {/* <div className="flex justify-center gap-3 p-2 mb-2">
                 <div
-                  className="cursor-pointer absolute"
-                  style={{
-                    top: "-220%",
-                    right: "3%",
-                  }}
+                  className="cursor-pointer"
                 >
-                  <PhoneCall size={36} />
+                  <PhoneCall className="text-black text-4xl lg:text-3xl dark:text-white" />
                 </div>
                 <div
-                  className="cursor-pointer absolute"
-                  style={{
-                    top: "-180%",
-                    right: "3%",
-                  }}
+                  className="cursor-pointer "
                 >
                   <Image
                     src={WhatsappLogo}
                     alt="social-icon"
-                    height={40}
-                    width={36}
+                    height={56}
+                    width={44}
                   />
+                  <IoLogoWhatsapp className="text-green-500 text-4xl lg:text-3xl" />
                 </div>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Button onClick={() => setIsDetailsModalOpen(true)}>
+             </div> */}
+              <div className="flex lg:absolute top-44 lg:r-20 lg:justify-end lg:items-center gap-2">
+                <Button onClick={() => setIsDetailsModalOpen(true)} className="lg:text-xs lg:p-2 xl:text-sm xl:p-3 ">
                   More Details
                 </Button>
                 {isOwner && (
@@ -371,6 +373,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                     onClick={() =>
                       router.push(`/post?data=${encodeURIComponent(info.Id)}`)
                     }
+                    className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
                   >
                     Post Review
                   </Button>
@@ -378,14 +381,15 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 <Button
                   ref={followButtonRef}
                   onClick={isFollowed ? handleUnfollow : handleFollow}
-                  className="px-6"
+                  className="px-6 lg:text-xs lg:p-2 xl:text-sm xl:p-3 "
                 >
                   {isFollowed ? "UnFollow" : "Follow"}
                 </Button>
                 <Button variant="outline" size="icon" onClick={handleShare}>
-                  <Share2 className="h-4 w-4" />
+                  <Share2 className="h-4 w-4 min-lg:h-1 min-lg:w-1" />
                 </Button>
               </div>
+             </div>
             </div>
           </div>
         ) : (
@@ -399,14 +403,14 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
               paddingTop: "40px",
             }}
           >
-            {/* <div> */}
+            <div className="mt-52">
             <div
-              className="bg-white"
+              className="bg-white dark:bg-black"
               style={{
                 borderRadius: "50%",
-                minWidth: "70px",
-                width: "70px",
-                height: "70px",
+                minWidth: "150px",
+                width: "150px",
+                height: "150px",
                 display: "flex",
                 alignContent: "center",
                 padding: "5px",
@@ -419,19 +423,31 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 objectFitProp="contain"
                 layout="fixed"
                 classname="circularImage"
-                width={70}
-                height={70}
+                width={150}
+                height={150}
               />
             </div>
-            {/* </div> */}
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-black">{info.name}</h1>
+            </div>
+            <div >
+              <div className="flex-col justify-center text-center items-center gap-2">
+                <div className="text-2xl font-bold text-black dark:text-white mb-3">{info.name}</div>
                 {/* {info.isVerified && (
                     <Badge variant="secondary">Verified Brand</Badge>
                   )} */}
+                <div className="text-lg font-bold text-black dark:text-white ">{info.title} </div>
+                <div className="text-md text-black dark:text-white"> {info.desc} </div>
+                <div className="flex gap-2 justify-center w-full">
+                  <div className="font-semibold flex gap-1 text-zinc-500">
+                        Rating : { }<StarRating rating={info.rating} />
+                  </div>
+                  <div className="font-semibold text-zinc-500  ">Rank:{ }
+                    <span className="gap-2">#{info.rank}</span>
+                  </div>
+                </div>
               </div>
+              
             </div>
+            <div className="flex gap-5">
             <div>
               <Button
                 ref={followButtonRef}
@@ -441,17 +457,23 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 {isFollowed ? "UnFollow" : "Follow"}
               </Button>
             </div>
+            <div>
             <div className="flex gap-5">
               <Button onClick={() => setIsDetailsModalOpen(true)}>
                 More Details
               </Button>
-              <Button
-                onClick={() =>
-                  router.push(`/post?data=${encodeURIComponent(info.Id)}`)
-                }
-              >
-                Post Review
-              </Button>
+              {isOwner && (
+                  <Button
+                    onClick={() =>
+                      router.push(`/post?data=${encodeURIComponent(info.Id)}`)
+                    }
+                    className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                  >
+                    Post Review
+                  </Button>
+                )}
+            </div>
+            </div>
             </div>
             {/* <div>5</div>
             <div>6</div> */}
