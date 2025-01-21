@@ -143,7 +143,10 @@ export default function WatchPage() {
             }}
             id="video-container"
           >
-            <div className="h-full rounded-lg overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.75)]">
+            <div
+              className={`h-full rounded-lg overflow-hidden ${
+                !isMobile ? "shadow-[0_0_20px_rgba(255,255,255,0.75)]" : "" }`}
+            >
               <VideoControlsProvider>
                 <VideoPlayer
                   key={currentVideo?._id}

@@ -149,7 +149,12 @@ export function ReviewForm() {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-4">
+          <div
+            className="space-y-4"
+            style={{
+              minHeight: `${isMobile && "20vh"}`,
+            }}
+          >
             {isMobile && videoUrl ? (
               <div className="space-y-4">
                 {/* <VideoPreview videoUrl={videoUrl} /> */}
@@ -203,7 +208,7 @@ export function ReviewForm() {
                 overflowY: "scroll",
                 padding: "12px",
                 // overflowY:'hidden'
-                minHeight: `${isMobile && '100vh'}`
+                minHeight: `${isMobile && "100vh"}`,
               }}
               className="space-y-6 scrollbar-hide"
             >
