@@ -150,23 +150,44 @@ export function ReviewForm() {
       case 1:
         return (
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Share Your Video Review</h2>
-            <VideoUploader
-              hasExistingVideo={!!videoUrl}
-              onUploadComplete={(url, file) => {
-                setVideoUrl(url);
-                setVideoFile(file);
-                toast.success(
-                  "Video uploaded successfully! Click Next to continue.",
-                );
-              }}
-            />
+            {isMobile && videoUrl ? (
+              <div className="space-y-4">
+                {/* <VideoPreview videoUrl={videoUrl} /> */}
+              </div>
+            ) : (
+              // Show video uploader if no video or on desktop
+              <div>
+                <h2 className="text-2xl font-semibold">
+                  Share Your Video Review
+                </h2>
+                <VideoUploader
+                  hasExistingVideo={!!videoUrl}
+                  onUploadComplete={(url, file) => {
+                    setVideoUrl(url);
+                    setVideoFile(file);
+                    toast.success(
+                      "Video uploaded successfully! Click Next to continue.",
+                    );
+                  }}
+                />
+              </div>
+            )}
             {videoUrl && (
               <>
                 <div className="md:hidden">
                   {/* <VideoPreview videoUrl={videoUrl} /> */}
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-4 mb-8">
+                  {isMobile && videoUrl && (
+                    <Button
+                      onClick={() => {
+                        setVideoUrl("");
+                        setVideoFile(null);
+                      }}
+                    >
+                      Change Video
+                    </Button>
+                  )}
                   <Button onClick={() => setStep(2)}>Next</Button>
                 </div>
               </>
@@ -182,6 +203,7 @@ export function ReviewForm() {
                 overflowY: "scroll",
                 padding: "12px",
                 // overflowY:'hidden'
+                minHeight: `${isMobile && '100vh'}`
               }}
               className="space-y-6 scrollbar-hide"
             >
@@ -201,7 +223,7 @@ export function ReviewForm() {
                   setThumbnailFile(file);
                 }}
                 onNext={() => setStep(3)}
-                // setStep={setStep}
+                setStep={setStep}
               />
               {/* <div className="flex justify-end gap-4">
                 <Button variant="outline" onClick={() => setStep(1)}>
@@ -338,7 +360,7 @@ export function ReviewForm() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary p-4 md:p-8">
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary md:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row gap-8">
             <StepIndicator currentStep={step} steps={STEPS} />
