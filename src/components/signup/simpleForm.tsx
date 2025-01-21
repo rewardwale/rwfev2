@@ -546,14 +546,14 @@ export default function SimpleForm() {
           </div>
         </form>
       </Form>
-      <Button
+      {/* <Button
           variant={"link"}
           className="w-full hover:text-blue-500 font-bold"
           size="sm"
           asChild
         >
           <Link href={"/login"}>Already have an account ? </Link>
-        </Button>
+        </Button> */}
       {/* </CardWrapper> */}
     </div>
   );

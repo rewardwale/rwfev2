@@ -296,7 +296,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
         if (scrollContainerRef.current) {
           scrollContainerRef.current.style.overflow = "hidden";
         }
-      }, 3000); // Adjust the delay in milliseconds (e.g., 3000ms = 3 seconds)
+      }, 10000); // Adjust the delay in milliseconds (e.g., 3000ms = 3 seconds)
     }
   };
 
@@ -308,7 +308,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
 
   return (
     profileData && (
-      <div className="min-h-screen p-4">
+      <div className=" p-4">
         {/* Profile Header Section */}
         <div className="flex flex-col sm:flex-row items-start">
           {/* Profile Image */}
@@ -523,10 +523,10 @@ const ProfilePage = ({ profileData, id }: Props) => {
 
             {/* Posts Section */}
             <div className="py-6">
-              <div className="flex w-full justify-center">
+              <div className="flex w-full justify-center  ">
                 <div
                   className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-1 gap-y-1
-                    h-[700px]"
+                    h-[700px] "
                   ref={scrollContainerRef}
                   onScroll={handleScrollEvent}
                   onMouseEnter={(e) =>
