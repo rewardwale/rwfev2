@@ -369,9 +369,9 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 left:'150%'
               }}
               >
-                <Button onClick={() => setIsDetailsModalOpen(true)} className="lg:text-xs lg:p-2 xl:text-sm xl:p-3 ">
+                {/* <Button onClick={() => setIsDetailsModalOpen(true)} className="lg:text-xs lg:p-2 xl:text-sm xl:p-3 ">
                   More Details
-                </Button>
+                </Button> */}
                 {isOwner && (
                   <Button
                     onClick={() =>
