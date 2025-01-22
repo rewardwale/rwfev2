@@ -25,7 +25,7 @@ export default function RootLayout({
       className={`${notoSans.className} ${notoSerif.variable} ${inter.variable} ${roboto.variable}`}
       suppressHydrationWarning
     >
-      <body className="max-sm:overscroll-none max-sm:overflow-hidden" >
+      <body className="max-sm:overscroll-none" >
 
         <Toaster position="top-center" richColors />
         <NextThemesProvider
