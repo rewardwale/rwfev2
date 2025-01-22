@@ -392,6 +392,7 @@ export function VideoControls({ video }: VideoControlsProps) {
         className="absolute bottom-4 left-4 right-16 text-white"
         style={{
           top: `${isMobile ? "85%" : "82%"}`,
+          left: `${isMobile && "0"}`,
         }}
       >
         <div className="flex items-center gap-3 mb-2 cursor-pointer">
@@ -419,18 +420,22 @@ export function VideoControls({ video }: VideoControlsProps) {
 
           {
             <div
-              className="flex gap-4 mt-5"
-              // style={{
-              //   width: "60px",
-              // }}
+              className="mt-5"
+              style={{
+               display:'flex',
+               flexDirection:'column',
+               gap:'8px'
+              }}
             >
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setShowContactUs(true)}
-              >
-                Contact Business
-              </Button>
+              {videoDetails?.businessDetails && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setShowContactUs(true)}
+                >
+                  Contact Business
+                </Button>
+              )}
               <Button
                 variant="secondary"
                 size="sm"

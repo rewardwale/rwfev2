@@ -188,7 +188,7 @@ export default function BrandPage({ params }: { params: any }) {
   const router = useRouter();
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-scroll">
       {/* post section */}
 
       {isLoggedIn && !isMobile && <Sidebar />}
