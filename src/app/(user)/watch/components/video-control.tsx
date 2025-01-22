@@ -176,7 +176,7 @@ export function VideoControls({ video }: VideoControlsProps) {
       await addBookmark(videoId);
       setIsBookmarked(true);
     } else {
-      await removeBookmark(videoId);
+      await removeBookmark([videoId]);
       setIsBookmarked(false);
     }
   };
