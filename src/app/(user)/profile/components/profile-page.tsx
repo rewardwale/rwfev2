@@ -321,12 +321,14 @@ const ProfilePage = ({ profileData, id }: Props) => {
               alt="Profile Image"
               className="w-180 h-auto sm:w-32 sm:h-32 md:w-40 md:h-40 object-cover rounded-lg"
             />
-            <div className="absolute -bottom-1 -right-1">
-              <EditProfilePicture
-                profileData={data}
-                imageReload={imageReload}
-              />
-            </div>
+            {myProfile && (
+              <div className="absolute -bottom-1 -right-1">
+                <EditProfilePicture
+                  profileData={data}
+                  imageReload={imageReload}
+                />
+              </div>
+            )}
           </div>
 
           {/* Profile Details */}

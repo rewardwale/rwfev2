@@ -431,7 +431,7 @@ export function VideoControls({ video }: VideoControlsProps) {
                 size="sm"
                 onClick={() => setShowContactUs(true)}
               >
-                Contact Business
+                Contact
               </Button>
             )}
           </div>
