@@ -5,6 +5,7 @@ import { FaChevronLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import BookMarkPost from "./list";
 import { deleteBookMark, getAllBookMarks } from "@/apis/bookmarks";
+import { Button } from "@/components/ui/button";
 
 export type TypeBookmark = {
   count: number;
@@ -19,13 +20,13 @@ export type TypeBookmark = {
       rating: number;
       count: number;
     };
-    userDetails:{
+    userDetails: {
       indFirstName: string;
       indLastName: string;
-      indPic:{thumbnail:string;original:string}
-    },
-    avgRating:number;
-    totalRating:number;
+      indPic: { thumbnail: string; original: string };
+    };
+    avgRating: number;
+    totalRating: number;
     totalViewCount: number;
     _id: string;
   }[];
@@ -37,6 +38,9 @@ export default function BookMarkComponent() {
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
+  const [deleteBookmark, setDeleteBookmark] = useState<boolean>(true);
+  const [bookmarkList, setBookmarkList] = useState<string[]>([]);
+  const [unselect, setUnSelect] = useState<boolean>(false);
   const router = useRouter();
 
   const handleBackButton = () => {
@@ -54,14 +58,14 @@ export default function BookMarkComponent() {
       setIsLoading(false);
     }
   };
-console.log(":::::::::::::::::::::::::",bookmarks?.data.length)
-  const handleBookmarkDelete = async (videoId: string) => {
+
+  const handleBookmarkDelete = async (videoId: string[]) => {
     try {
       const response = await deleteBookMark(videoId);
       if (bookmarks) {
         const tempBookmarks = [...bookmarks.data];
         const newBookmarks = tempBookmarks.filter(
-          (bookmark) => bookmark.videoId !== videoId,
+          (bookmark) => !videoId.includes(bookmark.videoId),
         );
         setBookmarks({ ...bookmarks, data: newBookmarks });
       }
@@ -79,15 +83,9 @@ console.log(":::::::::::::::::::::::::",bookmarks?.data.length)
       className="overflow-scroll overflow-x-hidden max-lg:h-screen py-2 px-2 lg:px-6
         lg:h-[calc(100vh-80px)] w-full"
     >
-      {/* <div
-        className="lg:hidden flex gap-1 cursor-pointer items-center text-gray-600
-          dark:text-gray-400 my-2"
-        onClick={() => handleBackButton()}
-      >
-        <FaChevronLeft className="size-4" />
-        <p>Back</p>
-      </div> */}
-      <div className="text-2xl mb-2 text-black dark:text-white">Bookmarked Reviews</div>
+      <div className="text-2xl mb-2 text-black dark:text-white">
+        Bookmarked Reviews
+      </div>
       {isLoading && (
         <div className="flex items-center gap-4 text-black dark:text-white">
           <p>Loading...</p>
@@ -104,18 +102,65 @@ console.log(":::::::::::::::::::::::::",bookmarks?.data.length)
               borderRadius: "12px",
             }}
           >
-            <p className="text-gray-700 dark:text-gray-300 mb-2">
-              Total bookmarks : {bookmarks.data.length}
-            </p>
+            <div
+              className="flex max-sm:flex-col max-sm:items-start items-center justify-between sm:p-4
+                w-full"
+            >
+              <p className="text-gray-700 max-sm:text-xs dark:text-gray-300 mb-2">
+                Total bookmarks : {bookmarks.data.length}
+              </p>
+              {deleteBookmark && (
+                <div className="space-x-2 pb-2">
+                  <Button
+                    type={"button"}
+                    variant={"outline"}
+                    className="max-sm:text-xs bg-blue-500 hover:bg-blue-600"
+                    onClick={() => {
+                      setBookmarkList([]);
+                      if (unselect) {
+                        setUnSelect(false);
+                      } else {
+                        setUnSelect(true);
+                      }
+                    }}
+                  >
+                    {unselect ? "Un Select All" : "Select All"}
+                  </Button>
+
+                  {bookmarkList.length > 0 && (
+                    <Button
+                      type={"button"}
+                      variant={"outline"}
+                      className="max-sm:text-xs"
+                      disabled={bookmarkList.length === 0}
+                      onClick={() => handleBookmarkDelete(bookmarkList)}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6
-                gap-1 md:gap-1.5 mx-auto"
+                gap-1 md:gap-1.5 mx-auto pb-36"
             >
               {bookmarks.data.map((data) => (
                 <BookMarkPost
                   key={data._id}
                   videoData={data}
-                  handleBookmarkDelete={handleBookmarkDelete}
+                  deletebm={deleteBookmark}
+                  setDelete={(val: boolean) => setDeleteBookmark(val)}
+                  setBookmarkList={(bookmark: string) => {
+                    setBookmarkList((prev) => [...prev, bookmark]);
+                  }}
+                  removeBookmarkList={(id: string) => {
+                    setBookmarkList((prevList) =>
+                      prevList.filter((item) => item !== id),
+                    );
+                  }}
+                  handleUnSelect={unselect}
                 />
               ))}
             </div>
