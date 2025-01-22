@@ -115,7 +115,7 @@ export default function WatchPage() {
   const currentVideo = videos[currentIndex];
 
   return (
-    <div className="flex flex-col h-screen bg-black">
+    <div className="flex flex-col h-screen bg-black overflow-scroll scrollbar-hide">
       {!isMobile && (
         <div
           onClick={() => router.back()}

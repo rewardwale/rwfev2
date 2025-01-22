@@ -325,7 +325,7 @@ export function VideoControls({ video }: VideoControlsProps) {
         className="absolute top-3/4 transform -translate-y-1/2 flex flex-col gap-6 items-center"
         style={{
           right: `${!isMobile ? "-5rem" : "1rem"}`,
-          top: "70%",
+          top: "66%",
         }}
       >
         {
@@ -392,7 +392,7 @@ export function VideoControls({ video }: VideoControlsProps) {
         className="absolute bottom-4 left-4 right-16 text-white"
         style={{
           top: `${isMobile ? "85%" : "82%"}`,
-          left: `${isMobile && "0"}`,
+          // left: `${isMobile && "0"}`,
         }}
       >
         <div className="flex items-center gap-3 mb-2 cursor-pointer">
@@ -400,51 +400,52 @@ export function VideoControls({ video }: VideoControlsProps) {
             <AvatarImage src={videoDetails?.userDetails?.indPic?.original} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div
-            className="flex-1"
-            onClick={() =>
-              router.push(
-                videoDetails?.businessDetails
-                  ? "/" + videoDetails.businessDetails.handle
-                  : "/profile/" + videoDetails?.userDetails.userName,
-              )
-            }
-          >
-            <h3 className="font-semibold cursor-pointer">
-              {videoDetails?.businessDetails
-                ? videoDetails.businessDetails.handle
-                : `${videoDetails?.userDetails.indFirstName} ${videoDetails?.userDetails.indLastName}`}
-            </h3>
-            <p className="text-sm text-white/80">{videoDetails?.title}</p>
-          </div>
-
-          {
+          <div className="flex gap-4">
             <div
-              className="mt-5"
-              style={{
-               display:'flex',
-               flexDirection:'column',
-               gap:'8px'
-              }}
+              className="flex-1"
+              onClick={() =>
+                router.push(
+                  videoDetails?.businessDetails
+                    ? "/" + videoDetails.businessDetails.handle
+                    : "/profile/" + videoDetails?.userDetails.userName,
+                )
+              }
             >
-              {videoDetails?.businessDetails && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setShowContactUs(true)}
-                >
-                  Contact Business
-                </Button>
-              )}
+              <h3 className="font-semibold cursor-pointer">
+                {videoDetails?.businessDetails
+                  ? videoDetails.businessDetails.handle
+                  : `${videoDetails?.userDetails.indFirstName} ${videoDetails?.userDetails.indLastName}`}
+              </h3>
+              <p className="text-sm text-white/80">{videoDetails?.title}</p>
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={isFollowed ? handleUnfollow : handleFollow}
+            >
+              {isFollowed ? "Following" : "Follow"}
+            </Button>
+            {videoDetails?.businessDetails && (
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={isFollowed ? handleUnfollow : handleFollow}
+                onClick={() => setShowContactUs(true)}
               >
-                {isFollowed ? "Following" : "Follow"}
+                Contact Business
               </Button>
-            </div>
-          }
+            )}
+          </div>
+
+          {/* {
+            <div
+              // className="mt-5"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
+            ></div>
+          } */}
         </div>
         <div className="flex gap-2">
           {videoDetails?.hashtags?.map(
