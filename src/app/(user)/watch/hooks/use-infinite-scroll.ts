@@ -1,9 +1,8 @@
 "use client";
 
-import { apiClient } from "@/lib/apiClient";
 import { useState, useEffect } from "react";
-import { Video } from '../types/video';
-
+import { Video } from "../types/video";
+import { apiClient } from "@/lib/apiClient";
 
 interface ApiResponse {
   message: string;
@@ -42,27 +41,32 @@ export function useInfiniteVideos(
     try {
       setLoading(true);
       const queryParams = new URLSearchParams({
-        categoryId,
         limit: "10",
-        skip: "0",
-        flag: "1",
-        radius: "110",
+        skip: skip.toString(),
+        radius: "0",
       });
+
+      const payload = {
+        categoryIds: [categoryId],
+      };
 
       const response = await apiClient<ApiResponse>(
         `/videoUsingCategoryId?${queryParams.toString()}`,
-        "GET",
+        "POST",
+        payload,
       );
 
       if (response.success && response.data?.data?.data) {
         const newVideos = response.data.data.data;
         if (Array.isArray(newVideos)) {
-          // Filter out the initial video if it exists
-          const filteredVideos = initialVideo
-            ? newVideos.filter((video) => video._id !== initialVideo._id)
-            : newVideos;
+          // Filter out duplicates and initial video
+          const uniqueVideos = newVideos.filter((video) => {
+            const isDuplicate = videos.some((v) => v.videoId === video.videoId);
+            const isInitial = initialVideo?.videoId === video.videoId;
+            return !isDuplicate && !isInitial;
+          });
 
-          setVideos((prev) => [...prev, ...filteredVideos]);
+          setVideos((prev) => [...prev, ...uniqueVideos]);
           setHasMore(newVideos.length === 10);
           setSkip((prev) => prev + 10);
         }

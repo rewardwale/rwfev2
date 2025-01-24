@@ -10,9 +10,10 @@ import { StarRating } from "../../post/components/StarRating";
 
 interface VideoPlayerProps {
   videoUrl?: string;
+  autoPlay?: boolean;
 }
 
-export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
   const { videoRef, isPlaying, isMuted, togglePlay, toggleMute } =
     useVideoContext();
   const [progress, setProgress] = useState(0);
@@ -25,6 +26,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v") || "";
+
 
   useEffect(() => {
     const video = videoRef.current;
@@ -61,6 +63,19 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     };
   }, [videoUrl, videoRef]);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (autoPlay) {
+      video.play().catch((error) => {
+        console.error("Autoplay failed:", error);
+      });
+    } else {
+      video.pause();
+    }
+  }, [autoPlay, videoRef]);
+
   // Hide controls after video starts playing
   useEffect(() => {
     if (isPlaying) {
@@ -90,7 +105,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
   const handleRatingChange = async (rating: number) => {
     console.log("User rating:", rating);
-    setRating(rating)
+    setRating(rating);
     let payload = {
       rating: rating,
     };
@@ -110,6 +125,9 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       </div>
     );
   }
+
+  console.log("checking for videoUrl", videoUrl);
+
 
   return (
     <div

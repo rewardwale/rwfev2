@@ -25,4 +25,5 @@ export interface Video {
   categoryId: string;
   totalComments: number;
   isFollowed:boolean;
+  website: string
 }

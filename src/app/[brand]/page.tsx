@@ -31,26 +31,25 @@ import { isUserLoggedIn } from "@/lib/utils";
 interface BrandInfo {
   name: string;
   logo: string;
-  // isVerified: boolean;
   rating: number;
   banner: string;
   Id: string;
   isFollow: boolean;
   businessPageOwner: string[];
-  // rank: {
-  //   country: string; 
-  //   city: string
-  // };
   title?: string;
   desc?: string;
+  _id: string;
+  custId: string;
+  handle: string;
+  websiteURLs: string[];
+  [key: string]: any; // Allow additional properties for flexibility
 }
 
 export default function BrandPage({ params }: { params: any }) {
   const resolvedParams = React.useMemo(() => params, [params]);
   const contentRef = useRef<HTMLDivElement>(null);
-  // const [userId, setUserId] = useState<any>(null);
   const [count, setCount] = useState<number>(0);
-  const [videoData, setvideodata] = useState<VideoData[] | []>([]);
+  const [videoData, setVideoData] = useState<VideoData[] | []>([]);
   const [taggedVideo, setTaggedVideo] = useState<VideoData[] | []>([]);
   const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -63,27 +62,34 @@ export default function BrandPage({ params }: { params: any }) {
   const fetchBrandDetails = async () => {
     const handle = window.location.pathname.split("/")[1];
 
-    const data = await fetchbusinessPageData(handle);
-    setBusinessID(data.data[0]._id);
+    try {
+      const data = await fetchbusinessPageData(handle);
+      console.log("Fetched brand data:", data);
+      setBusinessID(data.data[0]._id);
 
-    const brandData: BrandInfo = {
-      name: data.data[0]?.businessName || "Unknown Brand",
-      rating: data.data[0]?.avgRating || 0,
-      // isVerified: data.data[0]?.isVerified || false, // Add other required properties
-      logo: data.data[0].defaultBusinessImage.original || "",
-      banner: data.data[0].defaultBusinessBanner.original || "",
-      Id: data.data[0]._id,
-      businessPageOwner: data?.data[0]?.businessPageOwner || [],
-      title: data.data[0]?.title || "Default Title",
-      // isFollow: data.data[0]?.isFollow
-      isFollow: false,
-      // rank: data.data[0]?.rank || 0,
+      const brandData: BrandInfo = {
+        _id: data.data[0]?._id || "",
+        name: data.data[0]?.businessName || "Unknown Brand",
+        logo: data.data[0]?.defaultBusinessImage.original || "",
+        rating: data.data[0]?.avgRating || 0,
+        banner: data.data[0]?.defaultBusinessBanner.original || "",
+        Id: data.data[0]?._id || "",
+        isFollow: data.data[0]?.isFollow || false,
+        businessPageOwner: data.data[0]?.businessPageOwner || [],
+        title: data.data[0]?.title || "Default Title",
+        desc: data.data[0]?.desc || "Default Description",
+        custId: data.data[0]?.custId || "",
+        handle: data.data[0]?.handle || "",
+        websiteURLs: data.data[0]?.websiteURLs || [],
+        // Include other properties if needed
+        ...data.data[0],
+      };
 
-      desc: data.data[0]?.desc ?? "Default Description",
-    };
-
-    if (data.data) {
-      setBrandInfo(brandData); // Store a single object
+      if (data.data) {
+        setBrandInfo(brandData);
+      }
+    } catch (error) {
+      console.error("Error fetching brand details:", error);
     }
   };
 
@@ -108,25 +114,20 @@ export default function BrandPage({ params }: { params: any }) {
   }, []);
 
   const getPostData = async () => {
-    console.log("inside getPostsData");
-
     try {
       if (businessId) {
-        // setCount(count + 10);
         const responseData = await fetchBusinessPostsVideos(
           businessId,
           count + 10,
         );
+        const newData = responseData?.data;
 
-        let newData = responseData?.data;
         if (newData.length > 0) {
-          setvideodata(videoData.concat(newData));
-        } else {
-          return;
+          setVideoData(videoData.concat(newData));
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching post data:", error);
     }
   };
 
@@ -138,16 +139,14 @@ export default function BrandPage({ params }: { params: any }) {
           businessId,
           count + 10,
         );
+        const newData = responseData?.data;
 
-        let newData = responseData?.data;
         if (newData.length > 0) {
           setTaggedVideo(taggedVideo.concat(newData));
-        } else {
-          return;
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching tagged data:", error);
     }
   };
 
@@ -158,39 +157,10 @@ export default function BrandPage({ params }: { params: any }) {
 
   const isMobile = useIsMobile();
 
-  // async function handleScrollEventTagged(e: React.UIEvent<HTMLDivElement>) {
-  //   if (
-  //     e.currentTarget.clientHeight + e.currentTarget.scrollTop + 1 >=
-  //     e.currentTarget.scrollHeight
-  //   ) {
-  //     // setCount(count + 10);
-  //     await getMoreDatatagged();
-  //   }
-  // }
-  // async function handleScrollEvent(e: React.UIEvent<HTMLDivElement>) {
-  //   if (
-  //     e.currentTarget.clientHeight + e.currentTarget.scrollTop + 1 >=
-  //     e.currentTarget.scrollHeight
-  //   ) {
-  //     // setCount(count + 10);
-  //     await getMoreData();
-  //   }
-  // }
-
-  // const brandInfo = {};
-
-  // Fetch brand data (replace this with API call)
-  //   const brandData = {
-  //     name: brand,
-  //     description: `This is the page for the brand ${brand}.`,
-  //   };
-
   const router = useRouter();
 
   return (
     <div className="flex h-screen bg-background overflow-scroll">
-      {/* post section */}
-
       {isLoggedIn && !isMobile && <Sidebar />}
       <div className="flex-1">
         {isLoggedIn && <Header />}
@@ -207,54 +177,37 @@ export default function BrandPage({ params }: { params: any }) {
               <TabsList className="w-full flex items-center justify-center dark:text-white text-white rounded-lg">
                 <TabsTrigger
                   value="posts"
-                  style={{
-                    padding: "5px",
-                  }}
-                  onClick={() => setSelectedTab("posts")}
-                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2
-                    min-md:py-3 ${
+                  className={`max-lg:text-sm text-md rounded-md m-3 w-full px-2 ${
                     selectedTab === "posts"
-                        ? "text-black dark:bg-gray-800 dark:text-white"
-                        : "text-gray-200 dark:bg-black dark:text-gray-400"
+                      ? "text-black dark:bg-gray-800 dark:text-white"
+                      : "text-gray-200 dark:bg-black dark:text-gray-400"
                     }`}
+                  onClick={() => setSelectedTab("posts")}
                 >
                   POSTS
                 </TabsTrigger>
                 <TabsTrigger
                   value="tag"
-                  style={{
-                    padding: "5px",
-                  }}
-                  onClick={() => setSelectedTab("tag")}
-                  className={`max-lg:text-sm text-md min-md:text-base rounded-md m-3 w-full px-2 min-md:m-2
-                    min-md:py-3 ${
+                  className={`max-lg:text-sm text-md rounded-md m-3 w-full px-2 ${
                     selectedTab === "tag"
-                        ? "text-black dark:bg-gray-800 dark:text-white"
-                        : "text-gray-200 dark:bg-black dark:text-gray-400"
+                      ? "text-black dark:bg-gray-800 dark:text-white"
+                      : "text-gray-200 dark:bg-black dark:text-gray-400"
                     }`}
+                  onClick={() => setSelectedTab("tag")}
                 >
                   TAGGED
                 </TabsTrigger>
               </TabsList>
-
               <TabsContent value="posts">
                 <Separator />
-
-                {/* Posts Section */}
                 <div className="py-6">
                   <div className="flex w-full justify-center">
-                    <ScrollArea
-                      className="h-full w-full pb-36"
-                      // ref={scrollContainerRef}
-                      // onScroll={handleScrollEvent}
-                    >
+                    <ScrollArea className="h-full w-full pb-36">
                       <div
                         className="flex flex-wrap w-full h-full gap-4 lg:gap-5"
-                        style={{
-                          padding: "10px",
-                        }}
+                        style={{ padding: "10px" }}
                       >
-                        {videoData.length > 0 || !videoData ? (
+                        {videoData.length > 0 ? (
                           videoData.map((item: VideoData, index: number) => (
                             <ProfileItem
                               data={item}
@@ -266,25 +219,20 @@ export default function BrandPage({ params }: { params: any }) {
                             />
                           ))
                         ) : (
-                          <div
-                            style={{
-                              fontSize: "36px",
-                              lineHeight: "24px",
-                              fontWeight: "700",
-                              display: "flex",
-                              gap: "24px",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            className="flex-col w-full text-center"
+                          <div className="w-full text-center"
+                          style={{
+                            display:'flex',
+                            flexDirection:'column',
+                            justifyContent:'center',
+                            alignItems:'center',
+                            gap:'8px'
+                          }}
                           >
                             <span>No Posts Yet</span>
                             {isOwner && (
                               <Button
                                 variant="default"
-                                style={{
-                                  width: "25%",
-                                }}
+                                style={{ width: "25%" }}
                                 onClick={() =>
                                   router.push(
                                     `/post?data=${encodeURIComponent(businessId)}`,
@@ -297,7 +245,6 @@ export default function BrandPage({ params }: { params: any }) {
                           </div>
                         )}
                       </div>
-
                       <ScrollBar orientation="vertical" />
                     </ScrollArea>
                   </div>
@@ -305,17 +252,11 @@ export default function BrandPage({ params }: { params: any }) {
               </TabsContent>
               <TabsContent value="tag">
                 <Separator />
-
-                {/* Tgged Section */}
                 <div className="py-6">
                   <div className="flex w-full justify-center">
-                    <ScrollArea
-                      className="h-full w-full pb-36"
-                      // ref={scrollContainerRef}
-                      // onScroll={handleScrollEventTagged}
-                    >
+                    <ScrollArea className="h-full w-full pb-36">
                       <div className="flex flex-wrap w-full h-full gap-3 lg:gap-5">
-                        {taggedVideo.length > 0 || !taggedVideo ? (
+                        {taggedVideo.length > 0 ? (
                           taggedVideo.map((item: VideoData, index: number) => (
                             <ProfileItem
                               data={item}
@@ -327,19 +268,9 @@ export default function BrandPage({ params }: { params: any }) {
                             />
                           ))
                         ) : (
-                          <div
-                            className="w-full text-center"
-                            style={{
-                              fontSize: "36px",
-                              lineHeight: "24px",
-                              fontWeight: "700",
-                            }}
-                          >
-                            No Tags Yet
-                          </div>
+                          <div className="w-full text-center">No Tags Yet</div>
                         )}
                       </div>
-
                       <ScrollBar orientation="vertical" />
                     </ScrollArea>
                   </div>
@@ -348,10 +279,7 @@ export default function BrandPage({ params }: { params: any }) {
             </Tabs>
           </div>
         </Suspense>
-        {/* <Footer/> */}
       </div>
     </div>
   );
 }
-
-// export default BrandPage;

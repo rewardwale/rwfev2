@@ -3,16 +3,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
   ThumbsUp,
   MessageSquare,
   Share2,
   Bookmark,
   ArrowLeft,
-  AwardIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -70,6 +65,7 @@ interface VideoDetails {
     indMobileNum: string;
     indEmail: string;
   };
+  website: string;
 }
 
 interface VideoControlsProps {
@@ -239,6 +235,7 @@ export function VideoControls({ video }: VideoControlsProps) {
   }
 
   console.log("checking videoDetails", videoDetails);
+
   return (
     <>
       {/* Like/Dislike Animations */}
@@ -397,7 +394,13 @@ export function VideoControls({ video }: VideoControlsProps) {
       >
         <div className="flex items-center gap-3 mb-2 cursor-pointer">
           <Avatar>
-            <AvatarImage src={videoDetails?.userDetails?.indPic?.original} />
+            <AvatarImage
+              src={
+                videoDetails?.businessDetails
+                  ? videoDetails?.businessDetails.defaultBusinessImage?.original
+                  : videoDetails?.userDetails?.indPic?.original
+              }
+            />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className="flex gap-4">
@@ -473,8 +476,35 @@ export function VideoControls({ video }: VideoControlsProps) {
               Contact Business
             </DialogTitle>
           </DialogHeader>
-          <p>Call : {videoDetails?.contactUs?.indMobileNum}</p>
-          <p>Email : {videoDetails?.contactUs?.indEmail}</p>
+          <p>
+            Call:{" "}
+            <a
+              href={`tel:${videoDetails?.contactUs?.indMobileNum}`}
+              className="text-blue-500 underline"
+            >
+              {videoDetails?.contactUs?.indMobileNum}
+            </a>
+          </p>
+          <p>
+            Email:{" "}
+            <a
+              href={`mailto:${videoDetails?.contactUs?.indEmail}`}
+              className="text-blue-500 underline"
+            >
+              {videoDetails?.contactUs?.indEmail}
+            </a>
+          </p>
+          <p>
+            Visit:{" "}
+            <a
+              href={videoDetails?.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline"
+            >
+              {videoDetails?.website}
+            </a>
+          </p>
         </DialogContent>
       </Dialog>
     </>
