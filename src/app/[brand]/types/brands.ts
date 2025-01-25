@@ -70,7 +70,7 @@ export interface Business {
   handle: string;
   title: string;
   desc: string;
-  websiteURLs: string;
+  websiteURLs: string[]; 
   location: string;
   locationCoordinates: {
     type: string;
