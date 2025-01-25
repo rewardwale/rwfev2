@@ -19,16 +19,18 @@ export interface Post {
 export interface BrandInfo {
   name: string;
   logo: string;
+  rating: number;
   banner: string;
   Id: string;
   isFollow: boolean;
-  // isVerified: boolean;
-  rating: number;
-  businessPageOwner: string[]
-  // rank: number;
-  title? : string;
+  businessPageOwner: string[];
+  title?: string;
   desc?: string;
- 
+  _id: string;
+  custId: string;
+  handle: string;
+  websiteURLs: string[];
+  [key: string]: any; // Allow additional properties for flexibility
 }
 
 export interface BusinessHours {
@@ -68,7 +70,7 @@ export interface Business {
   handle: string;
   title: string;
   desc: string;
-  websiteURLs: string;
+  websiteURLs: string[]; 
   location: string;
   locationCoordinates: {
     type: string;
