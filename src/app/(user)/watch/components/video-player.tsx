@@ -81,7 +81,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
     if (isPlaying) {
       const timer = setTimeout(() => {
         setShowControls(false);
-      }, 2000);
+      }, 500);
       return () => clearTimeout(timer);
     } else {
       setShowControls(true);
@@ -126,7 +126,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
     );
   }
 
-  console.log("checking for videoUrl", videoUrl);
+  // console.log("checking for videoUrl", videoUrl);
 
 
   return (

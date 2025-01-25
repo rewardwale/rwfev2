@@ -166,32 +166,58 @@ export async function rateVideo(videoId: string, payload: Record<string, any>) {
 // Reply to a comment
 export const replyToComment = async (commentId: string, text: string) => {
   try {
-    const response = await apiClient(`/comment/${commentId}`,
-      "POST", { comment:text }
-    );
+    const response = await apiClient(`/comment/${commentId}`, "POST", {
+      comment: text,
+    });
     return response.data;
   } catch (error) {
-    console.error('Error replying to comment:', error);
+    console.error("Error replying to comment:", error);
     throw error;
   }
 };
 
-
-export const getReplyComment = async (commentId: string,count:number) => {
+export const getReplyComment = async (commentId: string, count: number) => {
   try {
     const queryParams = new URLSearchParams({
       limit: "10",
-      skip:JSON.stringify(count),
-      
+      skip: JSON.stringify(count),
     }).toString();
-    const response = await apiClient(`/video/replyComment/${commentId}?${queryParams}`,
-      "GET"
+    const response = await apiClient(
+      `/video/replyComment/${commentId}?${queryParams}`,
+      "GET",
     );
-    console.log("response reply",response)
+    console.log("response reply", response);
     return response.data;
   } catch (error) {
-    console.error('Error replying to comment:', error);
+    console.error("Error replying to comment:", error);
     throw error;
   }
 };
 
+
+export async function fetchVideoUsingCategory(categoryId: any) {
+  console.log("checking payload", categoryId)
+
+  const queryParams = new URLSearchParams({
+    limit: "10",
+    skip: '0',
+    radius: "0",
+  });
+
+  const payload = {
+    categoryIds: [categoryId],
+  };
+
+  const response = await apiClient(
+    `/videoUsingCategoryId?${queryParams.toString()}`,
+    "POST",
+    payload,
+  );
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+}

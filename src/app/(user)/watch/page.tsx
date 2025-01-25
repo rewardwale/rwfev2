@@ -6,7 +6,7 @@ import { Header } from "../home/components/header";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect, useRef, useState } from "react";
-import { fetchVideoDetails } from "@/apis/watch";
+import { fetchVideoDetails, fetchVideoUsingCategory } from "@/apis/watch";
 import { useInfiniteVideos } from "./hooks/use-infinite-scroll";
 import { ScrollButton } from "./components/scroll-button";
 
@@ -45,14 +45,30 @@ export default function WatchPage() {
   const videoId = searchParams.get("v") || "";
   const [initialVideo, setInitialVideo] = useState<VideoDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const { videos: fetchedVideos, error, hasMore, loadMore, currentIndex, setCurrentIndex } =
-    useInfiniteVideos(initialVideo?.categoryId || "", null);
+  const [relatedVideos, setRelatedVideos] = useState<VideoDetails[]>([]);
+  const {
+    videos: fetchedVideos,
+    error,
+    hasMore,
+    loadMore,
+    currentIndex,
+    setCurrentIndex,
+  } = useInfiniteVideos(initialVideo?.categoryId || "", null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const videos = initialVideo
-  ? [initialVideo, ...fetchedVideos]
-  : fetchedVideos;
+  useEffect(() => {
+    handleScroll('down')
+  }, [initialVideo]);
 
+  const videos = [
+    ...(initialVideo ? [initialVideo] : []),
+    ...fetchedVideos,
+  ];
+
+  console.log("Initial video:", initialVideo);
+  console.log("Related videos:", relatedVideos);
+  console.log("Fetched videos:", fetchedVideos);
+  console.log("Final videos array:", videos);
 
   useEffect(() => {
     // Initialize IntersectionObserver
@@ -156,9 +172,10 @@ export default function WatchPage() {
     }
   }, [videoId]);
 
-  console.log("checking videoUrl and hasMore", currentIndex, hasMore);
+
 
   const handleScroll = (direction: "up" | "down") => {
+    console.log("inside handlescroll");
     const newIndex =
       direction === "up"
         ? Math.max(0, currentIndex - 1)
@@ -172,28 +189,9 @@ export default function WatchPage() {
     }
   };
 
-  // useEffect(() => {
-  //   const handleWheel = (e: WheelEvent) => {
-  //     if (e.deltaY > 0) {
-  //       handleScroll("down");
-  //     } else {
-  //       handleScroll("up");
-  //     }
-  //   };
-
-  //   window.addEventListener("wheel", handleWheel);
-  //   return () => window.removeEventListener("wheel", handleWheel);
-  // }, [currentIndex, videos.length]);
-
   if (loading) {
     return <div>Loading...</div>; // Consider adding a proper loading component
   }
-
-  // if (!categoryId) return null;
-
-  // if (!initialVideo) return null;
-
-  // const currentVideo = videos[currentIndex];
 
   return (
     <div className="flex flex-col h-screen bg-black overflow-scroll scrollbar-hide">
@@ -220,6 +218,7 @@ export default function WatchPage() {
             style={{
               height: "-webkit-fill-available",
               paddingBlock: "12px",
+              // width:'400px'
             }}
             id="video-container"
           >
@@ -246,7 +245,7 @@ export default function WatchPage() {
         </div>
         {/* ${
                 !isMobile ? "shadow-[0_0_20px_rgba(255,255,255,0.75)]" : "" } */}
-        {!isMobile && (
+        {/* {!isMobile && (
           <div
             style={{
               zIndex: "9999",
@@ -279,7 +278,7 @@ export default function WatchPage() {
               />
             </div>
           </div>
-        )}
+        )} */}
       </main>
     </div>
   );

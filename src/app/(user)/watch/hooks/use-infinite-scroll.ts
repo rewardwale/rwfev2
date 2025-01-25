@@ -20,6 +20,7 @@ interface UseInfiniteVideosReturn {
   loadMore: () => Promise<void>;
   currentIndex: number;
   setCurrentIndex: (index: number) => void;
+  mergeVideos: (newVideos: Video[]) => void; // Add this
 }
 
 export function useInfiniteVideos(
@@ -96,6 +97,13 @@ export function useInfiniteVideos(
     await fetchVideos();
   };
 
+  const mergeVideos = (newVideos: Video[]) => {
+    const uniqueVideos = newVideos.filter(
+      (video) => !videos.some((v) => v.videoId === video.videoId),
+    );
+    setVideos((prev) => [...prev, ...uniqueVideos]);
+  };
+
   return {
     videos,
     loading,
@@ -104,5 +112,6 @@ export function useInfiniteVideos(
     loadMore,
     currentIndex,
     setCurrentIndex,
+    mergeVideos,
   };
 }
