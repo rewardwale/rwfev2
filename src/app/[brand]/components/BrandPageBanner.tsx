@@ -325,14 +325,14 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
     }
   };
 
+  console.log("checking info.banner", info.banner);
+
   return (
     <div className="relative w-full">
       <div
         className="w-full h-[350px] relative bg-gradient-to-b from-gray-200 to-white"
         style={{
-          backgroundImage: info?.banner
-            ? `url(${info.banner})`
-            : 'url("m.media-amazon.com/images/S/al-eu-726f4d26-7fdb/090833d5-7b09-4745-9d2d-3f4d31a035c1._CR0%2C0%2C3000%2C600_SX1920_.png")', // Fallback background
+          backgroundImage: `url(${encodeURI(info.banner)})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -348,7 +348,12 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
           </div>
         )}
         {!isMobile ? (
-          <div className="absolute bottom-0 top-48 min-md:top-68 px-4 py-4 text-black dark:text-white">
+          <div
+            className="absolute bottom-0 top-48 min-md:top-68 px-4 py-4 text-black dark:text-white"
+            style={{
+              display: "flex",
+            }}
+          >
             <div
               className="flex items-end lg:justify-between md:justify-center md:items-center gap-5 h-64
                 lg:space-x-96 md:flex-col md:gap-12 md:p-4 md:mt-16 md:m-3 xl:space-x-96"
@@ -429,52 +434,51 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                   <IoLogoWhatsapp className="text-green-500 text-4xl lg:text-3xl" />
                 </div>
              </div> */}
-                <div
-                  className="flex lg:absolute top-44 lg:r-20 lg:justify-end lg:items-center gap-2"
-                    // style={{
-                    //   right: "0",
-                    // }}
-                >
-                  <Button
-                    onClick={() => setIsDetailsModalOpen(true)}
-                    className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
-                  >
-                    More Details
-                  </Button>
-                  {isOwner && (
-                    <Button
-                      onClick={() =>
-                        router.push(`/post?data=${encodeURIComponent(info.Id)}`)
-                      }
-                      className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
-                    >
-                      Post Review
-                    </Button>
-                  )}
-                  {isOwner && (
-                    <Button
-                      onClick={() =>
-                        setIsEditModalOpen(true)
-                      }
-                      className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
-                    >
-                      Edit
-                    </Button>
-                  )}
-                  {!isOwner && (
-                    <Button
-                      ref={followButtonRef}
-                      onClick={isFollowed ? handleUnfollow : handleFollow}
-                      className="px-6 lg:text-xs lg:p-2 xl:text-sm xl:p-3"
-                    >
-                      {isFollowed ? "Following" : "Follow"}
-                    </Button>
-                  )}
-                  <Button variant="outline" size="icon" onClick={handleShare}>
-                    <Share2 className="h-4 w-4 min-lg:h-1 min-lg:w-1" />
-                  </Button>
-                </div>
+                {/*  this div needs to be aligned*/}
               </div>
+            </div>
+            <div
+              className="flex lg:justify-end lg:items-center gap-2 w-full absolute bottom-0 top-48 min-md:top-6"
+              style={{
+                left: "100%",
+              }}
+            >
+              <Button
+                onClick={() => setIsDetailsModalOpen(true)}
+                className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+              >
+                More Details
+              </Button>
+              {isOwner && (
+                <Button
+                  onClick={() =>
+                    router.push(`/post?data=${encodeURIComponent(info.Id)}`)
+                  }
+                  className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                >
+                  Post Review
+                </Button>
+              )}
+              {isOwner && (
+                <Button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                >
+                  Edit
+                </Button>
+              )}
+              {!isOwner && (
+                <Button
+                  ref={followButtonRef}
+                  onClick={isFollowed ? handleUnfollow : handleFollow}
+                  className="px-6 lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                >
+                  {isFollowed ? "Following" : "Follow"}
+                </Button>
+              )}
+              <Button variant="outline" size="icon" onClick={handleShare}>
+                <Share2 className="h-4 w-4 min-lg:h-1 min-lg:w-1" />
+              </Button>
             </div>
           </div>
         ) : (

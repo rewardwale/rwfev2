@@ -27,7 +27,6 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v") || "";
 
-
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !videoUrl) return;
@@ -128,11 +127,10 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
 
   // console.log("checking for videoUrl", videoUrl);
 
-
   return (
     <div
       className="relative w-full h-full bg-black group"
-      onClick={togglePlay}
+      onClick={toggleMute}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -145,40 +143,43 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
         muted={isMuted}
       />
 
-      {/* Center play/pause button - only shown when controls are visible */}
+      {/* Top controls */}
+
       <div
         className={`absolute inset-0 flex items-center justify-center transition-opacity
           duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
       >
-        <div className="bg-black/30 rounded-full p-4">
-          {isPlaying ? (
-            <Pause className="w-12 h-12 text-white" />
+        <div
+          // variant="ghost"
+          // size="icon"
+          className="text-white hover:bg-black/30"
+        >
+          {isMuted ? (
+            <VolumeX className="h-12 w-12" />
           ) : (
-            <Play className="w-12 h-12 text-white" />
+            <Volume2 className="h-12 w-12" />
           )}
         </div>
       </div>
-
-      {/* Top controls */}
+      {/* Center play/pause button - only shown when controls are visible */}
       <div
-        className={`absolute top-4 right-4 flex gap-2 transition-opacity duration-300 ${
-          showControls ? "opacity-100" : "opacity-0" }`}
+        className={
+          "absolute top-4 right-4 flex gap-2 transition-opacity duration-300"
+        }
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:bg-black/30"
+        <div
+          className="bg-black/30 rounded-full p-4"
           onClick={(e) => {
             e.stopPropagation();
-            toggleMute();
+            togglePlay();
           }}
         >
-          {isMuted ? (
-            <VolumeX className="h-6 w-6" />
+          {isPlaying ? (
+            <Pause className="w-6 h-6 text-white" />
           ) : (
-            <Volume2 className="h-6 w-6" />
+            <Play className="w-6 h-6 text-white" />
           )}
-        </Button>
+        </div>
       </div>
 
       {/* Progress bar */}

@@ -18,7 +18,6 @@ import { LikeAnimation } from "./like-animation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
 import { followUser, unFollowUser } from "@/apis/profile";
 import AuthModal from "@/components/ui/AuthModal";
@@ -73,7 +72,7 @@ interface VideoControlsProps {
 }
 
 export function VideoControls({ video }: VideoControlsProps) {
-  const { isPlaying, isMuted, togglePlay, toggleMute, toggleFullscreen } =
+  const { isPlaying} =
     useVideoContext();
   const [showComments, setShowComments] = useState(false);
   const [isLiked, setIsLiked] = useState(video?.isLiked || false);
