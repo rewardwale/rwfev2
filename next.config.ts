@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
     images: {
-      domains: ['rewardwale.com','d2c97t3k1om0pj.cloudfront.net','d1scqik6tlhrr8.cloudfront.net','github.com'],
+      domains: ['rewardwale.com','d2c97t3k1om0pj.cloudfront.net','d1scqik6tlhrr8.cloudfront.net','github.com', 'd11arp4eiztvl9.cloudfront.net'],
     },
     eslint: {
       ignoreDuringBuilds: true,
