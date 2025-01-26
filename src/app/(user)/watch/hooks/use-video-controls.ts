@@ -45,8 +45,6 @@ export const useVideoControls = (
   const togglePlay = () => {
     const video = videoRef.current;
 
-    console.log("looking for videoRef inside togglePlay", video);
-
     if (!video) {
       console.warn(
         "Video reference is null. Ensure the videoRef is attached properly."

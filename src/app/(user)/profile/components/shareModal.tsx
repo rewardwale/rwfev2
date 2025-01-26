@@ -16,7 +16,7 @@ import { Copy, Share2Icon, ShareIcon } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
-  shareLink: () => void;
+  shareLink: string;
   link: string;
 }
 
@@ -28,7 +28,7 @@ export default function ShareLinkModal({ shareLink, link }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default" onClick={shareLink}>
+        <Button variant="default">
           <Share2Icon /> <small>share</small>
         </Button>
       </DialogTrigger>
