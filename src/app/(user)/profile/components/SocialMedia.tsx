@@ -28,7 +28,7 @@ export default function SocialMedia({ profileData }: Props) {
   return (
     <div className=" flex sm:flex-col px-4 sm:ms-4 sm:mt-1 items-center justify-center">
       {profileData.SocialUrls?.whatsapp.length !== 0 && (
-        <Link href={profileData.SocialUrls?.whatsapp.trim()}>
+        <Link href={profileData?.SocialUrls?.whatsapp?.trim()}>
           <Image
             className="mb-2 mr-5 w-8 h-8 sm:w-12 sm:h-12"
             src="/whatsApp-logo.png"
