@@ -280,7 +280,7 @@ export default function ContactUs() {
                 </h3>
                 <div className="text-xs 2xl:text-lg 4k:text-3xl">
                   <p>MSVP Innovations Private Limited</p>
-                  <p>630,DHI Innovation Park, Arekere Gate,</p>
+                  <p>#E12, 630, Innovation Park, Arekere Gate,</p>
                   <p>Bannerghatta Rd, Bengaluru,</p>
                   <p>Karnataka 560076, India</p>
                 </div>

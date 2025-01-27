@@ -461,7 +461,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
 
             {/* rating */}
             <div className="flex items-center mt-1 gap-2 px-4 pb-2">
-              {Array.from({ length: 5 }).map((_, index) => (
+              {/* {Array.from({ length: 5 }).map((_, index) => (
                 <Star
                   key={index}
                   className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${
@@ -470,7 +470,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
                       : "text-gray-500"
                   }`}
                 />
-              ))}
+              ))} */}
               <span className="text-xs sm:text-sm md:text-base">
                 <span className="text-green-500">
                   {profileData?.avgRating}/5

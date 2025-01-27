@@ -55,10 +55,10 @@ const Footer = () => {
 
         {/* Footer Section */}
         <div className='mt-8 flex flex-col md:flex-row justify-between items-center'>
-          <p className='text-sm text-center md:text-left'>© 2024 rewardwale.com. All rights reserved.</p>
+          <p className='text-sm text-center md:text-left'>© 2025 rewardwale.com. All rights reserved.</p>
           <div className='flex space-x-4 mt-4 md:mt-0'>
-            <a className='text-sm hover:underline hover:text-blue-500 cursor-pointer' onClick={() => router.push("/termscondition")}>Terms and Conditions</a>
-            <a className='text-sm hover:underline hover:text-blue-500 cursor-pointer' onClick={() => router.push("/faq")}>FAQ's</a>
+            <a className='text-sm hover:underline hover:text-blue-500 cursor-pointer' onClick={() => router.push("/tnc")}>Terms and Conditions</a>
+            {/* <a className='text-sm hover:underline hover:text-blue-500 cursor-pointer' onClick={() => router.push("/faq")}>FAQ's</a> */}
           </div>
         </div>
       </div>
