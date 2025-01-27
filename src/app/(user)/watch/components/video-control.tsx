@@ -21,12 +21,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
 import { followUser, unFollowUser } from "@/apis/profile";
 import AuthModal from "@/components/ui/AuthModal";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { useInfiniteVideos } from "../hooks/use-infinite-scroll";
 
 interface VideoDetails {
   _id: string;
@@ -58,6 +53,7 @@ interface VideoDetails {
   totalComments: number;
   isLiked: boolean;
   isFollowed: boolean;
+  categoryId: string;
   isBookmarked: boolean;
   contactUs?: {
     indCountryCode: string;
@@ -92,10 +88,13 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [showContactUs, setShowContactUs] = useState(false);
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
+  console.log("checking video", video)
   const isMobile = useIsMobile();
+
+  console.log("checking fetched videos", videoDetails?.categoryId);
+
   const checkToken = async () => {
     const token = localStorage.getItem("token");
-
     if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
   };
 
@@ -295,41 +294,6 @@ export function VideoControls({ video }: VideoControlsProps) {
         onClose={() => setShowAuthModal(false)}
       />
 
-      {/* Center play/pause button */}
-      {/* <div
-        className={`absolute inset-0 flex items-center justify-center transition-opacity
-          duration-300 ${isPlaying && "group-hover:opacity-100 opacity-0"} ${ !isPlaying
-          && "opacity-100" }`}
-      >
-        <div className="bg-black/30 rounded-full p-4">
-          {isPlaying ? (
-            <Pause className="w-12 h-12 text-white" />
-          ) : (
-            <Play className="w-12 h-12 text-white" />
-          )}
-        </div>
-      </div> */}
-
-      {/* Top controls */}
-
-      {/* <div className="absolute top-4 right-4 flex gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:bg-black/30"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent video play/pause
-            toggleMute();
-          }}
-        >
-          {isMuted ? (
-            <VolumeX className="h-6 w-6" />
-          ) : (
-            <Volume2 className="h-6 w-6" />
-          )}
-        </Button>
-      </div> */}
-
       {isMobile && (
         <div
           className="absolute top-4"
@@ -355,16 +319,7 @@ export function VideoControls({ video }: VideoControlsProps) {
           </Button>
         </div>
       )}
-      {/* <Button
-          variant="ghost"
-          size="icon"
-          className="text-white"
-          onClick={toggleFullscreen}
-        >
-          <Maximize2 className="h-6 w-6" />
-        </Button> */}
 
-      {/* Right side controls */}
       <div
         className="absolute top-3/4 transform -translate-y-1/2 flex flex-col gap-6 items-center"
         style={{
@@ -443,9 +398,9 @@ export function VideoControls({ video }: VideoControlsProps) {
           <Avatar>
             <AvatarImage
               src={
-                videoDetails?.businessDetails
-                  ? videoDetails?.businessDetails.defaultBusinessImage?.original
-                  : videoDetails?.userDetails?.indPic?.original
+                video?.businessDetails
+                  ? video?.businessDetails.defaultBusinessImage?.original
+                  : video?.userDetails?.indPic?.original
               }
             />
             <AvatarFallback>CN</AvatarFallback>
@@ -455,16 +410,16 @@ export function VideoControls({ video }: VideoControlsProps) {
               className="flex-1"
               onClick={() =>
                 router.push(
-                  videoDetails?.businessDetails
-                    ? "/" + videoDetails.businessDetails.handle
-                    : "/profile/" + videoDetails?.userDetails.userName,
+                  video?.businessDetails
+                    ? "/" + video.businessDetails.handle
+                    : "/profile/" + video?.userDetails.userName,
                 )
               }
             >
               <h3 className="font-semibold cursor-pointer">
-                {videoDetails?.businessDetails
-                  ? videoDetails.businessDetails.handle
-                  : `${videoDetails?.userDetails.indFirstName} ${videoDetails?.userDetails.indLastName}`}
+                {video?.businessDetails
+                  ? video.businessDetails.handle
+                  : `${video?.userDetails.indFirstName} ${video?.userDetails.indLastName}`}
               </h3>
               <p className="text-sm text-white/80">{videoDetails?.title}</p>
             </div>
@@ -475,30 +430,19 @@ export function VideoControls({ video }: VideoControlsProps) {
             >
               {isFollowed ? "Following" : "Follow"}
             </Button>
-            {videoDetails?.businessDetails && (
+            {video?.businessDetails && (
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handleShowNow(videoDetails.defaultCommunication)}
+                onClick={() => handleShowNow(video.defaultCommunication)}
               >
                 Shop Now
               </Button>
             )}
           </div>
-
-          {/* {
-            <div
-              // className="mt-5"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-              }}
-            ></div>
-          } */}
         </div>
         <div className="flex gap-2">
-          {videoDetails?.hashtags?.map(
+          {video?.hashtags?.map(
             (tag: any, index: any) =>
               index < 2 && (
                 <div key={tag} className="flex flex-wrap gap-2">
@@ -512,7 +456,7 @@ export function VideoControls({ video }: VideoControlsProps) {
       {/* Comments Modal */}
       <CommentsModal
         isOpen={showComments}
-        ownerName={videoDetails?.userDetails.userName || ""}
+        ownerName={video?.userDetails.userName || ""}
         onClose={() => setShowComments(false)}
       />
     </>
