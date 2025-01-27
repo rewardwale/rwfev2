@@ -140,7 +140,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
           phone: profileData?.indMobileNum,
           profileImage: profileData?.indPic.original,
           SocialUrls: {
-            whatsapp: profileData?.socialUrls.whatsapp,
+            whatsapp: profileData?.socialUrls?.whatsapp,
             linkedin: profileData?.socialUrls.linkedin,
             facebook: profileData?.socialUrls.facebook,
             instagram: profileData?.socialUrls.instagram,
@@ -484,7 +484,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
             </div>
           </div>
 
-          <SocialMedia profileData={data} />
+          {/* <SocialMedia profileData={data} /> */}
         </div>
 
         <Tabs defaultValue="posts" className="w-full">

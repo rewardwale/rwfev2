@@ -58,7 +58,7 @@ interface Props {
     phone: string,
     whatsapp: string,
     linkedin: string,
-  
+
     instagram: string,
     twitter: string,
   ) => void;
@@ -69,6 +69,8 @@ export default function EditForm({ data, reload, profileData }: Props) {
   const [success, setSuccess] = useState<string | undefined>();
   const router = useRouter();
 
+  console.log("checking data in edit-form", data.SocialUrls);
+  
   const form = useForm<z.infer<typeof EditPersonalInfoFormSchema>>({
     resolver: zodResolver(EditPersonalInfoFormSchema),
     mode: "onChange",
@@ -77,15 +79,14 @@ export default function EditForm({ data, reload, profileData }: Props) {
       lastname: data.lname,
       firstname: data.fname,
       mobile: data.phone,
-      dob: new Date(data.dob)??new Date(),
+      dob: new Date(data.dob) ?? new Date(),
       gender: data.gender,
       title: data.title,
       desc: data.desc,
-      watsapp: data.SocialUrls.whatsapp,
-      instagram: data.SocialUrls.instagram,
-      twitter: data.SocialUrls.twitter,
-      linkdin: data.SocialUrls.linkedin,
-
+      watsapp: data?.SocialUrls?.whatsapp,
+      instagram: data.SocialUrls?.instagram,
+      twitter: data.SocialUrls?.twitter,
+      linkdin: data.SocialUrls?.linkedin,
     },
   });
 
@@ -116,8 +117,6 @@ export default function EditForm({ data, reload, profileData }: Props) {
               values.linkdin || "",
               values.instagram || "",
               values.twitter || "",
-              
-        
             );
           }
 
