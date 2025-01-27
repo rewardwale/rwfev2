@@ -36,7 +36,7 @@ export default function ProfileItem({
         onClick={() => router.push("/watch?v=" + data.videoId)}
       >
         <Image
-          src={data.cdnThumbPath[0]}
+          src={data?.cdnThumbPath[0]}
           alt={data.title}
           width={width}
           height={height}
