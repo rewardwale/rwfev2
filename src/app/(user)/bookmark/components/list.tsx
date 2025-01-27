@@ -1,8 +1,11 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { BoxSelectIcon, DeleteIcon, SquareDashed, SquareX, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { BsBoxSeamFill } from "react-icons/bs";
 import { MdDelete } from "react-icons/md";
 
 interface Props {
@@ -28,11 +31,41 @@ interface Props {
 
     _id: string;
   };
-  handleBookmarkDelete: (videoId: string) => void;
+  // handleBookmarkDelete: (videoId: string) => void;
+  deletebm: boolean;
+  setDelete: (val: boolean) => void;
+  setBookmarkList: (id: string) => void;
+  removeBookmarkList: (id: string) => void;
+  handleUnSelect: boolean;
 }
 
-const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
+const BookMarkPost = ({
+  videoData,
+  deletebm,
+  setDelete,
+  setBookmarkList,
+  handleUnSelect,
+  removeBookmarkList,
+}: Props) => {
   const router = useRouter();
+  const [selected, setSelected] = useState<boolean>(false);
+
+  useEffect(() => {
+
+    if(handleUnSelect){
+      setSelected(true);
+      setBookmarkList(videoData.videoId);
+     
+    
+    }else{
+      setSelected(false);
+      removeBookmarkList(videoData.videoId);
+    
+    }
+
+ 
+  }, [handleUnSelect]);
+
   return (
     <>
       {/* <div
@@ -70,12 +103,14 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
 
       <Card
         className="group overflow-hidden cursor-pointer"
-        onClick={() => router.push(`/watch?v=${videoData?.videoId}`)}
+        // onClick={() => router.push(`/watch?v=${videoData?.videoId}`)}
+        onDoubleClick={() => setDelete(true)}
       >
         <CardContent className="p-0">
           <div className="relative">
             {/* 9:16 aspect ratio container */}
-            <div className="relative pb-[177.78%]">
+            <div className="relative pb-[177.78%]"       
+            onClick={() => router.push("/watch?v=" + videoData.videoId)}>
               <Image
                 src={videoData?.cdnThumbPath[0]}
                 alt={videoData?.title}
@@ -85,11 +120,11 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
                   group-hover:scale-105"
               />
               {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/90" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/0 to-black/90" />
             </div>
 
             {/* Overlay content */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+            <div className="absolute bottom-0 left-0 right-0 p-3 text-white" >
               <h3 className="font-semibold text-sm line-clamp-2 mb-2">
                 {videoData?.title}
               </h3>
@@ -103,7 +138,7 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
                     </AvatarFallback>
                   </Avatar> */}
                   <div className="w-8 h-8 border border-white/20 rounded-full">
-                    <Avatar >
+                    <Avatar>
                       <AvatarImage
                         src={videoData?.userDetails?.indPic?.original}
                         alt={videoData?.title}
@@ -121,27 +156,40 @@ const BookMarkPost = ({ videoData, handleBookmarkDelete }: Props) => {
                       {videoData?.userDetails?.indFirstName}{" "}
                       {videoData?.userDetails?.indLastName}
                     </p>
-                    <div className="flex items-center gap-1  sm:text-xs text-[8px] 
-                     text-white/70">
+                    <div className="flex items-center gap-1 sm:text-xs text-[8px] text-white/70">
                       <span>{videoData?.totalViewCount} views</span>
                       <span>•</span>
                       <span>{videoData?.totalRating} ★</span>
                     </div>
                   </div>
-                 
                 </div>
               </div>
             </div>
 
-            <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleBookmarkDelete(videoData.videoId);
-                    }}
-                    className="absolute right-0 top-0 p-1 text-white rounded-bl-md hover:text-red-500"
-                  >
-                    <MdDelete className="size-5" />
-                  </button>
+            {deletebm && (
+              <button
+                // onClick={(e) => {
+                //   e.stopPropagation();
+                //   handleBookmarkDelete(videoData.videoId);
+                // }}
+               
+                
+                onClick={() => {
+                  setSelected(!selected);
+                  !selected
+                    ? setBookmarkList(videoData.videoId)
+                    : removeBookmarkList(videoData.videoId);
+                }}
+                className="absolute right-0 top-0 p-2 text-white rounded-bl-md
+                  "
+              >
+                {selected ? (
+                  <Trash2 className="size-5 fill-red-500" />
+                ) : (
+                  <Trash2 className="size-5" />
+                )}
+              </button>
+            )}
           </div>
         </CardContent>
       </Card>
