@@ -24,6 +24,7 @@ export interface BusinessFormData {
     instagram: string;
     twitter: string;
   };
+  defaultCommunication: 'WHATSAPP_NUMBER' | 'EMAIL' | 'PHONE_NUMBER' | 'WEBSITE';
   keywords: string[];
   content: Record<string, string[]>;
 }

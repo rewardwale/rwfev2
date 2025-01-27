@@ -36,6 +36,7 @@ interface VideoDetails {
   totalComments: number;
   isFollowed: boolean;
   website: string;
+  defaultCommunication:string
 }
 
 export default function WatchPage() {

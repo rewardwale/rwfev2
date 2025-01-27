@@ -65,6 +65,7 @@ interface VideoDetails {
     indEmail: string;
   };
   website: string;
+  defaultCommunication: string;
 }
 
 interface VideoControlsProps {
@@ -72,8 +73,7 @@ interface VideoControlsProps {
 }
 
 export function VideoControls({ video }: VideoControlsProps) {
-  const { isPlaying} =
-    useVideoContext();
+  const { isPlaying } = useVideoContext();
   const [showComments, setShowComments] = useState(false);
   const [isLiked, setIsLiked] = useState(video?.isLiked || false);
   const [unLiked, setIsUnLiked] = useState(false);
@@ -232,6 +232,54 @@ export function VideoControls({ video }: VideoControlsProps) {
       console.warn("No history available to navigate back.");
     }
   }
+
+  const handleShowNow = (defMethod: string) => {
+    console.log(defMethod);
+
+    switch (defMethod) {
+      case "WHATSAPP_NUMBER":
+        // Trigger WhatsApp with the number
+        if (videoDetails?.contactUs?.indMobileNum) {
+          window.open(
+            `https://wa.me/${videoDetails.contactUs.indMobileNum}`,
+            "_blank",
+          );
+        } else {
+          console.warn("WhatsApp number is not available");
+        }
+        break;
+
+      case "EMAIL":
+        // Trigger default email app
+        if (videoDetails?.contactUs?.indEmail) {
+          window.open(`mailto:${videoDetails.contactUs.indEmail}`, "_self");
+        } else {
+          console.warn("Email is not available");
+        }
+        break;
+
+      case "PHONE_NUMBER":
+        // Trigger phone dialer
+        if (videoDetails?.contactUs?.indMobileNum) {
+          window.open(`tel:${videoDetails.contactUs.indMobileNum}`, "_self");
+        } else {
+          console.warn("Phone number is not available");
+        }
+        break;
+
+      case "WEBSITE":
+        // Open the website in a new tab
+        if (videoDetails?.website) {
+          window.open(videoDetails.website, "_blank");
+        } else {
+          console.warn("Website is not available");
+        }
+        break;
+
+      default:
+        console.warn("Invalid communication method");
+    }
+  };
 
   console.log("checking videoDetails", videoDetails);
 
@@ -431,9 +479,9 @@ export function VideoControls({ video }: VideoControlsProps) {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => setShowContactUs(true)}
+                onClick={() => handleShowNow(videoDetails.defaultCommunication)}
               >
-                Contact
+                Shop Now
               </Button>
             )}
           </div>
@@ -467,45 +515,6 @@ export function VideoControls({ video }: VideoControlsProps) {
         ownerName={videoDetails?.userDetails.userName || ""}
         onClose={() => setShowComments(false)}
       />
-
-      <Dialog open={showContactUs} onOpenChange={setShowContactUs}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-center">
-              Contact Business
-            </DialogTitle>
-          </DialogHeader>
-          <p>
-            Call:{" "}
-            <a
-              href={`tel:${videoDetails?.contactUs?.indMobileNum}`}
-              className="text-blue-500 underline"
-            >
-              {videoDetails?.contactUs?.indMobileNum}
-            </a>
-          </p>
-          <p>
-            Email:{" "}
-            <a
-              href={`mailto:${videoDetails?.contactUs?.indEmail}`}
-              className="text-blue-500 underline"
-            >
-              {videoDetails?.contactUs?.indEmail}
-            </a>
-          </p>
-          <p>
-            Visit:{" "}
-            <a
-              href={videoDetails?.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline"
-            >
-              {videoDetails?.website}
-            </a>
-          </p>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

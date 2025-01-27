@@ -68,6 +68,7 @@ export const businessFormSchema = z.object({
     indEmail: z.string().email(),
     indCountryCode: z.string().default("+91"),
     indMobileNum: z.string().regex(/^\d{10}$/, "Invalid mobile number"),
+
   }),
   operationalHours: z.record(z.array(z.object({
     open: z.string(),
@@ -92,6 +93,9 @@ export const businessFormSchema = z.object({
     longitude: z.number().min(-180).max(180),
   }),
   socialUrls: z.object(socialUrlSchemas).optional(),
+  defaultCommunication: z.enum(['WHATSAPP_NUMBER', 'EMAIL', 'PHONE_NUMBER', 'WEBSITE'], {
+    required_error: "Please select a default communication method",
+  }),
   keywords: z.array(z.string()),
   content: z.record(z.array(z.string())),
 });
