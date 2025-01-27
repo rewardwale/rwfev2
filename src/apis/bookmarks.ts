@@ -13,8 +13,13 @@ export async function getAllBookMarks(skip: number) {
   }
 }
 
-export async function deleteBookMark(videoId: string) {
-  const response = await apiClient(`bookmark/${videoId}`, "DELETE");
+export async function deleteBookMark(videoId: string[]) {
+  console.log("===>deleteBookMark:",videoId)
+  const response = await apiClient(`bookmark`, "DELETE",{
+    "videoIds": 
+      videoId
+    
+  });
   console.log(";:::1:::", response);
   if (response.success && response.data) {
     return response.data;
@@ -25,7 +30,7 @@ export async function deleteBookMark(videoId: string) {
 }
 
 export async function addBookmark(videoId: string) {
-  const response = await apiClient(`videoBookmark/${videoId}`, "POST");
+  const response = await apiClient(`bookmark/${videoId}`, "POST");
   console.log(";:::2:::", response);
   if (response.success && response.data) {
     return response.data;
@@ -35,8 +40,13 @@ export async function addBookmark(videoId: string) {
   }
 }
 
-export async function removeBookmark(videoId: string) {
-  const response = await apiClient(`bookmark/${videoId}`, "DELETE");
+export async function removeBookmark(videoId: string[]) {
+  console.log("===>deleteBookMark:",videoId)
+  const response = await apiClient(`bookmark`, "DELETE",{
+    "videoIds": 
+      videoId
+    
+  });
   console.log(";:::2:::", response);
   if (response.success && response.data) {
     return response.data;
@@ -45,3 +55,4 @@ export async function removeBookmark(videoId: string) {
     return null;
   }
 }
+
