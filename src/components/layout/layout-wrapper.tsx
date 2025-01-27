@@ -9,14 +9,15 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
-
+  const showHeader = ["/", "/about-us", '/tnc'].includes(pathname);
+  const showFooter = ["/about-us", '/tnc','/how-it-works','/contact-us'].includes(pathname);
 
   return (
     <>
-      {isHomePage && <Header />}
+      {showHeader && <Header />}
       {children}
-      {/* {<Footer />} */}
+    { showFooter && <Footer />}
     </>
   );
 }
+

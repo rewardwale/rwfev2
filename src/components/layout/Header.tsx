@@ -29,8 +29,8 @@ const Navbar = () => {
   console.log("checking isLoggedIn", isLoggedIn);
 
   useEffect(() => {
-    isLoggedIn && router.push("/home")
-  },[isLoggedIn])
+    isLoggedIn && router.push("/home");
+  }, [isLoggedIn]);
 
   return (
     <div>
@@ -59,26 +59,26 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Links */}
-          {/* <div className="hidden md:flex space-x-6 ml-10">
+          <div className="hidden md:flex space-x-6 ml-10">
             <a
-              className="text-gray-600 hover:text-gray-900 cursor-pointer"
+              className="hover:text-gray-900 cursor-pointer"
               onClick={() => router.push("/about-us")}
             >
               About
             </a>
             <a
-              className="text-gray-600 hover:text-gray-900 cursor-pointer"
+              className="hover:text-gray-900 cursor-pointer"
               onClick={() => router.push("/contact-us")}
             >
               Contact
             </a>
             <a
-              className="text-gray-600 hover:text-gray-900 cursor-pointer"
+              className="hover:text-gray-900 cursor-pointer"
               onClick={() => router.push("/how-it-works")}
             >
               How it Works
             </a>
-          </div> */}
+          </div>
         </div>
 
         {/* Right Section: Search and Login */}

@@ -144,7 +144,7 @@ export default function AboutUs() {
 
   return (
     <div className="bg-white dark:bg-zinc-900 overflow-hidden">
-      <Header />
+      {/* <Header /> */}
 
       {/* <Slider {...settings}>
         {[
