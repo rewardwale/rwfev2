@@ -25,7 +25,7 @@ interface VideoCardProps {
 
 export function VideoCard({ review }: VideoCardProps) {
   const router = useRouter();
-  // console.log("checking review in videoCard", review.cdnThumbPath[1]);
+  // console.log("checking review in videoCard", review?.userDetails?.firstName[0]);
   return (
     // remove link
 
@@ -57,15 +57,15 @@ export function VideoCard({ review }: VideoCardProps) {
                 <Avatar className="w-8 h-8 border border-white/20">
                   <AvatarImage src={review && review?.userDetails?.indPic?.thumbnail} />
                   <AvatarFallback>
-                    {review.userDetails.firstName[0]}
+                    {review?.userDetails?.firstName[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium truncate">
-                    {review.userDetails.firstName} {review.userDetails.lastName}
+                    {review?.userDetails?.firstName} {review?.userDetails?.lastName}
                   </p>
                   <div className="flex items-center gap-1 text-xs text-white/70">
-                    <span>{review.totalViewCount.toLocaleString()} views</span>
+                    <span>{review?.totalViewCount?.toLocaleString()} views</span>
                     <span>•</span>
                     <span>{review.avgRating} ★</span>
                   </div>
