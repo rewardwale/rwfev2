@@ -44,7 +44,7 @@ export default function AboutUs() {
   const RewardWaleTitleCard = () => {
     return (
       <div className="relative">
-        <div className="max-w-3xl mx-auto text-center md:pb-16 flex flex-col justify-center">
+        <div className="max-w-3xl mx-auto text-center md:pb-16 flex flex-col justify-center mt-8">
           <h1
             className="mb-4 mt-4 lg:mt-0 md:text-violet-600 text-neutral-700 dark:text-stone-300
               md:text-4xl 2xl:text-[50px] font-bold md:font-semibold"
