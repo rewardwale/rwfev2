@@ -88,6 +88,7 @@ const DEFAULT_VALUES: BusinessFormData = {
     instagram: "",
     twitter: "",
   },
+  defaultCommunication: "EMAIL",
   keywords: [],
   content: {},
 };

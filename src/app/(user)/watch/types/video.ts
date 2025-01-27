@@ -26,4 +26,5 @@ export interface Video {
   totalComments: number;
   isFollowed:boolean;
   website: string
+  defaultCommunication:string
 }
