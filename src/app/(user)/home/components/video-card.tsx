@@ -38,8 +38,8 @@ export function VideoCard({ review }: VideoCardProps) {
           {/* 9:16 aspect ratio container */}
           <div className="relative pb-[177.78%]">
             <img
-              src={review.cdnThumbPath[0]}
-              alt={review.title}
+              src={review?.cdnThumbPath[0]}
+              alt={review?.title}
               className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
             />
             {/* Gradient overlay */}
@@ -55,7 +55,7 @@ export function VideoCard({ review }: VideoCardProps) {
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Avatar className="w-8 h-8 border border-white/20">
-                  <AvatarImage src={review.userDetails.indPic.thumbnail} />
+                  <AvatarImage src={review && review?.userDetails?.indPic?.thumbnail} />
                   <AvatarFallback>
                     {review.userDetails.firstName[0]}
                   </AvatarFallback>
