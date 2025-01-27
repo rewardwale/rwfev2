@@ -88,10 +88,9 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [showContactUs, setShowContactUs] = useState(false);
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
-  console.log("checking video", video)
   const isMobile = useIsMobile();
 
-  console.log("checking fetched videos", videoDetails?.categoryId);
+
 
   const checkToken = async () => {
     const token = localStorage.getItem("token");
@@ -421,7 +420,7 @@ export function VideoControls({ video }: VideoControlsProps) {
                   ? video.businessDetails.handle
                   : `${video?.userDetails.indFirstName} ${video?.userDetails.indLastName}`}
               </h3>
-              <p className="text-sm text-white/80">{videoDetails?.title}</p>
+              <p className="text-sm text-white/80">{video?.title}</p>
             </div>
             <Button
               variant="secondary"
