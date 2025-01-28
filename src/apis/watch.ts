@@ -61,7 +61,7 @@ export async function unLikeVideo(videoId: string) {
 }
 
 // Get video comments
-export async function getVideoComments(iD: string) {
+export async function getVideoComments(iD: string | undefined) {
   const queryParams = new URLSearchParams({
     limit: "10",
     skip: "0",
@@ -105,7 +105,7 @@ export const unlikeComment = async (commentId: string) => {
 // // Add or edit a comment
 
 export const addNewComment = async (
-  videoId: string,
+  videoId: string | undefined,
   payload: Record<string, any>,
 ) => {
   try {
@@ -123,7 +123,7 @@ export const addNewComment = async (
 
 // delete comment
 
-export async function deleteComment(videoId: string, commentId: string) {
+export async function deleteComment(videoId: string | undefined, commentId: string) {
   try {
     const response = await apiClient(
       `/comment/${videoId}/${commentId}`,

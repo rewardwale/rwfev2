@@ -10,11 +10,13 @@ import {
   unlikeComment,
 } from "@/apis/watch";
 
-export function useComments(videoId: string) {
+export function useComments(videoId: string | undefined) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState(0);
+
+  
 
   useEffect(() => {
     fetchComments();
@@ -26,8 +28,8 @@ export function useComments(videoId: string) {
     try {
       setLoading(true);
       const response = await getVideoComments(videoId);
-      setComments(response.data.data);
-      setTotalCount(response.data.count);
+      setComments(response?.data.data);
+      setTotalCount(response?.data.count);
     } catch (error) {
       console.error("Error fetching comments:", error);
       setError("Failed to load comments");
@@ -68,7 +70,7 @@ export function useComments(videoId: string) {
       console.error("Error toggling comment like:", error);
       // Revert optimistic update on error
       const response = await getVideoComments(videoId);
-      setComments(response.data.data);
+      setComments(response?.data?.data);
     }
   };
 
