@@ -110,9 +110,10 @@ const ShortCard: React.FC<ShortCardProps> = ({
   videoId,
 }) => {
   const router = useRouter();
-  console.log("checking cdnThumbPath", cdnThumbPath[0]);
   return (
-    <div>
+    <div style={{
+      maxWidth:'min-content'
+    }}>
       <Card
         className="w-[200px] flex-shrink-0 rounded-md cursor-pointer transition-transform
           hover:scale-105"

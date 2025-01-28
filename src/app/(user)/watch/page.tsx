@@ -207,6 +207,7 @@ export default function WatchPage() {
             fontSize: "24px",
             fontWeight: "600",
             zIndex: "9999",
+            color:'#ffffff'
           }}
         >
           <span>Back</span>

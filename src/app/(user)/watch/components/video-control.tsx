@@ -21,7 +21,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { addBookmark, removeBookmark } from "@/apis/bookmarks";
 import { followUser, unFollowUser } from "@/apis/profile";
 import AuthModal from "@/components/ui/AuthModal";
-import { useInfiniteVideos } from "../hooks/use-infinite-scroll";
 
 interface VideoDetails {
   _id: string;
@@ -62,6 +61,7 @@ interface VideoDetails {
   };
   website: string;
   defaultCommunication: string;
+  videoId: string;
 }
 
 interface VideoControlsProps {
@@ -90,7 +90,7 @@ export function VideoControls({ video }: VideoControlsProps) {
 
   const isMobile = useIsMobile();
 
-
+  console.log("checking video in", video?.videoId);
 
   const checkToken = async () => {
     const token = localStorage.getItem("token");
@@ -237,9 +237,9 @@ export function VideoControls({ video }: VideoControlsProps) {
     switch (defMethod) {
       case "WHATSAPP_NUMBER":
         // Trigger WhatsApp with the number
-        if (videoDetails?.contactUs?.indMobileNum) {
+        if (video?.contactUs?.indMobileNum) {
           window.open(
-            `https://wa.me/${videoDetails.contactUs.indMobileNum}`,
+            `https://wa.me/${video.contactUs.indMobileNum}`,
             "_blank",
           );
         } else {
@@ -249,8 +249,8 @@ export function VideoControls({ video }: VideoControlsProps) {
 
       case "EMAIL":
         // Trigger default email app
-        if (videoDetails?.contactUs?.indEmail) {
-          window.open(`mailto:${videoDetails.contactUs.indEmail}`, "_self");
+        if (video?.contactUs?.indEmail) {
+          window.open(`mailto:${video.contactUs.indEmail}`, "_self");
         } else {
           console.warn("Email is not available");
         }
@@ -258,8 +258,8 @@ export function VideoControls({ video }: VideoControlsProps) {
 
       case "PHONE_NUMBER":
         // Trigger phone dialer
-        if (videoDetails?.contactUs?.indMobileNum) {
-          window.open(`tel:${videoDetails.contactUs.indMobileNum}`, "_self");
+        if (video?.contactUs?.indMobileNum) {
+          window.open(`tel:${video.contactUs.indMobileNum}`, "_self");
         } else {
           console.warn("Phone number is not available");
         }
@@ -267,8 +267,8 @@ export function VideoControls({ video }: VideoControlsProps) {
 
       case "WEBSITE":
         // Open the website in a new tab
-        if (videoDetails?.website) {
-          window.open(videoDetails.website, "_blank");
+        if (video?.website) {
+          window.open(video.website, "_blank");
         } else {
           console.warn("Website is not available");
         }
@@ -278,8 +278,6 @@ export function VideoControls({ video }: VideoControlsProps) {
         console.warn("Invalid communication method");
     }
   };
-
-  console.log("checking videoDetails", videoDetails);
 
   return (
     <>
@@ -457,6 +455,7 @@ export function VideoControls({ video }: VideoControlsProps) {
         isOpen={showComments}
         ownerName={video?.userDetails.userName || ""}
         onClose={() => setShowComments(false)}
+        videoId={video?.videoId}
       />
     </>
   );
