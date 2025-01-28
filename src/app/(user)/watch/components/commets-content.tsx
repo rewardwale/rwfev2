@@ -16,16 +16,18 @@ interface CommentsContentProps {
   newComment: string;
   setNewComment: (comment: string) => void;
   ownerName:string;
+  videoId: string | undefined
 }
 
 export function CommentsContent({
   onClose,
   newComment,
   setNewComment,
-  ownerName
+  ownerName,
+  videoId
 }: CommentsContentProps) {
   const searchParams = useSearchParams();
-  const videoId = searchParams.get("v") || "";
+  // const videoId = searchParams.get("v") || "";
   const isMobile = useIsMobile();
   const {
     comments,
