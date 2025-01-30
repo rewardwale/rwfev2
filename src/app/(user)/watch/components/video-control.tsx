@@ -90,7 +90,6 @@ export function VideoControls({ video }: VideoControlsProps) {
 
   const isMobile = useIsMobile();
 
-  console.log("checking video in", video?.videoId);
 
   const checkToken = async () => {
     const token = localStorage.getItem("token");
@@ -182,7 +181,6 @@ export function VideoControls({ video }: VideoControlsProps) {
           text: "I found this interesting video. Take a look!",
           url: window.location.href,
         });
-        console.log("Content shared successfully");
       } catch (error) {
         console.log("Error sharing content:", error);
       }
@@ -232,8 +230,6 @@ export function VideoControls({ video }: VideoControlsProps) {
   }
 
   const handleShowNow = (defMethod: string) => {
-    console.log(defMethod);
-
     switch (defMethod) {
       case "WHATSAPP_NUMBER":
         // Trigger WhatsApp with the number

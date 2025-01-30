@@ -41,8 +41,6 @@ export function Sidebar({ className }: SidebarProps) {
     getBusinessPages();
   }, []);
 
-  console.log("checking business Page data", businessPageData);
-
   const SidebarContent = () => (
     <ScrollArea className="h-screen">
       <div className="space-y-4 py-4">

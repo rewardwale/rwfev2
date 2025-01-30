@@ -62,7 +62,6 @@ export default function FinalProviderForm({ data, errormsg }: Props) {
         : "90";
       Final(values, latitude, longitude)
         .then((res) => {
-          console.log("===res===", res, values);
           if (res?.error) {
             // form.reset();
             setError(res?.error);

@@ -10,8 +10,6 @@ export const EditPersonalInfo = async (
   values: z.infer<typeof EditPersonalInfoFormSchema>
 ) => {
   const validatedFields = EditPersonalInfoFormSchema.safeParse(values);
-
-  console.log("::::::EditPersonalInfo:::!!!!", validatedFields);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
@@ -29,7 +27,6 @@ export const EditPersonalInfo = async (
 //   }
 //   //check if email is already is in use or not- api
 //   if (validatedEmail.status && validateMobile.status) {
-//     console.log("done!! email");
 //     return { success: "OTP has been sent to your email id and mobile number" };
 //   }
 

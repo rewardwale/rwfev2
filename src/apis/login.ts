@@ -7,7 +7,6 @@ export async function signInWithMobile(
   fingerPrint:string
   ,latitude:string,longitude:string
 ) {
-  console.log("::::::login mobile:::::");
   try {
 
 
@@ -41,7 +40,6 @@ export async function signInWithMobile(
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("response::::::::",response)
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {
@@ -53,7 +51,6 @@ export async function signInWithMobile(
 }
 
 export async function signInWithEmail(password: string, email: string,  fingerPrint:string,latitude:string,longitude:string) {
-  console.log("::::::login email:::::");
   try {
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
@@ -83,7 +80,6 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("response::::::::",response)
     if (response.status === 200) {
 
       return { status: true, message: response.data };
@@ -96,7 +92,6 @@ export async function signInWithEmail(password: string, email: string,  fingerPr
 }
 
 export async function signInWithUserName(password: string, userName: string,  fingerPrint:string,latitude:string,longitude:string) {
-  console.log("::::::login userName:::::");
   try {
      const response = await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/login`,
@@ -126,7 +121,6 @@ export async function signInWithUserName(password: string, userName: string,  fi
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("response::::::::",response)
     if (response.status === 200) {
       return { status: true, message: response.data };
     } else {

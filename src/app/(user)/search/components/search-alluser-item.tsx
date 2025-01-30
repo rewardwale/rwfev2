@@ -10,7 +10,6 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function AllUserItem({ data, handleFollow }: userProps) {
   let router = useRouter();
-  console.log("data",data)
   useEffect(() => {}, [data]);
   return (
     <Card

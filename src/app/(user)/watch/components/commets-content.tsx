@@ -39,8 +39,6 @@ export function CommentsContent({
     handleDeleteComment,
   } = useComments(videoId);
 
-  console.log("checking for comment update", comments);
-
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between p-4 border-b">

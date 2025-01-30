@@ -107,7 +107,6 @@ export default function CredentialVerificationForm({
   const sendOTPMobile = async () => {
     try {
       // Simulate an API call to send OTP
-      console.log("Sending OTP...Mobile");
       setOtpSentMobile(true);
       setCountTimeMobile(true);
 

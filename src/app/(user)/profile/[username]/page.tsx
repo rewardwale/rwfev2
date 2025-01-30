@@ -35,7 +35,6 @@ export default function OthersPage() {
     init();
   }, []);
 
-  console.log("checking for profile data", data);
 
   // const params = {
   //   username: "Lokesh",

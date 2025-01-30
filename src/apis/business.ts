@@ -71,7 +71,6 @@ export async function fetchBusinessPostsVideos(id: string, count?: number) {
     businessPageId: id,
   }).toString();
   const response = await apiClient(`/uploadedVideos?${queryParams}`, "GET");
-  console.log("fetchProfilePosts::", response);
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -88,7 +87,6 @@ export async function fetchBusinessTaggedVideos(id: string, count: number) {
     businessPageId: id,
   }).toString();
   const response = await apiClient(`/taggedVideos?${queryParams}`, "GET");
-  console.log("fetchTaggedVideos::", response);
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -99,7 +97,6 @@ export async function fetchBusinessTaggedVideos(id: string, count: number) {
 
 // /api/followBusinessPage/{id},
 export const followMerchant = async (id: string) => {
-  console.log(":::::::::::::::::::", id);
   const response = await apiClient(`/followBusinessPage/${id}`, "PUT");
 
   if (response.success && response.data) {
@@ -113,7 +110,6 @@ export const followMerchant = async (id: string) => {
 // /api/unfollowBusinessPage/{id},
 
 export const unFollowMerchant = async (id: string) => {
-  console.log(":::::::::::::::::::", id);
   const response = await apiClient(`/unfollowBusinessPage/${id}`, "PUT");
 
   if (response.success && response.data) {

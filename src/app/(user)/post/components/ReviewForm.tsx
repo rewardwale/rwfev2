@@ -57,7 +57,6 @@ export function ReviewForm() {
 
   const router = useRouter();
   const isMobile = useIsMobile();
-  console.log("checking videoUrl", businessID);
 
   const averageRating =
     questions.reduce((acc, q) => acc + q.rating, 0) / questions.length;
@@ -111,10 +110,8 @@ export function ReviewForm() {
 
       // Get signed URL
       const { data } = await getSignedUrl(body);
-      console.log("checking data of signed url of signed url", data);
       if (data.isSignedURL) {
         setShowSuccess(true);
-        console.log("checking code execution", data.location);
 
         const videoUpload = await axios.put(data?.location, videoFile, {
           headers: {
@@ -122,13 +119,10 @@ export function ReviewForm() {
           },
           maxBodyLength: Infinity,
         });
-        console.log("checking upload api res", videoUpload.status);
-
         // Trigger onUploadSuccess after receiving 200 status from videoUpload
         if (videoUpload.status === 200) {
           try {
             const res = await onUploadSuccess(data.videoId);
-            console.log("Response from onUploadSuccess:", res);
             const formData = new FormData();
             formData.append("image", thumbnailFile);
             const thumbnailRes = await onUploadVideoThumbnail(

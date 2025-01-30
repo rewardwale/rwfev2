@@ -66,11 +66,6 @@ export default function WatchPage() {
     ...fetchedVideos,
   ];
 
-  console.log("Initial video:", initialVideo);
-  console.log("Related videos:", relatedVideos);
-  console.log("Fetched videos:", fetchedVideos);
-  console.log("Final videos array:", videos);
-
   useEffect(() => {
     // Initialize IntersectionObserver
     observerRef.current = new IntersectionObserver(
@@ -176,7 +171,6 @@ export default function WatchPage() {
 
 
   const handleScroll = (direction: "up" | "down") => {
-    console.log("inside handlescroll");
     const newIndex =
       direction === "up"
         ? Math.max(0, currentIndex - 1)

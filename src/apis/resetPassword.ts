@@ -2,7 +2,6 @@ import api, { getDeviceFingerprint } from "@/lib/api";
 import axios from "axios";
 
 export async function sendForgotPassword(email: string) {
-  console.log("::::::sendForgotPassword:::::");
   try {
     // Check for localStorage availability
     const isLocalStorageAvailable =
@@ -32,7 +31,6 @@ export async function sendForgotPassword(email: string) {
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("forgot password response===>", response);
     if (response.status === 200) {
       return {
         status: true,
@@ -48,7 +46,6 @@ export async function sendForgotPassword(email: string) {
 }
 
 export async function sendResetPassword(token: string, password: string) {
-  console.log("::::::sendForgotPassword:::::");
   try {
     // Check for localStorage availability
     const isLocalStorageAvailable =
@@ -78,7 +75,6 @@ export async function sendResetPassword(token: string, password: string) {
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("forgot password response===>", response);
     if (response.status === 200) {
       return { status: true, message: response.data.message };
     } else {
@@ -92,7 +88,6 @@ export async function sendResetPassword(token: string, password: string) {
 
 //validate token
 export async function validateToken(token: string) {
-  console.log("::::::validateToken:::::");
   try {
     // Check for localStorage availability
     const isLocalStorageAvailable =
@@ -120,7 +115,6 @@ export async function validateToken(token: string) {
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("validateToken===>", response);
     if (response.status === 200 && response.data.data.isValid) {
       return { status: true, message: response.data.data.reason };
     } else {
@@ -140,7 +134,6 @@ export const handleGetLandingPage = async () => {
     //   );
 
     const response = await api.get(`profile`);
-    console.log("}{response}{", response.data.data);
   } catch (error) {
     console.log("error=>", error);
   }

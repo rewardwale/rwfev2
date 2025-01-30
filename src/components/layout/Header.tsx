@@ -26,8 +26,6 @@ const Navbar = () => {
     checkToken();
   }, []);
 
-  console.log("checking isLoggedIn", isLoggedIn);
-
   useEffect(() => {
     isLoggedIn && router.push("/home");
   }, [isLoggedIn]);

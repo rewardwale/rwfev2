@@ -186,7 +186,6 @@ export const getReplyComment = async (commentId: string, count: number) => {
       `/video/replyComment/${commentId}?${queryParams}`,
       "GET",
     );
-    console.log("response reply", response);
     return response.data;
   } catch (error) {
     console.error("Error replying to comment:", error);
@@ -196,8 +195,6 @@ export const getReplyComment = async (commentId: string, count: number) => {
 
 
 export async function fetchVideoUsingCategory(categoryId: any) {
-  console.log("checking payload", categoryId)
-
   const queryParams = new URLSearchParams({
     limit: "10",
     skip: '0',

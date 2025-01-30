@@ -110,10 +110,8 @@ const ProfilePage = ({ profileData, id }: Props) => {
       twitter: "",
     },
   });
-  console.log("profile data::::", profileData);
   useEffect(() => {
     if (profileData) {
-      console.log("profile data::1::");
       const data = localStorage.getItem("uib");
       const name = JSON.parse(data || "").userName;
       if (name === profileData.userName) {
@@ -166,7 +164,6 @@ const ProfilePage = ({ profileData, id }: Props) => {
   const getMoreData = async () => {
     try {
       if (profileData?._id) {
-        console.log("more data!!!");
         setCount(count + 10);
         const responseData = await fetchProfilePosts(
           profileData?._id,

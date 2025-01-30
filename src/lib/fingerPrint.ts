@@ -7,7 +7,6 @@ export const getDeviceFingerprint = () => {
     const timezoneOffset = new Date().getTimezoneOffset();
 
     const fingerprint: string = `${userAgent.replace(/\s+/g, "")}|${language.replace(/\s+/g, "")}|${hardwareConcurrency}|${screenResolution.replace(/\s+/g, "")}|${timezoneOffset}`;
-    console.log(`finger:${fingerprint}`);
     return fingerprint;
   }
   return "devicefingerprint";

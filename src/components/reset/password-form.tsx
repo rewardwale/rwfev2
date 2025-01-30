@@ -56,7 +56,6 @@ export default function NewPasswordForm() {
 
   const init = async () => {
     const verifyToken = await validateToken(token || "");
-    console.log("::::::verifyToken::::::", verifyToken);
     if (verifyToken.status) {
       setTokenVerification(true);
     } else {

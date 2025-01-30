@@ -66,11 +66,7 @@ interface Props {
 export default function EditForm({ data, reload, profileData }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
-  const router = useRouter();
-
-  console.log("checking data in edit-form", data.SocialUrls);
-  
+  const [success, setSuccess] = useState<string | undefined>();  
   const form = useForm<z.infer<typeof EditPersonalInfoFormSchema>>({
     resolver: zodResolver(EditPersonalInfoFormSchema),
     mode: "onChange",

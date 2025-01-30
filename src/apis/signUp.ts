@@ -6,7 +6,6 @@ export const checkUserNameAvailability = async (
   latitude: string,
   longitude: string,
 ) => {
-  console.log("checkUserNameAvailability\t", userName);
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?type=user`,
@@ -21,7 +20,6 @@ export const checkUserNameAvailability = async (
         timeout: 10000, // Include timeout as part of the Axios config
       },
     );
-    console.log("response:::", response.data.data);
     if (response.status === 200) {
       if (response.data.data.isAvailable) {
         return { status: true, message: response.data.message };
@@ -35,7 +33,6 @@ export const checkUserNameAvailability = async (
       return { status: false, message: response.data.message };
     }
   } catch (error: any) {
-    console.log("error\n\t", error);
     console.error("error", error.response);
     return {status:false,message:error.response.data.message}  }
 }
@@ -46,12 +43,8 @@ export async function validateEmail(
   latitude: string,
   longitude: string,
 ) {
-  console.log("validateEmail", email);
   //   const response = await  apiClient(`/validateEmail/${email}`, "GET");
   try {
-    console.log(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validateEmail/${email}?isBusinessUser=false`,
-    );
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validateEmail/${email}?isBusinessUser=false`,
       {
@@ -71,7 +64,6 @@ export async function validateEmail(
       return { status: false, message: response.data.message };
     }
   } catch (error: any) {
-    console.log("error\n\t", error);
     return { status: false, message: error.response.data.message };
   }
 }
@@ -83,11 +75,7 @@ export async function validatePhone(
   latitude: string,
   longitude: string,
 ) {
-  console.log("validatePhone\t", countryCode, mobile);
   try {
-    console.log(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validatePhoneNumber/${countryCode}/${mobile}?isBusinessUser=false`,
-    );
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validatePhoneNumber/${countryCode}/${mobile}?isBusinessUser=false`,
       {
@@ -107,7 +95,6 @@ export async function validatePhone(
       return { status: false, message: response.data.message };
     }
   } catch (error: any) {
-    console.log("error\n\t", error);
     return { status: false, message: error.response.data.message };
   }
 }
@@ -120,11 +107,7 @@ export async function verifyOTPMobile(
   latitude: string,
   longitude: string,
 ) {
-  console.log("verifyOTPMobile\n");
   try {
-    console.log(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?countryCode=${code}&phoneNumber=${number}&otp=${otp}`,
-    );
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?countryCode=${code}&phoneNumber=${number}&otp=${otp}`,
       {
@@ -156,11 +139,7 @@ export async function verifyOTPEmail(
   latitude: string,
   longitude: string,
 ) {
-  console.log("verifyOTPEmail\n");
   try {
-    console.log(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?otp=${otp}&emailId=${email}`,
-    );
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verifyOTP?otp=${otp}&emailId=${email}`,
       {
@@ -199,8 +178,6 @@ export async function signup(
   longitude: string,
 ) {
   try {
-    console.log("Signup\n", value);
-    console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`);
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`,
       {
@@ -248,17 +225,12 @@ export async function signup(
       return {status:false,message:response.data.message}; 
     }
   } catch (error: any) {
-    console.log("error\n\t", error);
     return { status: false, message: error.response.data.message };
   }
 }
 
 export async function resendOTPEmail( email: string,  fingerPrints:string,latitude:string,longitude:string) {
-  console.log("resendOTPEmail\n",email,fingerPrints,latitude,longitude);
   try {
-    console.log(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?emailId=${email}`,
-    );
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?emailId=${email}`,
       {
@@ -290,11 +262,7 @@ export async function resendOTPMobile(
   latitude: string,
   longitude: string,
 ) {
-  console.log("resendOTPMobile\n");
   try {
-    console.log(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?countryCode=${code}&phoneNumber=${number}`,
-    );
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?countryCode=${code}&phoneNumber=${number}`,
       {
@@ -334,15 +302,6 @@ export async function signupWithProvider(
   provider: string,
 ) {
   try {
-    console.log(
-      "Signup\n",
-      value,
-      latitude,
-      longitude,
-      providerToken,
-      provider.toLocaleUpperCase(),
-    );
-    console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/signup`);
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/signupWithSocialProvider`,
       {
@@ -383,7 +342,6 @@ export async function signupWithProvider(
       return { status: false, message: "Signup isnt successful" };
     }
   } catch (error: any) {
-    console.log("error\n\t", error.response.data);
     return { status: false, message: error.response.data.message };
   }
 }

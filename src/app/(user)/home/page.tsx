@@ -18,8 +18,6 @@ export default function HomePage() {
   };
 
   const isMobile = useIsMobile();
-
-  console.log("checking selectedCategories", selectedCategories);
   return (
     <div className="flex h-screen bg-background">
       {!isMobile && <Sidebar />}

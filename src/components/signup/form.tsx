@@ -55,7 +55,6 @@ export default function SignupForm() {
     two: boolean,
     three: boolean | string,
   ) => {
-    console.log("SIGNUP API ==>", signupForm);
     if (!one && !two && !three) {
       //signupapi
       signupForm.fingerPrints = getDeviceFingerprint();

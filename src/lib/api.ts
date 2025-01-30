@@ -2,8 +2,6 @@ import axios from "axios";
 
 export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://www.elawdrawer.in/';
 
-console.log('Base URL: from axios', baseURL); 
-
 const getLocalStorageValue = (key: string, defaultValue: string | number) => {
   if (typeof window !== "undefined") {
     const value = localStorage.getItem(key);
@@ -60,8 +58,6 @@ const api = axios.create({
   },
   timeout: 10000,
 });
-
-console.log('Axios instance baseURL:', api.defaults.baseURL); 
 
 // Request Interceptor: Attach tokens or any required headers
 api.interceptors.request.use(

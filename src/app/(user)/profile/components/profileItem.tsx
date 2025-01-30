@@ -28,7 +28,6 @@ export default function ProfileItem({
   ...props
 }: videoProps) {
   const router = useRouter();
-  console.log("data:::", data);
   return (
     <div className={cn(" relative h-full w-full p-0.5", className)} {...props}>
       <div

@@ -20,8 +20,6 @@ export function CommentsModal({
 }: CommentsModalProps) {
   const [newComment, setNewComment] = useState("");
   const isMobile = useMediaQuery("(max-width: 768px)");
-
-  console.log("checking ownerName", videoId)
   useEffect(() => {
     const videoContainer = document.getElementById("video-container");
     if (videoContainer && !isMobile) {
@@ -48,8 +46,6 @@ export function CommentsModal({
       </Sheet>
     );
   }
-  
-  console.log("checking for isOpen in comments Modal", isOpen)
 
   return (
     isOpen && (
