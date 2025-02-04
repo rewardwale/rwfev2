@@ -88,7 +88,7 @@ export function FollowingList({ id ,usern,followers}: Props) {
             ref={scrollContainerRef}
             onScroll={handleScrollEvent}
           >
-            <div className="flex flex-wrap w-full h-full gap-3">
+            <div className="flex flex-wrap w-full h-full gap-3 cursor-pointer">
               {follower.length > 0 || !follower ? (
                 follower.map((item: FollowerList, index: number) => (
                   <FollowerItem item={item} key={index} />

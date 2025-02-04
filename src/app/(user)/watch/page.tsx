@@ -46,7 +46,6 @@ export default function WatchPage() {
   const videoId = searchParams.get("v") || "";
   const [initialVideo, setInitialVideo] = useState<VideoDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const [relatedVideos, setRelatedVideos] = useState<VideoDetails[]>([]);
   const {
     videos: fetchedVideos,
     error,

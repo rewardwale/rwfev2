@@ -68,8 +68,8 @@ const HorizontalScrollWithArrows: React.FC<HorizontalScrollWithArrowsProps> = ({
   const getImageSrc = (direction: "left" | "right") => {
     if (arrowType === "white") {
       return direction === "left"
-        ? "https://images.woovly.com/assets/arrow-white-left.png"
-        : "https://images.woovly.com/assets/arrow-white-right.png";
+        ? "https://d1scqik6tlhrr8.cloudfront.net/Assets/Left-Arrow.png"
+        : "https://d1scqik6tlhrr8.cloudfront.net/Assets/Right-Arrow.png";
     }
     if (arrowType === "productListing") {
       return direction === "left"
