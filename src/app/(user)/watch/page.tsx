@@ -209,11 +209,11 @@ export default function WatchPage() {
       <main className="flex-1 relative overflow-y-scroll snap-y snap-mandatory">
         <div className="absolute inset-0 flex items-center justify-center">
           <div
-            className="relative w-full md:max-w-fit transition-all duration-400 ease-in-out"
+            className="relative w-full  transition-all duration-400 ease-in-out"
             style={{
               height: "-webkit-fill-available",
               paddingBlock: "12px",
-              // width:'400px'
+              maxWidth:`${!isMobile && "400px"}`
             }}
             id="video-container"
           >
