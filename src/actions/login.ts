@@ -9,7 +9,6 @@ import * as z from "zod";
 
 export const Newlogin = async (values: z.infer<typeof LoginSchema>,fingerPrint:string,latitude:string,longitude:string) => {
   const validatedFields = LoginSchema.safeParse(values);
-  console.log("STEP 2:", values);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }

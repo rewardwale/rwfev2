@@ -407,7 +407,7 @@ export default function ContactUs() {
             </div>
           </div>
           <div className="flex justify-end items-center">
-            {/* <button
+            <button
               className="px-6 py-2 font-semibold tracking-wide text-white capitalize
                bg-gradient-to-r from-[#D64ACF] via-[#A844D8] to-[#883FDE] rounded-lg"
               onClick={sendMessage}
@@ -421,9 +421,9 @@ export default function ContactUs() {
               }
             >
               Send message
-            </button> */}
+            </button>
 
-            <button
+            {/* <button
               className="group relative  px-6 py-2  4k:px-10 4k:py-5
               font-semibold tracking-wide max-md:w-full
                text-white capitalize bg-gradient-to-r 
@@ -473,7 +473,7 @@ export default function ContactUs() {
                   `}
               ></span>
               <span className="relative 4k:text-4xl"> Send message</span>
-            </button>
+            </button> */}
           </div>
         </div>
       </section>

@@ -47,3 +47,15 @@ export async function onUploadVideoThumbnail(videoId: string, formData: FormData
     return null;
   }
 }
+
+
+export async function fetchTagSuggestions(keyword: string) {
+  const response = await apiClient(`/find/${keyword}`, "GET");
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+}

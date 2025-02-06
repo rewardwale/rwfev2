@@ -72,7 +72,6 @@ export default function LoginForm() {
         : "90";
       Newlogin(values, fingerPrint, latitude, longitude)
         .then((res) => {
-          console.log("===res===", res);
           if (res?.error) {
             // form.reset();
             setError(res?.error);

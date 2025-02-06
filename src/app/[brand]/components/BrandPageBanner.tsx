@@ -207,8 +207,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
 
   const handleUpload = async (id: string) => {
     if (selectedFile) {
-      console.log("Uploading file:", selectedFile);
-
       // Boilerplate for API call to upload logo
       const formData = new FormData();
       formData.append("image", selectedFile);
@@ -221,12 +219,10 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
           window.location.reload();
         }, 1000);
       }
-
-      console.log("checking res of upload", res.message === "Success.");
       // alert("Logo uploaded successfully!");
       handleCloseModal();
     } else if (selectedBannerFile) {
-      console.log("Uploading file:", selectedBannerFile);
+  
 
       // Boilerplate for API call to upload logo
       const formData = new FormData();
@@ -240,8 +236,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
           window.location.reload();
         }, 1000);
       }
-
-      console.log("checking res of upload", res.message === "Success.");
       // alert("Logo uploaded successfully!");
       handleCloseModal();
     } else {
@@ -289,7 +283,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
           text: "I found this interesting video. Take a look!",
           url: window.location.href,
         });
-        console.log("Content shared successfully");
       } catch (error) {
         console.log("Error sharing content:", error);
       }
@@ -325,7 +318,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
     }
   };
 
-  console.log("checking info.banner", info.banner);
 
   return (
     <div className="relative w-full">

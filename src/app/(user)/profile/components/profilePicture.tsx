@@ -79,10 +79,6 @@ export default function EditProfilePicture({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log(
-      !["image/jpeg", "image/png", "image/jpg"].includes(file?.type || ""),
-      (file?.size || 0) / 1048576,
-    );
     if ((file?.size || 0) / 1048576 > 4) {
       setWarning("please upload image less than 5MB");
     } else if (

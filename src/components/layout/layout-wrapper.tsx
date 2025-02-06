@@ -9,8 +9,8 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const showHeader = ["/", "/about-us", '/tnc'].includes(pathname);
-  const showFooter = ["/about-us", '/tnc','/how-it-works','/contact-us'].includes(pathname);
+  const showHeader = ["/", "/about-us", '/tnc','/privacy-policy','/guidelines'].includes(pathname);
+  const showFooter = ["/about-us", '/tnc','/how-it-works','/contact-us','/privacy-policy','/guidelines'].includes(pathname);
 
   return (
     <>

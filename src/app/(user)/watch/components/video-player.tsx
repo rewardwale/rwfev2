@@ -103,13 +103,11 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
   }, [showOverlay]);
 
   const handleRatingChange = async (rating: number) => {
-    console.log("User rating:", rating);
     setRating(rating);
     let payload = {
       rating: rating,
     };
     let res = await rateVideo(videoId, payload);
-    console.log("checking res of rate video", res.message);
     if (res) {
       setShowThankYou(true);
     }
@@ -124,8 +122,6 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
       </div>
     );
   }
-
-  // console.log("checking for videoUrl", videoUrl);
 
   return (
     <div

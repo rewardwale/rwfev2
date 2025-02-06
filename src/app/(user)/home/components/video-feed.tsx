@@ -21,8 +21,6 @@ export function VideoFeed({ selectedCategories }: VideoFeedProps) {
     const loadHomePageData = async () => {
       try {
         const data = await fetchHomePageData(selectedCategories);
-        console.log("checking res of getCategories", data);
-
         if (data) {
           setCategories(data?.data?.data);
         }

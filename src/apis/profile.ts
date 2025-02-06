@@ -14,7 +14,6 @@ export async function fetchProfileData() {
 
 export async function othersProfileData(userName: string) {
   const response = await apiClient(`/viewProfileByUsername/${userName}`, "GET");
-  console.log("response::::::::::;", response);
   if (response.success && response.data) {
     return response.data;
   } else {
@@ -43,7 +42,6 @@ export async function fetchProfilePosts(id: string, count?: number) {
     userId: id,
   }).toString();
   const response = await apiClient(`/uploadedVideos?${queryParams}`, "GET");
-  console.log("fetchProfilePosts::", response);
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -60,7 +58,6 @@ export async function fetchTaggedVideos(id: string, count: number) {
     userId: id,
   }).toString();
   const response = await apiClient(`/taggedVideos?${queryParams}`, "GET");
-  console.log("fetchTaggedVideos::", response);
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -70,7 +67,6 @@ export async function fetchTaggedVideos(id: string, count: number) {
 }
 
 export const followUser = async (id: string) => {
-  console.log(":::::::::::::::::::", id);
   const response = await apiClient(`/user/follow/${id}`, "PUT");
 
   if (response.success && response.data) {
@@ -93,7 +89,6 @@ export const unFollowUser = async (id: string) => {
 };
 
 export const getfollowerList = async (id: string, count: number) => {
-  console.log("::::::::::::::::", id, count);
   let queryParams;
   if (id.length === 0) {
     queryParams = new URLSearchParams({
@@ -110,7 +105,6 @@ export const getfollowerList = async (id: string, count: number) => {
   }
 
   const response = await apiClient(`/followerList?${queryParams}`, "GET");
-  console.log("getFollowersLIst", response);
   if (response.success && response.data) {
     return response.data;
   } else {
@@ -122,7 +116,6 @@ export const getfollowerList = async (id: string, count: number) => {
 export const uploadProfileImage = async ( formdata:FormData) => {
 
   const response = await apiClient(`/uploadProfileImage`, "PUT",formdata);
-  console.log("uploadProfileImage", response);
   if (response.success && response.data) {
     return response.data;
   } else {
@@ -146,7 +139,6 @@ export const updateUserProfile = async (value: {
   // facebook: string | undefined;
   linkdin: string | undefined;
 }) => {
-  console.log("profile data::::::::", value.dob);
   const response = await apiClient(`/profile`, "PUT", {
     indFirstName: value.firstname,
     indLastName: value.lastname,
@@ -179,7 +171,6 @@ export const updateUserProfile = async (value: {
 };
 
 export const getfollowingList = async (id: string, count: number) => {
-  console.log("::::::::::::::::", id, count);
   let queryParams;
   if (id.length === 0) {
     queryParams = new URLSearchParams({
@@ -196,7 +187,6 @@ export const getfollowingList = async (id: string, count: number) => {
   }
 
   const response = await apiClient(`/followingList?${queryParams}`, "GET");
-  console.log("followingList", response);
   if (response.success && response.data) {
     return response.data;
   } else {
@@ -207,7 +197,6 @@ export const getfollowingList = async (id: string, count: number) => {
 
 export const postShareUrl = async (url: string) => {
   const path = `${process.env.NEXT_PUBLIC_BASE_URL}${url}`;
-  console.log("path::::=>", path);
   const response = await apiClient(`/shorten`, "POST", { originalUrl: path });
 
   if (response.success && response.data) {

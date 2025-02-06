@@ -38,8 +38,6 @@ export function useComments(videoId: string | undefined) {
     }
   };
 
-  console.log("checking for data", comments, videoId);
-
   const handleLikeComment = async (
     commentId: string,
     isCurrentlyLiked: boolean
@@ -83,14 +81,12 @@ export function useComments(videoId: string | undefined) {
       if (res) {
         fetchComments();
       }
-      console.log("checking add comment", res);
     } catch (error) {
       console.error("not able to comment", error);
     }
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    console.log("handle delete called")
     try {
       const previousComments = [...comments];
       setComments(comments.filter((comment) => comment._id !== commentId));

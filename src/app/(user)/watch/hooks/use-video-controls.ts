@@ -19,14 +19,9 @@ export const useVideoControls = (
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
-  console.log("looking for videoref", videoRef.current);
-
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
-    console.log("VideoRef initialized:", videoRef.current);
-
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleVolumeChange = () => setIsMuted(video.muted);

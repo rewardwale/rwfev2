@@ -64,7 +64,6 @@ export default function BrandPage({ params }: { params: any }) {
 
     try {
       const data = await fetchbusinessPageData(handle);
-      console.log("Fetched brand data:", data);
       setBusinessID(data.data[0]._id);
 
       const brandData: BrandInfo = {

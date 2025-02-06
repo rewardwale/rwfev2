@@ -23,8 +23,6 @@ interface Props {
 }
 
 export default function SocialMedia({ profileData }: Props) {
-  console.log("checking profileData", profileData.SocialUrls);
-
   return (
     <div className=" flex sm:flex-col px-4 sm:ms-4 sm:mt-1 items-center justify-center">
       {profileData.SocialUrls?.whatsapp.length !== 0 && (

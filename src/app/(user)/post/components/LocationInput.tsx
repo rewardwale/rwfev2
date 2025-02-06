@@ -50,8 +50,6 @@ export function LocationInput({ value, onChange }: LocationInputProps) {
     }
   }, [onChange, autocomplete]);
 
-  console.log("checking apiError",apiError)
-
   return (
     <div className="space-y-2">
       <Label htmlFor="location">Location</Label>

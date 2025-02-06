@@ -21,16 +21,12 @@ import {
 
 export const NewSignUp = async (values: z.infer<typeof combinedSchema>) => {
   const validatedFields = combinedSchema.safeParse(values);
-
-  console.log(":::::::::", validatedFields);
 };
 
 export const PersonalInfo = async (
   values: z.infer<typeof PersonalInfoFormSchema>,fingerPrints:string,latitude:string,longitude:string
 ) => {
   const validatedFields = PersonalInfoFormSchema.safeParse(values);
-
-  console.log(":::::::::!!!!", validatedFields);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
@@ -48,7 +44,6 @@ export const PersonalInfo = async (
   }
   //check if email is already is in use or not- api
   if (validatedEmail.status && validateMobile.status) {
-    console.log("done!! email");
     return { success: "OTP has been sent to your email id and mobile number" };
   }
 };
@@ -63,8 +58,6 @@ export const Verification = async (
   longitude:string
 ) => {
   const validatedFields = OTPFormSchema.safeParse(values);
-
-  console.log(":::::::::", validatedFields, code, number, email);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
@@ -72,8 +65,6 @@ export const Verification = async (
 
   const getMobileOtp = await verifyOTPMobile(code, number, verifyMobileNumber,fingerPrints,latitude,longitude);
   const getEmailOtp = await verifyOTPEmail(verifyEmail, email,fingerPrints,latitude,longitude);
-  console.log(":::11::", getEmailOtp);
-  console.log(":::21::", getMobileOtp);
   // if (getEmailOtp?.status) {
   //   return { success: getEmailOtp.message };
   // }
@@ -91,8 +82,6 @@ export const Verification = async (
 
 export const Final = async (values: z.infer<typeof PasswordFormSchema>,latitude:string,longitude:string) => {
   const validatedFields = PasswordFormSchema.safeParse(values);
-
-  console.log(":::::::::", validatedFields);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
@@ -113,8 +102,6 @@ export const simpleForm = async (
   longitude: string,
 ) => {
   const validatedFields =await newSignupRwSchema.parseAsync(values);
-
-  console.log(":::::::::!!!!", validatedFields);
   if (!validatedFields) {
     return { error: "Invalid fields!" };
   }
@@ -131,7 +118,6 @@ export const simpleForm = async (
   }
   //check if email is already is in use or not- api
   if (validatedEmail.status && validateMobile.status) {
-    console.log("done!! email");
     return { success: "OTP has been sent to your email id and mobile number" };
   }
   // if (validatedEmail.status) {
@@ -152,8 +138,6 @@ export const simpleProviderForm = async (
   longitude: string,
 ) => {
   const validatedFields =await newSignupSchema.parseAsync(values);
-
-  console.log(":::::::::!!!!", validatedFields);
   if (!validatedFields) {
     return { error: "Invalid fields!" };
   }
@@ -175,7 +159,6 @@ export const simpleProviderForm = async (
   //   return { success: "OTP has been sent to your email id and mobile number" };
   // }
   if (validateMobile.status) {
-    console.log("done!! mobile");
     return { success: "OTP has been sent to your  mobile number" };
   }
 

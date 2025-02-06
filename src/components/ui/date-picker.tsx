@@ -70,9 +70,7 @@ export function DatePicker({
     if (selectedData) {
       setDate(selectedData);
       onDateChange(selectedData);
-      console.log("Date being sent to parent:", selectedData);
     }
-    console.log("undef");
   };
 
   return (

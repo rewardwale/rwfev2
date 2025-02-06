@@ -15,8 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Toaster, toast } from "sonner";
-import api from "@/lib/api";
+import { toast } from "sonner";
 import axios from "axios";
 import {
   getSignedUrl,
@@ -54,10 +53,11 @@ export function ReviewForm() {
   const [questions, setQuestions] = useState<Question[]>(INITIAL_QUESTIONS);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
 
   const router = useRouter();
   const isMobile = useIsMobile();
-  console.log("checking videoUrl", businessID);
 
   const averageRating =
     questions.reduce((acc, q) => acc + q.rating, 0) / questions.length;
@@ -95,8 +95,8 @@ export function ReviewForm() {
       const body = {
         ext,
         desc: description,
-        hashtags: [],
-        tags: [],
+        hashtags,
+        tags,
         latitude: 90,
         longitude: 90,
         isSponsored: false,
@@ -111,10 +111,7 @@ export function ReviewForm() {
 
       // Get signed URL
       const { data } = await getSignedUrl(body);
-      console.log("checking data of signed url of signed url", data);
       if (data.isSignedURL) {
-        setShowSuccess(true);
-        console.log("checking code execution", data.location);
 
         const videoUpload = await axios.put(data?.location, videoFile, {
           headers: {
@@ -122,13 +119,10 @@ export function ReviewForm() {
           },
           maxBodyLength: Infinity,
         });
-        console.log("checking upload api res", videoUpload.status);
-
         // Trigger onUploadSuccess after receiving 200 status from videoUpload
         if (videoUpload.status === 200) {
           try {
-            const res = await onUploadSuccess(data.videoId);
-            console.log("Response from onUploadSuccess:", res);
+            // const res = await onUploadSuccess(data.videoId);
             const formData = new FormData();
             formData.append("image", thumbnailFile);
             const thumbnailRes = await onUploadVideoThumbnail(
@@ -142,7 +136,17 @@ export function ReviewForm() {
       }
     } finally {
       setIsLoading(false);
+      setShowSuccess(true);
+
     }
+  };
+
+  const handleHashtagsChange = (newHashtags: string[]) => {
+    setHashtags(newHashtags);
+  };
+
+  const handleTagsChange = (newTags: string[]) => {
+    setTags(newTags);
   };
 
   const renderStepContent = () => {
@@ -219,6 +223,7 @@ export function ReviewForm() {
                 description={description}
                 location={location}
                 thumbnailUrl={thumbnailUrl}
+                videoUrl={videoUrl}
                 onTitleChange={setTitle}
                 onCategoryChange={setCategory}
                 onDescriptionChange={setDescription}
@@ -227,6 +232,8 @@ export function ReviewForm() {
                   setThumbnailUrl(url);
                   setThumbnailFile(file);
                 }}
+                onHashtagsChange={handleHashtagsChange}
+                onTagsChange={handleTagsChange}
                 onNext={() => setStep(3)}
                 setStep={setStep}
               />

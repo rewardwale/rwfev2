@@ -46,7 +46,6 @@ export default function WatchPage() {
   const videoId = searchParams.get("v") || "";
   const [initialVideo, setInitialVideo] = useState<VideoDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const [relatedVideos, setRelatedVideos] = useState<VideoDetails[]>([]);
   const {
     videos: fetchedVideos,
     error,
@@ -65,11 +64,6 @@ export default function WatchPage() {
     ...(initialVideo ? [initialVideo] : []),
     ...fetchedVideos,
   ];
-
-  console.log("Initial video:", initialVideo);
-  console.log("Related videos:", relatedVideos);
-  console.log("Fetched videos:", fetchedVideos);
-  console.log("Final videos array:", videos);
 
   useEffect(() => {
     // Initialize IntersectionObserver
@@ -176,7 +170,6 @@ export default function WatchPage() {
 
 
   const handleScroll = (direction: "up" | "down") => {
-    console.log("inside handlescroll");
     const newIndex =
       direction === "up"
         ? Math.max(0, currentIndex - 1)
@@ -216,11 +209,11 @@ export default function WatchPage() {
       <main className="flex-1 relative overflow-y-scroll snap-y snap-mandatory">
         <div className="absolute inset-0 flex items-center justify-center">
           <div
-            className="relative w-full md:max-w-fit transition-all duration-400 ease-in-out"
+            className="relative w-full  transition-all duration-400 ease-in-out"
             style={{
               height: "-webkit-fill-available",
               paddingBlock: "12px",
-              // width:'400px'
+              maxWidth:`${!isMobile && "400px"}`
             }}
             id="video-container"
           >

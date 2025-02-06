@@ -108,8 +108,6 @@ export function BusinessForm() {
   const currentStepIndex = STEPS.findIndex((step) => step.id === currentStep);
   const isLastStep = currentStepIndex === STEPS.length - 1;
 
-  console.log("checking isLastStep", isLastStep);
-
   const getStepFields = (step: FormStep): (keyof BusinessFormData)[] => {
     switch (step) {
       case "business":
@@ -163,8 +161,6 @@ export function BusinessForm() {
       try {
         const data = form.getValues();
         const response = await addBusiness(data);
-
-        console.log("checking res of add bussines", response);
         if (response?.data?.statusCode) {
           toast.success("Business information submitted successfully!");
           setShowSuccessModal(true)
