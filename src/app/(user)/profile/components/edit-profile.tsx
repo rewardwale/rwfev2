@@ -26,13 +26,13 @@ interface Props {
     gender: string;
     email: string | undefined;
     phone: string | undefined;
-    SocialUrls: {
-      whatsapp: string;
-      linkedin: string;
-      // facebook: string;
-      instagram: string;
-      twitter: string;
-    };
+    // SocialUrls: {
+    //   whatsapp: string;
+    //   linkedin: string;
+    //   // facebook: string;
+    //   instagram: string;
+    //   twitter: string;
+    // };
   };
   profileData: ProfileDataProps;
   reload: (

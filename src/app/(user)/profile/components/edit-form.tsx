@@ -38,13 +38,13 @@ interface Props {
     gender: string;
     email: string | undefined;
     phone: string | undefined;
-    SocialUrls: {
-      whatsapp: string;
-      linkedin: string;
-      // facebook: string;
-      instagram: string;
-      twitter: string;
-    };
+    // SocialUrls: {
+    //   whatsapp: string;
+    //   linkedin: string;
+    //   // facebook: string;
+    //   instagram: string;
+    //   twitter: string;
+    // };
   };
   profileData: ProfileDataProps;
   reload: (
@@ -79,10 +79,10 @@ export default function EditForm({ data, reload, profileData }: Props) {
       gender: data.gender,
       title: data.title,
       desc: data.desc,
-      watsapp: data?.SocialUrls?.whatsapp,
-      instagram: data.SocialUrls?.instagram,
-      twitter: data.SocialUrls?.twitter,
-      linkdin: data.SocialUrls?.linkedin,
+      // watsapp: data?.SocialUrls?.whatsapp,
+      // instagram: data.SocialUrls?.instagram,
+      // twitter: data.SocialUrls?.twitter,
+      // linkdin: data.SocialUrls?.linkedin,
     },
   });
 

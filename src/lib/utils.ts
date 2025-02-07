@@ -6,6 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const isUserLoggedIn = (): boolean => {
+  if (typeof window === "undefined") return false; // Ensure code doesn't run on the server (for SSR)
+
   const token = localStorage.getItem("token");
-  return !!token && token.length > 0;
+  return !!token && token.trim().length > 0;
 };
