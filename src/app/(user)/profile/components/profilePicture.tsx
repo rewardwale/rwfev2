@@ -32,13 +32,13 @@ interface Props {
     email: string | undefined;
     phone: string | undefined;
     profileImage: string;
-    SocialUrls: {
-      whatsapp: string;
-      linkedin: string;
-      // facebook: string;
-      instagram: string;
-      twitter: string;
-    };
+    // SocialUrls: {
+    //   whatsapp: string;
+    //   linkedin: string;
+    //   // facebook: string;
+    //   instagram: string;
+    //   twitter: string;
+    // };
   };
   imageReload: (image: string) => void;
 }

@@ -1,19 +1,15 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, isUserLoggedIn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Home,
-  Library,
   Menu,
-  Wallet,
-  CircleEllipsis,
   UserRound,
   Bookmark,
-  CircleHelp,
   CirclePlus,
   ChevronDown,
 } from "lucide-react";
@@ -28,18 +24,23 @@ export function Sidebar({ className }: SidebarProps) {
   const [businessPageData, setBusinessPageData] = useState<any[]>([]);
   const [isBusinessPageOpen, setIsBusinessPageOpen] = useState(false);
 
+  const isLoggedIn = isUserLoggedIn()
+
+
   useEffect(() => {
+    if (!isLoggedIn) return; // 🚀 Prevent API call if not logged in
+
     const getBusinessPages = async () => {
       try {
         const res = await getBusinessPageList();
-        setBusinessPageData(res.data.data || []);
+        setBusinessPageData(res.data?.data || []);
       } catch (error) {
         console.error("Error fetching business pages", error);
       }
     };
 
     getBusinessPages();
-  }, []);
+  }, [isLoggedIn]);
 
   const SidebarContent = () => (
     <ScrollArea className="h-screen">
