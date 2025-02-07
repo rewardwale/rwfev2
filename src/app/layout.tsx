@@ -25,8 +25,13 @@ export default function RootLayout({
       className={`${notoSans.className} ${notoSerif.variable} ${inter.variable} ${roboto.variable}`}
       suppressHydrationWarning
     >
-      <body className="max-sm:overscroll-none" >
-
+      <head>
+        <meta
+          name="google-site-verification"
+          content="DEIRrbWosKczqXEVZHLW-9aDo_oF3p8iqe4Ndl_kPyY"
+        />
+      </head>
+      <body className="max-sm:overscroll-none">
         <Toaster position="top-center" richColors />
         <NextThemesProvider
           attribute="class"
@@ -37,9 +42,8 @@ export default function RootLayout({
           <ThemeDataProvider>
             <LayoutWrapper>
               <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID!}>
-                <div className="container mx-auto ">{children}</div>
+                <div className="container mx-auto">{children}</div>
               </GoogleOAuthProvider>{" "}
-              
             </LayoutWrapper>
           </ThemeDataProvider>
         </NextThemesProvider>
