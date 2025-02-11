@@ -11,7 +11,7 @@ export interface BusinessFormData {
   handle: string;
   title: string;
   desc: string;
-  websiteUrl: string;
+  websiteURLs: string;
   location: string;
   locationCoordinates: {
     latitude: number;

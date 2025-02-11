@@ -26,11 +26,18 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <meta
-          name="google-site-verification"
-          content="DEIRrbWosKczqXEVZHLW-9aDo_oF3p8iqe4Ndl_kPyY"
-        />
+        {process.env.NEXT_PUBLIC_ENV === "uat" ? (
+          <meta name="robots" content="noindex" />
+        ) : process.env.NEXT_PUBLIC_ENV === "development" ? (
+          <meta name="robots" content="noindex, nofollow" />
+        ) : (
+          <meta
+            name="google-site-verification"
+            content="DEIRrbWosKczqXEVZHLW-9aDo_oF3p8iqe4Ndl_kPyY"
+          />
+        )}
       </head>
+
       <body className="max-sm:overscroll-none">
         <Toaster position="top-center" richColors />
         <NextThemesProvider

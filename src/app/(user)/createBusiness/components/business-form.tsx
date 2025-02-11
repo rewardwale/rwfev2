@@ -7,7 +7,7 @@ import { businessFormSchema } from "@/lib/schemas/business";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { BusinessStep } from "./steps/business-step";
 import { ContactStep } from "./steps/contact-step";
 import { HoursStep } from "./steps/hours-step";
@@ -32,7 +32,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 
 const STEPS: { title: string; icon: React.ReactNode; id: FormStep }[] = [
@@ -75,7 +74,7 @@ const DEFAULT_VALUES: BusinessFormData = {
   handle: "",
   title: "",
   desc: "",
-  websiteUrl: "",
+  websiteURLs: "",
   location: "",
   locationCoordinates: {
     latitude: 0,
@@ -111,7 +110,7 @@ export function BusinessForm() {
   const getStepFields = (step: FormStep): (keyof BusinessFormData)[] => {
     switch (step) {
       case "business":
-        return ["businessName", "handle", "title", "desc", "websiteUrl"];
+        return ["businessName", "handle", "title", "desc", "websiteURLs"];
       case "contact":
         return ["contactUsDetails"];
       case "hours":
@@ -163,7 +162,7 @@ export function BusinessForm() {
         const response = await addBusiness(data);
         if (response?.data?.statusCode) {
           toast.success("Business information submitted successfully!");
-          setShowSuccessModal(true)
+          setShowSuccessModal(true);
         }
       } catch (error: any) {
         console.error("Submission error:", error.message || error);

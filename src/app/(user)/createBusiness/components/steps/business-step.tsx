@@ -110,7 +110,7 @@ export function BusinessStep({ form }: BusinessStepProps) {
 
       <FormField
         control={form.control}
-        name="websiteUrl"
+        name="websiteURLs"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Website URL</FormLabel>
