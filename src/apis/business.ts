@@ -11,6 +11,20 @@ export const addBusiness = async (payload: Record<string, any>) => {
   return response.data;
 };
 
+export const editBusiness = async (
+  handle: string,
+  payload: Record<string, any>,
+) => {
+  const response = await apiClient(`/businessPage/${handle}`, "PUT", payload);
+
+  if (!response.success) {
+    console.error("Error adding business:", response.error);
+    throw new Error(response.error || "Failed to add business");
+  }
+
+  return response.data;
+};
+
 export async function fetchbusinessPageData(handle: string) {
   const response = await apiClient(`/businessPageByHandle/${handle}`, "GET");
 

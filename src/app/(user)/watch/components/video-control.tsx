@@ -90,7 +90,6 @@ export function VideoControls({ video }: VideoControlsProps) {
 
   const isMobile = useIsMobile();
 
-
   const checkToken = async () => {
     const token = localStorage.getItem("token");
     if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
@@ -264,7 +263,20 @@ export function VideoControls({ video }: VideoControlsProps) {
       case "WEBSITE":
         // Open the website in a new tab
         if (video?.website) {
-          window.open(video.website, "_blank");
+          let websiteUrl = video.website;
+          if (
+            !websiteUrl.startsWith("http://") &&
+            !websiteUrl.startsWith("https://")
+          ) {
+            // Check if it starts with "www."
+            if (websiteUrl.startsWith("www.")) {
+              websiteUrl = `https://${websiteUrl}`;
+            } else {
+              // Assume it's a domain without protocol or subdomain
+              websiteUrl = `https://${websiteUrl}`;
+            }
+          }
+          window.open(websiteUrl, "_blank");
         } else {
           console.warn("Website is not available");
         }

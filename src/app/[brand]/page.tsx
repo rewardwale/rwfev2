@@ -42,6 +42,7 @@ interface BrandInfo {
   custId: string;
   handle: string;
   websiteURLs: string[];
+  defaultCommunication: string;
   [key: string]: any; // Allow additional properties for flexibility
 }
 
@@ -218,14 +219,15 @@ export default function BrandPage({ params }: { params: any }) {
                             />
                           ))
                         ) : (
-                          <div className="w-full text-center"
-                          style={{
-                            display:'flex',
-                            flexDirection:'column',
-                            justifyContent:'center',
-                            alignItems:'center',
-                            gap:'8px'
-                          }}
+                          <div
+                            className="w-full text-center"
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
                           >
                             <span>No Posts Yet</span>
                             {isOwner && (

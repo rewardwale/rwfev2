@@ -1,6 +1,3 @@
-import Image from "next/image";
-import styles from "./BrandPageBanner.module.css";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link, Pencil, PhoneCall, Share2, Star, StarHalf } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +9,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  editBusiness,
   followMerchant,
   unFollowMerchant,
   uploadBusinessBanner,
@@ -21,49 +19,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { BusinessModal } from "./BusinessModal";
 import useIsOwner from "@/hooks/use-owner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-const editBusinessSchema = z.object({
-  businessName: z
-    .string()
-    .min(3, "Business name must be at least 3 characters.")
-    .max(100, "Business name cannot exceed 100 characters."),
-  contactUsDetails: z.object({
-    indEmail: z.string().email("Invalid email address."),
-    indCountryCode: z.string().min(1, "Country code is required."),
-    indMobileNum: z.string().min(10, "Mobile number must be valid."),
-  }),
-  operationalHours: z.string().optional(),
-  handle: z
-    .string()
-    .min(3, "Handle must be at least 3 characters.")
-    .max(30, "Handle cannot exceed 30 characters."),
-  title: z.string().optional(),
-  desc: z.string().optional(),
-  websiteUrl: z.string().url("Invalid URL.").optional(),
-  location: z.string().optional(),
-  locationCoordinates: z.object({
-    latitude: z.number(),
-    longitude: z.number(),
-  }),
-  socialUrls: z.object({
-    whatsapp: z.string().optional(),
-    linkedin: z.string().optional(),
-    facebook: z.string().optional(),
-    instagram: z.string().optional(),
-    twitter: z.string().optional(),
-  }),
-  keywords: z.array(z.string()).optional(),
-  content: z.string().optional(),
-});
-
-type EditBusinessFormValues = z.infer<typeof editBusinessSchema>;
+import { EditBusinessDialog } from "./EditBusinessDialog";
 
 export function BrandHeader({ info }: { info: BrandInfo }) {
   const followButtonRef = useRef<HTMLButtonElement>(null);
@@ -78,30 +34,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
     null,
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<EditBusinessFormValues>({
-    resolver: zodResolver(editBusinessSchema),
-    defaultValues: {
-      businessName: info.businessName,
-      contactUsDetails: info.contactUsDetails,
-      operationalHours: info.operationalHours,
-      handle: info.handle,
-      title: info.title,
-      desc: info.desc,
-      websiteUrl: info.websiteURLs?.[0] || "",
-      location: info.location,
-      locationCoordinates: {
-        latitude: info.locationCoordinates?.coordinates[1] || 0,
-        longitude: info.locationCoordinates?.coordinates[0] || 0,
-      },
-      socialUrls: info.socialUrls,
-      keywords: [],
-      content: "",
-    },
-  });
 
   const mockData = {
     _id: info?._id || "",
@@ -140,6 +72,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
     status: info.status || "",
     avgRating: info.avgRating || 0,
     totalRating: info.totalRating || 0,
+    defaultCommunication: info.defaultCommunication,
     defaultBusinessBanner: info.defaultBusinessBanner || {
       original: "",
       thumbnail: "",
@@ -222,8 +155,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
       // alert("Logo uploaded successfully!");
       handleCloseModal();
     } else if (selectedBannerFile) {
-  
-
       // Boilerplate for API call to upload logo
       const formData = new FormData();
       formData.append("image", selectedBannerFile);
@@ -299,25 +230,29 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
   const isMobile = useIsMobile();
   const router = useRouter();
 
-  const onSubmit = async (data: EditBusinessFormValues) => {
-    const payload = {
-      ...data,
-      locationCoordinates: {
-        latitude: data.locationCoordinates.latitude,
-        longitude: data.locationCoordinates.longitude,
-      },
-    };
-
+  const handleEditSubmit = async (data: any) => {
     try {
-      // Replace `editBusinessPage` with your API call function
-      // await editBusinessPage(info._id, payload);
-      alert("Business details updated successfully!");
-      setIsModalOpen(false);
+      const formattedData = {
+        ...data,
+        websiteURLs:
+          Array.isArray(data.websiteURLs) && data.websiteURLs.length > 0
+            ? data.websiteURLs[0]
+            : "",
+      };
+
+      const response = await editBusiness(info.handle, formattedData);
+      console.log("checking response fo edit business", response.message);
+      if (response.success === 'Success') {
+        toast.success("Business details updated successfully");
+        window.location.reload();
+      } else {
+        toast.error("Failed to update business details");
+      }
     } catch (error) {
-      console.error("Failed to update business details:", error);
+      console.error("Error updating business:", error);
+      toast.error("Failed to update business details");
     }
   };
-
 
   return (
     <div className="relative w-full">
@@ -430,7 +365,8 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
               </div>
             </div>
             <div
-              className="flex lg:justify-end lg:items-center gap-2 w-full absolute bottom-0 top-48 min-md:top-6"
+              className="flex lg:justify-end lg:items-center gap-2 w-full absolute bottom-0 top-48
+                min-md:top-6"
               style={{
                 left: "100%",
               }}
@@ -536,20 +472,31 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
               </div>
             </div>
             <div className="flex gap-5">
-              <div>
-                <Button
-                  ref={followButtonRef}
-                  onClick={isFollowed ? handleUnfollow : handleFollow}
-                  className="px-6"
-                >
-                  {isFollowed ? "UnFollow" : "Follow"}
-                </Button>
-              </div>
+              {!isOwner && (
+                <div>
+                  <Button
+                    ref={followButtonRef}
+                    onClick={isFollowed ? handleUnfollow : handleFollow}
+                    className="px-6"
+                  >
+                    {isFollowed ? "UnFollow" : "Follow"}
+                  </Button>
+                </div>
+              )}
+
               <div>
                 <div className="flex gap-5">
                   <Button onClick={() => setIsDetailsModalOpen(true)}>
                     More Details
                   </Button>
+                  {isOwner && (
+                    <Button
+                      onClick={() => setIsEditModalOpen(true)}
+                      className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                    >
+                      Edit
+                    </Button>
+                  )}
                   {isOwner && (
                     <Button
                       onClick={() =>
@@ -724,71 +671,12 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
       />
-
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit Business Details</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Business Name</label>
-              <input
-                {...register("businessName")}
-                className="input"
-                placeholder="Enter business name"
-              />
-              {errors.businessName && (
-                <p className="text-red-500 text-sm">
-                  {errors.businessName.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Email</label>
-              <input
-                {...register("contactUsDetails.indEmail")}
-                className="input"
-                placeholder="Enter email"
-              />
-              {errors.contactUsDetails?.indEmail && (
-                <p className="text-red-500 text-sm">
-                  {errors.contactUsDetails.indEmail.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Mobile Number</label>
-              <input
-                {...register("contactUsDetails.indMobileNum")}
-                className="input"
-                placeholder="Enter mobile number"
-              />
-              {errors.contactUsDetails?.indMobileNum && (
-                <p className="text-red-500 text-sm">
-                  {errors.contactUsDetails.indMobileNum.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Website URL</label>
-              <input
-                {...register("websiteUrl")}
-                className="input"
-                placeholder="Enter website URL"
-              />
-              {errors.websiteUrl && (
-                <p className="text-red-500 text-sm">
-                  {errors.websiteUrl.message}
-                </p>
-              )}
-            </div>
-            <Button type="submit" className="w-full">
-              Save Changes
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <EditBusinessDialog
+        business={mockData}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={handleEditSubmit}
+      />
     </div>
   );
 }
