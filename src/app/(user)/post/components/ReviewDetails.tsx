@@ -31,11 +31,6 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { fetchTagSuggestions } from "@/apis/post";
 
 interface Tag {

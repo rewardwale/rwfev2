@@ -30,6 +30,7 @@ export interface BrandInfo {
   custId: string;
   handle: string;
   websiteURLs: string[];
+  defaultCommunication: string;
   [key: string]: any; // Allow additional properties for flexibility
 }
 
@@ -70,7 +71,7 @@ export interface Business {
   handle: string;
   title: string;
   desc: string;
-  websiteURLs: string[]; 
+  websiteURLs: string[];
   location: string;
   locationCoordinates: {
     type: string;
@@ -88,6 +89,7 @@ export interface Business {
   totalRating: number;
   defaultBusinessBanner: Image;
   defaultBusinessImage: Image;
+  defaultCommunication: string;
   businessBanners: Image[];
   businessImages: Image[];
 }
