@@ -25,6 +25,7 @@ export interface Profile {
     isFollow: boolean;
     location?: string;
     individualId?:string;
+    handle: string;
   }
   
   export interface IndPic {

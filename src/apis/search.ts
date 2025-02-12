@@ -7,7 +7,7 @@ export const searchBusinessUsers = async (
 ) => {
   try {
     const res = await apiClient(
-      `search?limit=${limit}&skip=${count}&keyword=${word}&type=businessUsers`
+      `search?limit=${limit}&skip=${count}&keyword=${word}&type=businessPage`
    ,"GET" );
 
     if (res.success) {

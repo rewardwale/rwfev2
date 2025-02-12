@@ -90,6 +90,8 @@ export function VideoControls({ video }: VideoControlsProps) {
 
   const isMobile = useIsMobile();
 
+  console.log("checking video data", video);
+
   const checkToken = async () => {
     const token = localStorage.getItem("token");
     if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
