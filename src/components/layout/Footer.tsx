@@ -53,14 +53,14 @@ const Footer = () => {
                 </a>
               </li>
 
-              <li className="text-sm mb-1">
+              {/* <li className="text-sm mb-1">
                 <a
                   className="hover:underline hover:text-blue-500 cursor-pointer"
                   onClick={() => router.push("/earnrewards")}
                 >
                   Earn Rewards & cash coins
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 

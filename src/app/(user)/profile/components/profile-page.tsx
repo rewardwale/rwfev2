@@ -44,10 +44,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SocialMedia from "./SocialMedia";
 import EditProfile from "./edit-profile";
 import { FollowingList } from "./following";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { URL } from "url";
-import ShareLinkModal from "./shareModal";
+
 import EditProfilePicture from "./profilePicture";
 import { isUserLoggedIn } from "@/lib/utils";
 import AuthModal from "@/components/ui/AuthModal";
@@ -119,7 +116,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
     if (profileData) {
       const data = localStorage.getItem("uib");
 
-      // ✅ Safe parsing of JSON
+      // Safe parsing of JSON
       let parsedData;
       try {
         parsedData = data ? JSON.parse(data) : null; // Ensure it's valid JSON
@@ -128,7 +125,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
         parsedData = null;
       }
 
-      // ✅ Check if parsedData exists before accessing properties
+      // Check if parsedData exists before accessing properties
       if (parsedData?.userName === profileData.userName) {
         setMyProfile(true);
       }
@@ -329,6 +326,27 @@ const ProfilePage = ({ profileData, id }: Props) => {
     }
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Check out this video",
+          text: "I found this interesting video. Take a look!",
+          url: `${window.location.href + "/" + profileData?.userName}`,
+        });
+      } catch (error) {
+        console.log("Error sharing content:", error);
+      }
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      console.log("Web Share API not supported");
+      // You can implement a custom share dialog here
+      alert(
+        "Sharing is not supported on this browser. You can copy the URL to share.",
+      );
+    }
+  };
+
   return (
     profileData && (
       <>
@@ -468,10 +486,24 @@ const ProfilePage = ({ profileData, id }: Props) => {
                     </Dialog>
                   )}
                 </div>
-                <ShareLinkModal
+                {/* <ShareLinkModal
                   shareLink={handleShareFunctionality}
                   link={shareLink}
-                />
+                /> */}
+                <div
+                  style={{
+                    border: "1px solid rgb(52,52,52,1)",
+                    borderRadius: "6px",
+                    padding: "6px",
+                    display: "flex",
+                    gap: "4px",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={handleShare}
+                >
+                  Share <Share2Icon size={16} />
+                </div>
               </div>
 
               <div className="max-w-[650px] col-span-1 flex flex-col px-4">

@@ -24,8 +24,7 @@ export function Sidebar({ className }: SidebarProps) {
   const [businessPageData, setBusinessPageData] = useState<any[]>([]);
   const [isBusinessPageOpen, setIsBusinessPageOpen] = useState(false);
 
-  const isLoggedIn = isUserLoggedIn()
-
+  const isLoggedIn = isUserLoggedIn();
 
   useEffect(() => {
     if (!isLoggedIn) return; // 🚀 Prevent API call if not logged in
@@ -41,6 +40,10 @@ export function Sidebar({ className }: SidebarProps) {
 
     getBusinessPages();
   }, [isLoggedIn]);
+
+  const username = localStorage.getItem('userName');
+
+  console.log("checking business data", username);
 
   const SidebarContent = () => (
     <ScrollArea className="h-screen">
