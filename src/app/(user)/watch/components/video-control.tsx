@@ -45,6 +45,7 @@ interface VideoDetails {
       original: string;
       thumbnail: string;
     };
+    defaultCommunication: string | undefined;
   };
   title: string;
   hashtags: string[];
@@ -60,7 +61,6 @@ interface VideoDetails {
     indEmail: string;
   };
   website: string;
-  defaultCommunication: string;
   videoId: string;
 }
 
@@ -230,7 +230,8 @@ export function VideoControls({ video }: VideoControlsProps) {
     }
   }
 
-  const handleShowNow = (defMethod: string) => {
+  const handleShowNow = (defMethod: any) => {
+    console.log("chekcing video.defaultCommunication", defMethod);
     switch (defMethod) {
       case "WHATSAPP_NUMBER":
         // Trigger WhatsApp with the number
@@ -441,7 +442,9 @@ export function VideoControls({ video }: VideoControlsProps) {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handleShowNow(video.defaultCommunication)}
+                onClick={() =>
+                  handleShowNow(video?.businessDetails?.defaultCommunication)
+                }
               >
                 Shop Now
               </Button>

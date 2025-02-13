@@ -3,7 +3,6 @@ import "./globals.css";
 import { notoSans, notoSerif, inter, roboto } from "@/lib/fonts";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ThemeDataProvider from "@/context/theme-data-provider";
-import { Header } from "@/components/layout";
 import LayoutWrapper from "@/components/layout/layout-wrapper";
 import { Toaster } from "sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -13,6 +12,7 @@ export const metadata: Metadata = {
   description:
     "Share your experiences about products and services in 2 minute video reviews. Rate business, products and services based on your experience. Engage with your favourite brands 1-on-1. Get rewarded with special offers, cash, coupons and discounts from brands directly",
 };
+
 
 export default function RootLayout({
   children,
@@ -48,9 +48,9 @@ export default function RootLayout({
         >
           <ThemeDataProvider>
             <LayoutWrapper>
-              <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID!}>
+              <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
                 <div className="container mx-auto">{children}</div>
-              </GoogleOAuthProvider>{" "}
+              </GoogleOAuthProvider>
             </LayoutWrapper>
           </ThemeDataProvider>
         </NextThemesProvider>

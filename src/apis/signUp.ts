@@ -1,5 +1,6 @@
-"use server";
-import axios, { AxiosError } from "axios";
+"use client";
+import { apiClient } from "@/lib/apiClient";
+import axios from "axios";
 
 export const checkUserNameAvailability = async (
   userName: string,
@@ -34,8 +35,9 @@ export const checkUserNameAvailability = async (
     }
   } catch (error: any) {
     console.error("error", error.response);
-    return {status:false,message:error.response.data.message}  }
-}
+    return { status: false, message: error.response.data.message };
+  }
+};
 
 export async function validateEmail(
   email: string,
@@ -190,7 +192,7 @@ export async function signup(
         },
         indEmail: value.email,
         indPwd: value.password,
-        location:"karnataka",
+        location: "karnataka",
         indCountryCode: "91",
         indMobileNum: value.mobile,
         // indDob: "",
@@ -220,16 +222,21 @@ export async function signup(
       },
     );
     if (response.status === 200) {
-      return {status:true,message:"successfully created"} 
+      return { status: true, message: "successfully created" };
     } else {
-      return {status:false,message:response.data.message}; 
+      return { status: false, message: response.data.message };
     }
   } catch (error: any) {
     return { status: false, message: error.response.data.message };
   }
 }
 
-export async function resendOTPEmail( email: string,  fingerPrints:string,latitude:string,longitude:string) {
+export async function resendOTPEmail(
+  email: string,
+  fingerPrints: string,
+  latitude: string,
+  longitude: string,
+) {
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resendOTP?emailId=${email}`,
@@ -287,61 +294,18 @@ export async function resendOTPMobile(
   }
 }
 
-export async function signupWithProvider(
-  value: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    userName: string;
-    mobile: string;
-    fingerPrints: string;
-  },
-  latitude: string,
-  longitude: string,
-  providerToken: string,
-  provider: string,
-) {
+export const signupWithSocialProvider = async (
+  payload: Record<string, any>,
+) => {
   try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/signupWithSocialProvider`,
-      {
-        indFirstName: value.firstName,
-        indLastName: value.lastName,
-        userName: value.userName,
-        location: "chennai",
-        locationCoordinates: {
-          latitude: latitude,
-          longitude: longitude,
-        },
-        indEmail: value.email,
-        indCountryCode: "91",
-        indDob: "2000-01-11",
-        indGender: "male",
-        indMobileNum: value.mobile,
-        indEmailNotify: true,
-        indMobileNotify: true,
-        indPushNotify: true,
-        indWhatsappNotify: true,
-        socialProviderType: "GOOGLE",
-        socialProviderToken: providerToken,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          fingerprint: value.fingerPrints,
-          latitude: latitude,
-          longitude: longitude,
-          lan: "en",
-        },
-        timeout: 10000,
-      },
+    const response = await apiClient(
+      "/signupWithSocialProvider",
+      "POST",
+      payload,
     );
-    if (response.status === 200) {
-      return { status: true, message: "successfully created" };
-    } else {
-      return { status: false, message: "Signup isnt successful" };
-    }
-  } catch (error: any) {
-    return { status: false, message: error.response.data.message };
+    return response.data;
+  } catch (error) {
+    console.error("Error replying to comment:", error);
+    throw error;
   }
-}
+};

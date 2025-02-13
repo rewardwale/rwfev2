@@ -11,7 +11,6 @@ import {
 import * as z from "zod";
 import {
   checkUserNameAvailability,
-  signupWithProvider,
   validateEmail,
   validatePhone,
   verifyOTPEmail,

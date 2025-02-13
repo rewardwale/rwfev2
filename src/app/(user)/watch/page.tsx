@@ -36,7 +36,7 @@ interface VideoDetails {
   totalComments: number;
   isFollowed: boolean;
   website: string;
-  defaultCommunication:string
+  defaultCommunication: string;
 }
 
 export default function WatchPage() {
@@ -57,13 +57,12 @@ export default function WatchPage() {
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    handleScroll('down')
+    handleScroll("down");
   }, [initialVideo]);
 
-  const videos = [
-    ...(initialVideo ? [initialVideo] : []),
-    ...fetchedVideos,
-  ];
+  const videos = [...(initialVideo ? [initialVideo] : []), ...fetchedVideos];
+
+  console.log("checking videos in page.tsx", videos);
 
   useEffect(() => {
     // Initialize IntersectionObserver
@@ -167,8 +166,6 @@ export default function WatchPage() {
     }
   }, [videoId]);
 
-
-
   const handleScroll = (direction: "up" | "down") => {
     const newIndex =
       direction === "up"
@@ -200,7 +197,7 @@ export default function WatchPage() {
             fontSize: "24px",
             fontWeight: "600",
             zIndex: "9999",
-            color:'#ffffff'
+            color: "#ffffff",
           }}
         >
           <span>Back</span>
@@ -209,11 +206,11 @@ export default function WatchPage() {
       <main className="flex-1 relative overflow-y-scroll snap-y snap-mandatory">
         <div className="absolute inset-0 flex items-center justify-center">
           <div
-            className="relative w-full  transition-all duration-400 ease-in-out"
+            className="relative w-full transition-all duration-400 ease-in-out"
             style={{
               height: "-webkit-fill-available",
               paddingBlock: "12px",
-              maxWidth:`${!isMobile && "400px"}`
+              maxWidth: `${!isMobile && "400px"}`,
             }}
             id="video-container"
           >
