@@ -122,8 +122,6 @@ const GoogleSignUp = () => {
       return;
     }
 
-    const decodedToken = decodeJwt(response.credential);
-
     // Construct user data required for internal API sign-up
     // const userData = {
     //   indFirstName: decodedToken.given_name || "",
@@ -158,15 +156,6 @@ const GoogleSignUp = () => {
     // let res = await signupWithSocialProvider(userData);
   };
 
-  const decodeJwt = (token: string) => {
-    try {
-      return JSON.parse(atob(token.split(".")[1]));
-    } catch (error) {
-      console.error("Error decoding JWT", error);
-      return {};
-    }
-  };
-
   const handleSendOtp = async () => {
     try {
       setCanResend(false);
@@ -179,12 +168,9 @@ const GoogleSignUp = () => {
         longitude,
       );
 
-      console.log("checking response of send otp", response.message);
+      console.log("checking response of send otp", response);
       toast.message(response.message);
-      response.status
-        ? setSuccess(response.message)
-        : setError(response.message);
-      setShowOtp(true);
+      response.status ? setShowOtp(true) : setShowOtp(false);
     } catch (err) {
       console.error("Failed to send OTP:", err);
       setError("Failed to send OTP");
@@ -198,9 +184,9 @@ const GoogleSignUp = () => {
       const response = await resendOTPMobile(
         "91",
         phoneNumber,
-        "fingerprint",
-        "latitude",
-        "longitude",
+        fingerPrints,
+        latitude,
+        longitude,
       );
       response.status
         ? setSuccess(response.message)
@@ -251,12 +237,13 @@ const GoogleSignUp = () => {
         if (response) {
           toast.success("Registration Successful, Welcome to Rewardwale");
           router.push("/home");
-        }else{
-          toast.error("Sign up failed, Please try again...")
+        } else {
+          toast.error("Sign up failed, Please try again...");
         }
         setShowOtp(false);
       } catch (err) {
         setError("Signup Failed");
+        toast.error("Sign up failed, Please try again...");
         console.error(err);
       }
     }
