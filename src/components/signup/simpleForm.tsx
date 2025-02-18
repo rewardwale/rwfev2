@@ -76,7 +76,7 @@ export default function SimpleForm() {
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
       : "";
-
+  const type = 'user'
   const fingerPrints = getDeviceFingerprint();
   const isLocalStorageAvailable = localStorage;
   // Safely access location data from localStorage
@@ -164,8 +164,10 @@ export default function SimpleForm() {
         setError_1(register.message);
       }
     } else {
-      validateOtp.status?"":setError_1("Email : "+validateOtp.message)
-     validateOtpMobile.status?"": setError_1("Phone Number : "+ validateOtpMobile.message);
+      validateOtp.status ? "" : setError_1("Email : " + validateOtp.message);
+      validateOtpMobile.status
+        ? ""
+        : setError_1("Phone Number : " + validateOtpMobile.message);
     }
   };
 
@@ -315,8 +317,7 @@ export default function SimpleForm() {
                         field.onChange(e.target.value);
                         await checkUserNameAvailability(
                           e.target.value,
-                          latitude,
-                          longitude,
+                          type,
                         )
                           .then((res) => {
                             //  setMessage(res?.message)
@@ -349,10 +350,8 @@ export default function SimpleForm() {
                       /> */}
 
                     <div
-                      className="flex border shadow-sm 
-                      focus:ring-1 max-sm:text-xs max-sm:p-2 
-                      max-sm:h-7 justify-center items-center
-                        active:ring-1 selection:ring-1 rounded-sm"
+                      className="flex border shadow-sm focus:ring-1 max-sm:text-xs max-sm:p-2 max-sm:h-7
+                        justify-center items-center active:ring-1 selection:ring-1 rounded-sm"
                     >
                       <Input
                         {...field}
