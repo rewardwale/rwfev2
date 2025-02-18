@@ -2,44 +2,6 @@
 import { apiClient } from "@/lib/apiClient";
 import axios from "axios";
 
-// export const checkUserNameAvailability = async (
-//   userName: string,
-//   latitude: string,
-//   longitude: string,
-//   type: string,
-// ) => {
-//   try {
-//     const response = await axios.get(
-//       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?type=${type}`,
-//       {
-//         headers: {
-//           "Content-Type": "application/json",
-//           // fingerprint: fingerPrints,
-//           latitude: latitude,
-//           longitude: longitude,
-//           // lan: "en",
-//         },
-//         timeout: 10000, // Include timeout as part of the Axios config
-//       },
-//     );
-//     if (response.status === 200) {
-//       if (response.data) {
-//         return { message: "Success", data: { isAvailable: true } };
-//       } else if (!response.data.data.isAvailable) {
-//         return {
-//           message: "User Name already exists!,try new",
-//           data: { isAvailable: false },
-//         };
-//       }
-//     } else {
-//       return { message: response.data.message };
-//     }
-//   } catch (error: any) {
-//     console.error("error", error.response);
-//     return { message: error.response.data.message };
-//   }
-// };
-
 export async function checkUserNameAvailability(
   userName: string,
   type: string,
