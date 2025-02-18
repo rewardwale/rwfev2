@@ -6,7 +6,7 @@ export interface BusinessFormData {
     indMobileNum: string;
   };
   operationalHours: {
-    [key: string]: Array<{ open: string; close: string }>;
+    [key: string]: Array<{ isOpen: boolean; open: string; close: string }>;
   };
   handle: string;
   title: string;
@@ -24,12 +24,16 @@ export interface BusinessFormData {
     instagram: string;
     twitter: string;
   };
-  defaultCommunication: 'WHATSAPP_NUMBER' | 'EMAIL' | 'PHONE_NUMBER' | 'WEBSITE';
+  defaultCommunication:
+    | "WHATSAPP_NUMBER"
+    | "EMAIL"
+    | "PHONE_NUMBER"
+    | "WEBSITE";
   keywords: string[];
   content: Record<string, string[]>;
 }
 
-export type FormStep = 
+export type FormStep =
   | "business"
   | "contact"
   | "hours"

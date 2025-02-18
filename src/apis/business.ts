@@ -84,7 +84,7 @@ export async function fetchBusinessPostsVideos(id: string, count?: number) {
     flag: "1",
     businessPageId: id,
   }).toString();
-  const response = await apiClient(`/uploadedVideos?${queryParams}`, "GET");
+  const response = await apiClient(`/userPosts?${queryParams}`, "GET");
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -100,7 +100,7 @@ export async function fetchBusinessTaggedVideos(id: string, count: number) {
     // flag: "1",
     businessPageId: id,
   }).toString();
-  const response = await apiClient(`/taggedVideos?${queryParams}`, "GET");
+  const response = await apiClient(`/userTaggedPosts?${queryParams}`, "GET");
   if (response.success && response.data) {
     return response.data.data;
   } else {

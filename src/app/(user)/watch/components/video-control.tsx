@@ -434,7 +434,11 @@ export function VideoControls({ video }: VideoControlsProps) {
             <Button
               variant="secondary"
               size="sm"
-              onClick={isFollowed ? handleUnfollow : handleFollow}
+              onClick={
+                isFollowed
+                  ? () => handleAuthAction(handleUnfollow)
+                  : () => handleAuthAction(handleFollow)
+              }
             >
               {isFollowed ? "Following" : "Follow"}
             </Button>

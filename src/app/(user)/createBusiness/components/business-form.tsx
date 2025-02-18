@@ -63,13 +63,13 @@ const DEFAULT_VALUES: BusinessFormData = {
     indMobileNum: "",
   },
   operationalHours: {
-    monday: [{ open: "09:00", close: "17:00" }],
-    tuesday: [{ open: "09:00", close: "17:00" }],
-    wednesday: [{ open: "09:00", close: "17:00" }],
-    thursday: [{ open: "09:00", close: "17:00" }],
-    friday: [{ open: "09:00", close: "17:00" }],
-    saturday: [{ open: "09:00", close: "17:00" }],
-    sunday: [{ open: "09:00", close: "17:00" }],
+    monday: [{ isOpen: true, open: "09:00", close: "17:00" }],
+    tuesday: [{ isOpen: true, open: "09:00", close: "17:00" }],
+    wednesday: [{ isOpen: true, open: "09:00", close: "17:00" }],
+    thursday: [{ isOpen: true, open: "09:00", close: "17:00" }],
+    friday: [{ isOpen: true, open: "09:00", close: "17:00" }],
+    saturday: [{ isOpen: true, open: "09:00", close: "17:00" }],
+    sunday: [{ isOpen: false, open: "09:00", close: "17:00" }],
   },
   handle: "",
   title: "",
@@ -96,6 +96,9 @@ export function BusinessForm() {
   const [currentStep, setCurrentStep] = useState<FormStep>("business");
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [handleAvailability, setHandleAvailability] = useState<boolean | null>(
+    null,
+  );
   const router = useRouter();
 
   const form = useForm<BusinessFormData>({
@@ -129,6 +132,11 @@ export function BusinessForm() {
   const isStepValid = async () => {
     const fields = getStepFields(currentStep);
     const result = await form.trigger(fields as any);
+
+    if (currentStep === "business") {
+      return result && handleAvailability === true;
+    }
+
     return result;
   };
 
@@ -177,7 +185,13 @@ export function BusinessForm() {
   const renderStep = () => {
     switch (currentStep) {
       case "business":
-        return <BusinessStep form={form} />;
+        return (
+          <BusinessStep
+            form={form}
+            onHandleAvailabilityChange={setHandleAvailability}
+            handleAvailability={handleAvailability}
+          />
+        );
       case "contact":
         return <ContactStep form={form} />;
       case "hours":
@@ -239,7 +253,11 @@ export function BusinessForm() {
                   Submit
                 </Button>
               ) : (
-                <Button type="button" onClick={nextStep}>
+                <Button
+                  type="button"
+                  onClick={nextStep}
+                  disabled={currentStep === "business" && !handleAvailability}
+                >
                   Next
                 </Button>
               )}

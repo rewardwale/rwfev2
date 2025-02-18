@@ -28,6 +28,8 @@ export async function fetchHomeCategories() {
 // }
 
 export async function fetchHomePageData(selectedCategories?: string[]) {
+  console.log("inside video feed fetchHomePageData");
+
   const queryParams = new URLSearchParams({
     limit: "10",
     skip: "0",

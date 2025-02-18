@@ -1,23 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VideoCard } from "./video-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Category } from "../types/video";
 import { fetchHomePageData } from "@/apis/home";
+
 interface VideoFeedProps {
   selectedCategories: string[];
-
-  
 }
 
 export function VideoFeed({ selectedCategories }: VideoFeedProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    console.log("inside useEffect loadHomePageData");
     const loadHomePageData = async () => {
       try {
         const data = await fetchHomePageData(selectedCategories);

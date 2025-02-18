@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   FormControl,
   FormField,
@@ -11,12 +12,56 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { UseFormReturn } from "react-hook-form";
 import type { BusinessFormData } from "@/lib/types/business";
+import { Check, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { checkUserNameAvailability } from "@/apis/signUp";
 
 interface BusinessStepProps {
   form: UseFormReturn<BusinessFormData>;
+  onHandleAvailabilityChange: (isAvailable: boolean | null) => void;
+  handleAvailability: boolean | null;
 }
 
-export function BusinessStep({ form }: BusinessStepProps) {
+export function BusinessStep({ 
+  form, 
+  onHandleAvailabilityChange,
+  handleAvailability 
+}: BusinessStepProps) {
+  const [isCheckingHandle, setIsCheckingHandle] = useState(false);
+  const [debouncedHandle, setDebouncedHandle] = useState("");
+
+  useEffect(() => {
+    const handle = form.watch("handle");
+    const timeoutId = setTimeout(() => {
+      if (handle && handle !== debouncedHandle) {
+        setDebouncedHandle(handle);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [form.watch("handle"), debouncedHandle]);
+
+  useEffect(() => {
+    const checkAvailability = async () => {
+      if (debouncedHandle) {
+        setIsCheckingHandle(true);
+        try {
+          const response = await checkUserNameAvailability(debouncedHandle, "businessPage");
+          onHandleAvailabilityChange(response?.data?.isAvailable ?? false);
+        } catch (error) {
+          console.error("Error checking handle availability:", error);
+          onHandleAvailabilityChange(false);
+        } finally {
+          setIsCheckingHandle(false);
+        }
+      } else {
+        onHandleAvailabilityChange(null);
+      }
+    };
+
+    checkAvailability();
+  }, [debouncedHandle, onHandleAvailabilityChange]);
+
   return (
     <div className="space-y-4">
       <FormField
@@ -47,18 +92,41 @@ export function BusinessStep({ form }: BusinessStepProps) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Business Handle*</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="your-business-handle"
-                maxLength={30}
-                {...field}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/[^a-zA-Z0-9._-]/g, "");
-                  field.onChange(value);
-                }}
-              />
-            </FormControl>
+            <div className="relative">
+              <FormControl>
+                <Input
+                  placeholder="your-business-handle"
+                  maxLength={30}
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^a-zA-Z0-9._-]/g, "");
+                    field.onChange(value);
+                  }}
+                  className={cn(
+                    "pr-10",
+                    handleAvailability === true && "border-green-500",
+                    handleAvailability === false && "border-red-500"
+                  )}
+                />
+              </FormControl>
+              {field.value && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {isCheckingHandle ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  ) : handleAvailability === true ? (
+                    <Check className="h-4 w-4 text-green-500" />
+                  ) : handleAvailability === false ? (
+                    <X className="h-4 w-4 text-red-500" />
+                  ) : null}
+                </div>
+              )}
+            </div>
             <FormMessage />
+            {handleAvailability === false && (
+              <p className="text-sm text-red-500 mt-1">
+                This handle is already taken
+              </p>
+            )}
           </FormItem>
         )}
       />
@@ -85,7 +153,7 @@ export function BusinessStep({ form }: BusinessStepProps) {
         )}
       />
 
-<FormField
+      <FormField
         control={form.control}
         name="desc"
         render={({ field }) => (
@@ -98,7 +166,7 @@ export function BusinessStep({ form }: BusinessStepProps) {
                 maxLength={1000}
                 {...field}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/\s+/g, ' ');
+                  const value = e.target.value.replace(/\s+/g, " ");
                   field.onChange(value);
                 }}
               />
