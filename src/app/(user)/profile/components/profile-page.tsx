@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 import {
   fetchProfilePosts,
   fetchTaggedVideos,
@@ -10,41 +10,25 @@ import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 // import { ScrollArea } from "@/co/react-scroll-area";
 import {
-  Bookmark,
-  Grip,
-  Share,
-  Share2,
   Share2Icon,
-  Star,
-  Tag,
-  UserCheck,
   UserRoundCheckIcon,
   UserRoundPlusIcon,
-  VideoIcon,
 } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import { useEffect, useRef, useState } from "react";
 import ProfileItem from "./profileItem";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FollowersList } from "./followers";
 import { ProfileDataProps, VideoData } from "./dataTypes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SocialMedia from "./SocialMedia";
 import EditProfile from "./edit-profile";
 import { FollowingList } from "./following";
-
 import EditProfilePicture from "./profilePicture";
 import { isUserLoggedIn } from "@/lib/utils";
 import AuthModal from "@/components/ui/AuthModal";

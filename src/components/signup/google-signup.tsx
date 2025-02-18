@@ -243,7 +243,7 @@ const GoogleSignUp = () => {
         setShowOtp(false);
       } catch (err) {
         setError("Signup Failed");
-        toast.error("Sign up failed, Please try again...");
+        toast.error("Email Already Exists, Please Login..");
         console.error(err);
       }
     }

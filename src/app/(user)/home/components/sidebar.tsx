@@ -41,10 +41,6 @@ export function Sidebar({ className }: SidebarProps) {
     getBusinessPages();
   }, [isLoggedIn]);
 
-  const username = localStorage.getItem('userName');
-
-  console.log("checking business data", username);
-
   const SidebarContent = () => (
     <ScrollArea className="h-screen">
       <div className="space-y-4 py-4">
@@ -147,20 +143,22 @@ export function Sidebar({ className }: SidebarProps) {
   );
 
   return (
-    <>
-      <aside className={cn("pb-12 w-64 hidden md:block", className)}>
-        <SidebarContent />
-      </aside>
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
+    isLoggedIn && (
+      <>
+        <aside className={cn("pb-12 w-64 hidden md:block", className)}>
           <SidebarContent />
-        </SheetContent>
-      </Sheet>
-    </>
+        </aside>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64 p-0">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      </>
+    )
   );
 }

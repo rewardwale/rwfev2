@@ -2,42 +2,60 @@
 import { apiClient } from "@/lib/apiClient";
 import axios from "axios";
 
-export const checkUserNameAvailability = async (
+// export const checkUserNameAvailability = async (
+//   userName: string,
+//   latitude: string,
+//   longitude: string,
+//   type: string,
+// ) => {
+//   try {
+//     const response = await axios.get(
+//       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?type=${type}`,
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           // fingerprint: fingerPrints,
+//           latitude: latitude,
+//           longitude: longitude,
+//           // lan: "en",
+//         },
+//         timeout: 10000, // Include timeout as part of the Axios config
+//       },
+//     );
+//     if (response.status === 200) {
+//       if (response.data) {
+//         return { message: "Success", data: { isAvailable: true } };
+//       } else if (!response.data.data.isAvailable) {
+//         return {
+//           message: "User Name already exists!,try new",
+//           data: { isAvailable: false },
+//         };
+//       }
+//     } else {
+//       return { message: response.data.message };
+//     }
+//   } catch (error: any) {
+//     console.error("error", error.response);
+//     return { message: error.response.data.message };
+//   }
+// };
+
+export async function checkUserNameAvailability(
   userName: string,
-  latitude: string,
-  longitude: string,
-) => {
-  try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?type=user`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          // fingerprint: fingerPrints,
-          latitude: latitude,
-          longitude: longitude,
-          // lan: "en",
-        },
-        timeout: 10000, // Include timeout as part of the Axios config
-      },
-    );
-    if (response.status === 200) {
-      if (response.data.data.isAvailable) {
-        return { status: true, message: response.data.message };
-      } else if (!response.data.data.isAvailable) {
-        return {
-          status: false,
-          message: "User Name already exists!,try new",
-        };
-      }
-    } else {
-      return { status: false, message: response.data.message };
-    }
-  } catch (error: any) {
-    console.error("error", error.response);
-    return { status: false, message: error.response.data.message };
+  type: string,
+) {
+  const response = await apiClient(
+    `userNameAvailability/${encodeURIComponent(userName)}?type=${encodeURIComponent(type)}`,
+    "GET",
+  );
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to check username availability:", response.error);
+    return null;
   }
-};
+}
 
 export async function validateEmail(
   email: string,

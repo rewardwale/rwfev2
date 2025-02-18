@@ -22,18 +22,6 @@ export async function othersProfileData(userName: string) {
   }
 }
 
-// export async function fetchProfilePosts(id: string,count:number) {
-//   console.log("fetchProfilePosts==>",id,count,`/uploadedVideos?limit=10&skip=${count}&flag=1&userId=672b4a14f7f2f5ada4ee34eb`)
-//   const response = await apiClient(`/uploadedVideos?limit=10&skip=${count}&flag=1&userId=672b4a14f7f2f5ada4ee34eb`, "GET");
-//   console.log("fetchProfilePosts::",response)
-//   if (response.success && response.data) {
-//     return response.data.data;
-//   } else {
-//     console.error("Failed to fetch fetchProfilePosts data:", response.error);
-//     return null;
-//   }
-// }
-
 export async function fetchProfilePosts(id: string, count?: number) {
   const queryParams = new URLSearchParams({
     limit: "10",
@@ -41,7 +29,7 @@ export async function fetchProfilePosts(id: string, count?: number) {
     flag: "1",
     userId: id,
   }).toString();
-  const response = await apiClient(`/uploadedVideos?${queryParams}`, "GET");
+  const response = await apiClient(`/userPosts?${queryParams}`, "GET");
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -57,7 +45,7 @@ export async function fetchTaggedVideos(id: string, count: number) {
     // flag: "1",
     userId: id,
   }).toString();
-  const response = await apiClient(`/taggedVideos?${queryParams}`, "GET");
+  const response = await apiClient(`/userTaggedPosts?${queryParams}`, "GET");
   if (response.success && response.data) {
     return response.data.data;
   } else {
