@@ -1,4 +1,4 @@
-"use client";
+"use server";
 import { apiClient } from "@/lib/apiClient";
 import axios from "axios";
 
@@ -18,6 +18,46 @@ export async function checkUserNameAvailability(
     return null;
   }
 }
+
+export const checkUserHandleAvailability = async (
+  userName: string,
+  latitude: string,
+  longitude: string,
+) => {
+  console.log("checkUserNameAvailability\t", userName);
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userNameAvailability/${userName}?type=user`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          // fingerprint: fingerPrints,
+          latitude: latitude,
+          longitude: longitude,
+          // lan: "en",
+        },
+        timeout: 10000, // Include timeout as part of the Axios config
+      },
+    );
+    console.log("response:::", response.data.data);
+    if (response.status === 200) {
+      if (response.data.data.isAvailable) {
+        return { status: true, message: response.data.message };
+      } else if (!response.data.data.isAvailable) {
+        return {
+          status: false,
+          message: "User Name already exists!,try new",
+        };
+      }
+    } else {
+      return { status: false, message: response.data.message };
+    }
+  } catch (error: any) {
+    console.log("error\n\t", error);
+    console.error("error", error.response);
+    return {status:false,message:error.response.data.message}  }
+}
+
 
 export async function validateEmail(
   email: string,

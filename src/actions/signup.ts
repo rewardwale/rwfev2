@@ -10,7 +10,7 @@ import {
 } from "@/schema";
 import * as z from "zod";
 import {
-  checkUserNameAvailability,
+  checkUserHandleAvailability,
   validateEmail,
   validatePhone,
   verifyOTPEmail,
@@ -20,36 +20,24 @@ import {
 
 export const NewSignUp = async (values: z.infer<typeof combinedSchema>) => {
   const validatedFields = combinedSchema.safeParse(values);
+
 };
 
 export const PersonalInfo = async (
-  values: z.infer<typeof PersonalInfoFormSchema>,
-  fingerPrints: string,
-  latitude: string,
-  longitude: string,
+  values: z.infer<typeof PersonalInfoFormSchema>,fingerPrints:string,latitude:string,longitude:string
 ) => {
   const validatedFields = PersonalInfoFormSchema.safeParse(values);
+
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
   const { email, mobile, firstname, lastname, city, dob } =
     validatedFields.data;
 
-  const validatedEmail = await validateEmail(
-    email,
-    fingerPrints,
-    latitude,
-    longitude,
-  );
-  const validateMobile = await validatePhone(
-    "91",
-    mobile,
-    fingerPrints,
-    latitude,
-    longitude,
-  );
+  const validatedEmail = await validateEmail(email,fingerPrints,latitude,longitude);
+  const validateMobile = await validatePhone("91", mobile,fingerPrints,latitude,longitude);
   if (!validatedEmail.status) {
-    return { error: validatedEmail.message };
+    return { error:validatedEmail.message };
   }
 
   if (!validateMobile.status) {
@@ -66,31 +54,19 @@ export const Verification = async (
   code: string,
   number: string,
   email: string,
-  fingerPrints: string,
-  latitude: string,
-  longitude: string,
+  fingerPrints:string,
+  latitude:string,
+  longitude:string
 ) => {
   const validatedFields = OTPFormSchema.safeParse(values);
+
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
   const { verifyEmail, verifyMobileNumber } = validatedFields.data;
 
-  const getMobileOtp = await verifyOTPMobile(
-    code,
-    number,
-    verifyMobileNumber,
-    fingerPrints,
-    latitude,
-    longitude,
-  );
-  const getEmailOtp = await verifyOTPEmail(
-    verifyEmail,
-    email,
-    fingerPrints,
-    latitude,
-    longitude,
-  );
+  const getMobileOtp = await verifyOTPMobile(code, number, verifyMobileNumber,fingerPrints,latitude,longitude);
+  const getEmailOtp = await verifyOTPEmail(verifyEmail, email,fingerPrints,latitude,longitude);
   // if (getEmailOtp?.status) {
   //   return { success: getEmailOtp.message };
   // }
@@ -106,22 +82,17 @@ export const Verification = async (
   }
 };
 
-export const Final = async (
-  values: z.infer<typeof PasswordFormSchema>,
-  latitude: string,
-  longitude: string,
-) => {
+export const Final = async (values: z.infer<typeof PasswordFormSchema>,latitude:string,longitude:string) => {
   const validatedFields = PasswordFormSchema.safeParse(values);
+
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
   const { userName, password, confirmPassword } = validatedFields.data;
 
-  const type = "user";
-
-  const verifyUserName = await checkUserNameAvailability(userName, type);
+  const verifyUserName = await checkUserHandleAvailability(userName,latitude,longitude);
   if (!verifyUserName?.status) {
-    return { error: verifyUserName?.message };
+    return { error:verifyUserName?.message };
   }
 
   return { success: "Success" };
@@ -133,27 +104,17 @@ export const simpleForm = async (
   latitude: string,
   longitude: string,
 ) => {
-  const validatedFields = await newSignupRwSchema.parseAsync(values);
+  const validatedFields =await newSignupRwSchema.parseAsync(values);
+
   if (!validatedFields) {
     return { error: "Invalid fields!" };
   }
-  const { firstname, lastname, email, mobile } = validatedFields;
+  const { firstname, lastname, email,mobile } = validatedFields;
 
-  const validatedEmail = await validateEmail(
-    email,
-    fingerPrints,
-    latitude,
-    longitude,
-  );
-  const validateMobile = await validatePhone(
-    "91",
-    mobile,
-    fingerPrints,
-    latitude,
-    longitude,
-  );
+  const validatedEmail = await validateEmail(email,fingerPrints,latitude,longitude);
+  const validateMobile = await validatePhone("91", mobile,fingerPrints,latitude,longitude);
   if (!validatedEmail.status) {
-    return { error: validatedEmail.message };
+    return { error:validatedEmail.message };
   }
 
   if (!validateMobile.status) {
@@ -180,20 +141,16 @@ export const simpleProviderForm = async (
   latitude: string,
   longitude: string,
 ) => {
-  const validatedFields = await newSignupSchema.parseAsync(values);
+  const validatedFields =await newSignupSchema.parseAsync(values);
+
   if (!validatedFields) {
     return { error: "Invalid fields!" };
   }
-  const { firstname, lastname, email, userName, mobile } = validatedFields;
+  const { firstname, lastname, email, userName ,mobile} =
+    validatedFields;
 
   // const validatedEmail = await validateEmail(email,fingerPrints,latitude,longitude);
-  const validateMobile = await validatePhone(
-    "91",
-    mobile,
-    fingerPrints,
-    latitude,
-    longitude,
-  );
+  const validateMobile = await validatePhone("91", mobile,fingerPrints,latitude,longitude);
   // if (!validatedEmail.status) {
   //   return { error:validatedEmail.message };
   // }
@@ -216,6 +173,7 @@ export const simpleProviderForm = async (
 
   //provider signup
 };
+
 
 // export const registerSignupProvider = async (
 //   values: z.infer<typeof newSignupSchema>,
@@ -268,3 +226,4 @@ export const simpleProviderForm = async (
 //     return { error: signup.message };
 //   }
 // };
+

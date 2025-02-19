@@ -22,10 +22,10 @@ interface BusinessStepProps {
   handleAvailability: boolean | null;
 }
 
-export function BusinessStep({ 
-  form, 
+export function BusinessStep({
+  form,
   onHandleAvailabilityChange,
-  handleAvailability 
+  handleAvailability,
 }: BusinessStepProps) {
   const [isCheckingHandle, setIsCheckingHandle] = useState(false);
   const [debouncedHandle, setDebouncedHandle] = useState("");
@@ -46,7 +46,10 @@ export function BusinessStep({
       if (debouncedHandle) {
         setIsCheckingHandle(true);
         try {
-          const response = await checkUserNameAvailability(debouncedHandle, "businessPage");
+          const response = await checkUserNameAvailability(
+            debouncedHandle,
+            "businessPage",
+          );
           onHandleAvailabilityChange(response?.data?.isAvailable ?? false);
         } catch (error) {
           console.error("Error checking handle availability:", error);
@@ -99,13 +102,16 @@ export function BusinessStep({
                   maxLength={30}
                   {...field}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/[^a-zA-Z0-9._-]/g, "");
+                    const value = e.target.value.replace(
+                      /[^a-zA-Z0-9._-]/g,
+                      "",
+                    );
                     field.onChange(value);
                   }}
                   className={cn(
                     "pr-10",
                     handleAvailability === true && "border-green-500",
-                    handleAvailability === false && "border-red-500"
+                    handleAvailability === false && "border-red-500",
                   )}
                 />
               </FormControl>

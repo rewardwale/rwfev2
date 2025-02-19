@@ -66,7 +66,7 @@ interface Props {
 export default function EditForm({ data, reload, profileData }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();  
+  const [success, setSuccess] = useState<string | undefined>();
   const form = useForm<z.infer<typeof EditPersonalInfoFormSchema>>({
     resolver: zodResolver(EditPersonalInfoFormSchema),
     mode: "onChange",
@@ -470,15 +470,16 @@ export default function EditForm({ data, reload, profileData }: Props) {
                         type="date"
                         disabled={pending}
                         value={
-                          field.value
+                          field.value instanceof Date &&
+                          !isNaN(field.value.getTime()) // Ensure valid Date
                             ? field.value.toISOString().split("T")[0]
                             : ""
-                        } // Convert Date to string
+                        }
                         onChange={(e) => {
                           const dateValue = e.target.value
                             ? new Date(e.target.value)
-                            : undefined;
-                          field.onChange(dateValue); // Convert string to Date before passing it to react-hook-form
+                            : null; // Use null for better form handling
+                          field.onChange(dateValue);
                         }}
                       />
                     </FormControl>

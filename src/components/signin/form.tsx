@@ -32,6 +32,7 @@ import { getDeviceFingerprint } from "@/lib/fingerPrint";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/apiClient";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const [showPassword, setShowpassword] = useState<boolean>(true);
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  // const { toast } = useToast();
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
@@ -155,14 +156,13 @@ export default function LoginForm() {
           //start transition will tell when the validation has ended till then the feilds will be disabled
           // })
           // .catch((error) => setError(error.message));
+        } else {
+          toast.error("Email not registered,Create Account...");
+          router.push("/signup")
         }
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to authenticate with Google",
-        variant: "destructive",
-      });
+      toast.error("Failed to authenticate with Google");
     } finally {
       setLoading(false);
     }
@@ -170,11 +170,7 @@ export default function LoginForm() {
 
   const handleLoginFailure = (error: any) => {
     console.error("Google login failed:", error);
-    toast({
-      title: "Error",
-      description: "Google login failed",
-      variant: "destructive",
-    });
+    toast.error("Google login failed");
   };
 
   return (
