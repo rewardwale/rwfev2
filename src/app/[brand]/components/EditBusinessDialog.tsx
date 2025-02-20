@@ -27,15 +27,20 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Business } from "../types/brands";
+import { Business, BusinessHours } from "../types/brands";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { Upload, UserCircle2, X } from "lucide-react";
+import { setProfilePicture, uploadBusinessProfile } from "@/apis/business";
 
 const timeSchema = z.object({
   open: z.string(),
   close: z.string(),
+  isOpen: z.boolean(),
+  // _id: z.string().optional(),
 });
 
 const operationalHoursSchema = z.object({
@@ -72,6 +77,9 @@ const formSchema = z.object({
   keywords: z.array(z.string()),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+type Day = (typeof DAYS)[number];
+
 interface EditBusinessDialogProps {
   business: Business;
   isOpen: boolean;
@@ -103,8 +111,11 @@ export function EditBusinessDialog({
   onSubmit,
 }: EditBusinessDialogProps) {
   const [activeTab, setActiveTab] = useState("basic");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       businessName: business.businessName,
@@ -124,13 +135,62 @@ export function EditBusinessDialog({
     },
   });
 
-  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (data: FormValues) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       await onSubmit(data);
-      toast.success("Business details updated successfully");
-      onClose();
     } catch (error) {
-      toast.error("Failed to update business details");
+      console.error("Form submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDayToggle = (day: Day, value: boolean) => {
+    const currentHours = form.getValues(
+      `operationalHours.${day}`,
+    ) as BusinessHours[];
+    const updatedHours = currentHours.map((hour) => ({
+      ...hour,
+      isOpen: value,
+    }));
+    form.setValue(`operationalHours.${day}` as const, updatedHours);
+  };
+
+  const handlePhotoUpload = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await uploadBusinessProfile(business._id, formData);
+      if (response.message === "Success.") {
+        toast.success("Photo uploaded successfully");
+      } else {
+        toast.error("Failed to upload photo");
+      }
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      toast.error("Failed to upload photo");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSetProfilePicture = async (imageId: string) => {
+    try {
+      const response = await setProfilePicture(business._id, imageId);
+      if (response.message === "Success.") {
+        toast.success("Profile picture updated successfully");
+        window.location.reload()
+      } else {
+        toast.error("Failed to update profile picture");
+      }
+    } catch (error) {
+      console.error("Error setting profile picture:", error);
+      toast.error("Failed to update profile picture");
     }
   };
 
@@ -147,10 +207,11 @@ export function EditBusinessDialog({
             className="space-y-4"
           >
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="contact">Contact</TabsTrigger>
                 <TabsTrigger value="hours">Hours</TabsTrigger>
+                <TabsTrigger value="photos">Photos</TabsTrigger>
               </TabsList>
 
               <ScrollArea className="h-[60vh] pr-4">
@@ -339,39 +400,153 @@ export function EditBusinessDialog({
                 <TabsContent value="hours" className="space-y-4">
                   {DAYS.map((day) => (
                     <div key={day} className="space-y-2">
-                      <h3 className="font-medium capitalize">{day}</h3>
-                      {form.watch(`operationalHours.${day}`).map((_, index) => (
-                        <div key={index} className="grid grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name={`operationalHours.${day}.${index}.open`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Open</FormLabel>
-                                <FormControl>
-                                  <Input type="time" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium capitalize">{day}</h3>
+                        <FormField
+                          control={form.control}
+                          name={`operationalHours.${day}.0.isOpen` as const}
+                          render={({ field }) => (
+                            <FormItem className="flex items-center space-x-2">
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={(value) => {
+                                    field.onChange(value);
+                                    handleDayToggle(day, value);
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="text-sm">
+                                {field.value ? "Open" : "Closed"}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      {form.watch(
+                        `operationalHours.${day}.0.isOpen` as const,
+                      ) &&
+                        form
+                          .watch(`operationalHours.${day}`)
+                          .map((_, index) => (
+                            <div key={index} className="grid grid-cols-2 gap-4">
+                              <FormField
+                                control={form.control}
+                                name={
+                                  `operationalHours.${day}.${index}.open` as const
+                                }
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Open</FormLabel>
+                                    <FormControl>
+                                      <Input type="time" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={
+                                  `operationalHours.${day}.${index}.close` as const
+                                }
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Close</FormLabel>
+                                    <FormControl>
+                                      <Input type="time" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          ))}
+                    </div>
+                  ))}
+                </TabsContent>
+
+                <TabsContent value="photos" className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium">Business Photos</h3>
+                      <Button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                      >
+                        {isUploading ? "Uploading..." : "Add Photo"}
+                      </Button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handlePhotoUpload(file);
+                        }}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {business.businessImages.map((image, index) => (
+                        <div key={image._id} className="relative group">
+                          <img
+                            src={image.original}
+                            alt={`Business photo ${index + 1}`}
+                            className="w-full aspect-square object-cover rounded-lg"
                           />
-                          <FormField
-                            control={form.control}
-                            name={`operationalHours.${day}.${index}.close`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Close</FormLabel>
-                                <FormControl>
-                                  <Input type="time" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          <div
+                            className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100
+                              transition-opacity rounded-lg flex items-center justify-center gap-2"
+                          >
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => handleSetProfilePicture(image._id)}
+                            >
+                              <UserCircle2 className="h-4 w-4 mr-1" />
+                              Set as Profile
+                            </Button>
+                            {/* <Button
+                              variant="destructive"
+                              size="sm"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => {
+                                toast.error("Photo deletion not implemented");
+                              }}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button> */}
+                          </div>
+                          {business.defaultBusinessImage._id === image._id && (
+                            <div
+                              className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs px-2 py-1
+                                rounded-full"
+                            >
+                              Profile Picture
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
-                  ))}
+
+                    {business.businessImages.length === 0 && (
+                      <div
+                        className="border-2 border-dashed rounded-lg p-8 text-center"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <Upload className="h-8 w-8 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground">
+                            No photos yet. Click to upload your first photo.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </TabsContent>
               </ScrollArea>
             </Tabs>
@@ -380,7 +555,9 @@ export function EditBusinessDialog({
               <Button variant="outline" type="button" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save Changes"}
+              </Button>
             </div>
           </form>
         </Form>

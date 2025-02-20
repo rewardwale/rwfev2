@@ -37,6 +37,7 @@ export interface BrandInfo {
 export interface BusinessHours {
   open: string;
   close: string;
+  isOpen: boolean;
   _id: string;
 }
 

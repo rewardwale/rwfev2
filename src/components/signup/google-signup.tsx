@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  resendOTPMobile,
-  signupWithSocialProvider,
-  validatePhone,
-  verifyOTPMobile,
-} from "@/apis/signUp";
+import { resendOTPMobile, validatePhone, verifyOTPMobile } from "@/apis/signUp";
 import { useEffect, useState } from "react";
 import {
   AlertDialog,
@@ -33,6 +28,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { getDeviceFingerprint } from "@/lib/api";
 import { toast } from "sonner";
+import { signupWithSocialProvider } from "@/actions/signup";
 
 declare global {
   interface Window {
@@ -212,8 +208,6 @@ const GoogleSignUp = () => {
       longitude,
     );
 
-    console.log("checkign validateOtpMobile", validateOtpMobile);
-
     if (validateOtpMobile.status) {
       setSuccess("OTP Verified!");
       setError("");
@@ -235,15 +229,17 @@ const GoogleSignUp = () => {
         const response = await signupWithSocialProvider(userData);
         console.log("Signup Successful:", response);
         if (response) {
-          toast.success("Registration Successful, Welcome to Rewardwale");
+          toast.success(
+            "Registration Successful, Welcome to Rewardwale, Please Login to Continue",
+          );
           router.push("/home");
         } else {
           toast.error("Email Already Exists, Please Login..");
+          router.push("/login");
         }
         setShowOtp(false);
       } catch (err) {
         setError("Signup Failed");
-        toast.error("Email Already Exists, Please Login..");
         console.error(err);
       }
     }

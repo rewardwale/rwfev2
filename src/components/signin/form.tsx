@@ -117,6 +117,11 @@ export default function LoginForm() {
           },
         });
 
+        if (result.error) {
+          toast.error(`result.error`);
+          router.push("/signup");
+        }
+
         console.log("Google login successful:2", result);
 
         if (result.success) {
@@ -158,11 +163,12 @@ export default function LoginForm() {
           // .catch((error) => setError(error.message));
         } else {
           toast.error("Email not registered,Create Account...");
-          router.push("/signup")
+          router.push("/signup");
         }
       }
     } catch (error) {
-      toast.error("Failed to authenticate with Google");
+      toast.error("Email not registered,Create Account...");
+      router.push("/signup");
     } finally {
       setLoading(false);
     }

@@ -14,7 +14,7 @@ import type { UseFormReturn } from "react-hook-form";
 import type { BusinessFormData } from "@/lib/types/business";
 import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { checkUserNameAvailability } from "@/apis/signUp";
+import { checkUBusinessHandleAvailability } from "@/apis/business";
 
 interface BusinessStepProps {
   form: UseFormReturn<BusinessFormData>;
@@ -46,7 +46,7 @@ export function BusinessStep({
       if (debouncedHandle) {
         setIsCheckingHandle(true);
         try {
-          const response = await checkUserNameAvailability(
+          const response = await checkUBusinessHandleAvailability(
             debouncedHandle,
             "businessPage",
           );
