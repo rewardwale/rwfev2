@@ -277,18 +277,3 @@ export const simpleProviderForm = async (
 //   }
 // };
 
-export const signupWithSocialProvider = async (
-  payload: Record<string, any>,
-) => {
-  try {
-    const response = await apiClient(
-      "/signupWithSocialProvider",
-      "POST",
-      payload,
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error replying to comment:", error);
-    throw error;
-  }
-};
