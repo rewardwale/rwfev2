@@ -242,9 +242,9 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
 
       const response = await editBusiness(info.handle, formattedData);
       console.log("checking response fo edit business", response.message);
-      if (response.success === "Success") {
+      if (response.message === "Success.") {
         toast.success("Business details updated successfully");
-        window.location.reload();
+        setIsEditModalOpen(false);
       } else {
         toast.error("Failed to update business details");
       }
@@ -508,13 +508,16 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                     </Button>
                   )}
                 </div>
-                
-                <Button variant="outline" size="icon" onClick={handleShare}
-                style={{
-                  border:'none',
-                  margin:'4px',
-                  width:'100%'
-                }}
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleShare}
+                  style={{
+                    border: "none",
+                    margin: "4px",
+                    width: "100%",
+                  }}
                 >
                   <Share2 className="h-4 w-4 min-lg:h-1 min-lg:w-1" />
                 </Button>

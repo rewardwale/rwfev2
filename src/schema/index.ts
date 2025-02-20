@@ -280,77 +280,39 @@ export const EditPersonalInfoFormSchema = z.object({
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
       message: "Must be a valid 10-digit number.",
     }),
-  title: z.string().optional(),
-  desc: z.string().optional(),
-  watsapp: z
-    .string()
-    .optional()
-    .refine(
+    title:z.string().optional(),
+    desc:z.string().optional(),
+    watsapp:z.string().optional()          .refine(
       (value) => !value || /^https?:\/\/(www\.)?wa\.me\/[0-9]+.*$/.test(value),
-      {
-        message: "Enter a valid WhatsApp URL (e.g., https://wa.me/1234567890)",
-      },
+      { message: "Enter a valid WhatsApp URL (e.g., https://wa.me/1234567890)" }
     ),
-  twitter: z
-    .string()
-    .optional()
-    .refine(
+    twitter:z.string().optional()     .refine(
       (value) =>
         !value || /^https?:\/\/(www\.)?x\.com\/[a-zA-Z0-9_]+\/?$/.test(value),
-      {
-        message:
-          "Enter a valid Twitter URL (e.g., https://twitter.com/username)",
-      },
+      { message: "Enter a valid Twitter URL (e.g., https://twitter.com/username)" }
     ),
-  instagram: z
-    .string()
-    .optional()
-    .refine(
+    instagram:z.string().optional()    .refine(
+      (value) =>
+        !value || /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
+      { message: "Enter a valid Instagram URL (e.g., https://instagram.com/username)" }
+    ),
+    facebook:z.string().optional()     .refine(
+      (value) =>
+        !value || /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
+      { message: "Enter a valid Facebook URL (e.g., https://facebook.com/username)" }
+    ),
+    linkdin:z.string().optional()    .refine(
       (value) =>
         !value ||
-        /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
-      {
-        message:
-          "Enter a valid Instagram URL (e.g., https://instagram.com/username)",
-      },
+        /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/.test(value),
+      { message: "Enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)" }
     ),
-  facebook: z
-    .string()
-    .optional()
-    .refine(
-      (value) =>
-        !value ||
-        /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9._-]+\/?$/.test(value),
-      {
-        message:
-          "Enter a valid Facebook URL (e.g., https://facebook.com/username)",
-      },
-    ),
-  linkdin: z
-    .string()
-    .optional()
-    .refine(
-      (value) =>
-        !value ||
-        /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/.test(
-          value,
-        ),
-      {
-        message:
-          "Enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)",
-      },
-    ),
-  github: z
-    .string()
-    .optional()
-    .refine(
-      (value) =>
-        !value ||
-        value.trim() === "" ||
-        /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
-      { message: "Enter a valid GitHub URL" },
-    ),
+    github:z.string().optional()    .refine(
+      (value) => !value || value.trim() === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Enter a valid GitHub URL" }
+    )
 });
+
 
 export const newSignupSchema = z.object({
   firstname: z
@@ -393,7 +355,7 @@ export const newSignupSchema = z.object({
       message: "Email cannot be empty.",
     })
     .email(),
-  mobile: z
+    mobile: z
     .string()
     .nonempty({
       message: "Mobile Number cannot be empty.",
@@ -401,18 +363,17 @@ export const newSignupSchema = z.object({
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
       message: "Must be a valid 10-digit number.",
     }),
-
+  
   userName: z
     .string()
     .nonempty({
       message: "User Name cannot be empty.",
-    })
-    .min(3, { message: "Username must be at least 3 characters." })
+    }).min(3, { message: "Username must be at least 3 characters." })
     .max(30, { message: "Username must not be longer than 30 characters." })
     .regex(/^(?![._-])(?!.*[._-]{2})[a-zA-Z0-9._-]+$/, {
       message:
         "Username can only contain letters, numbers, underscores, dots, and hyphens.\n It cannot start with special characters or \nhave consecutive special characters.",
-    }),
+    })
 });
 
 
@@ -477,10 +438,8 @@ export const newSignupRwSchema = z.object({
     .string()
     .nonempty({
       message: "User Name cannot be empty.",
-    })
-    .superRefine(async (username, ctx) => {
-      let type = 'user'
-      const response = await checkUserNameAvailability(username, type);
+    }).superRefine(async (username, ctx) => {
+      const response = await checkUserNameAvailability(username, "90", "90");
       // Add an error if the username is not available
       if (!response?.status) {
         ctx.addIssue({
@@ -489,7 +448,7 @@ export const newSignupRwSchema = z.object({
         });
       }
     }),
-  mobile: z
+    mobile: z
     .string()
     .nonempty({
       message: "Mobile Number cannot be empty.",
@@ -497,7 +456,7 @@ export const newSignupRwSchema = z.object({
     .regex(/^(91[-\s]?)?[6-9]\d{9}$/, {
       message: "Must be a valid 10-digit number.",
     }),
-
+    
   TnC: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and conditions to proceed.",
   }),
@@ -505,6 +464,7 @@ export const newSignupRwSchema = z.object({
     message: "You must accept the terms and conditions to proceed.",
   }),
 });
+
 
 export const combinedSchema = z.object({
   ...PersonalInfoFormSchema.shape,

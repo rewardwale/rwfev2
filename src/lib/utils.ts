@@ -9,7 +9,6 @@ export const isUserLoggedIn = (): boolean => {
   if (typeof window === "undefined") return false; // Ensure code doesn't run on the server (for SSR)
 
   const token = localStorage.getItem("token");
-  console.log("checking token", token);
 
   return !!token && token.trim().length > 0;
 };

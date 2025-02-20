@@ -76,7 +76,7 @@ export default function SimpleForm() {
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider "
       : "";
-  const type = 'user'
+
   const fingerPrints = getDeviceFingerprint();
   const isLocalStorageAvailable = localStorage;
   // Safely access location data from localStorage
@@ -317,7 +317,8 @@ export default function SimpleForm() {
                         field.onChange(e.target.value);
                         await checkUserNameAvailability(
                           e.target.value,
-                          type,
+                          latitude,
+                          longitude,
                         )
                           .then((res) => {
                             //  setMessage(res?.message)
@@ -363,7 +364,7 @@ export default function SimpleForm() {
                           max-sm:h-7 focus-visible:ring-0`,
                           "border-none",
                         )}
-                        maxLength={12}
+                        maxLength={36}
                         minLength={8}
                       />
                       <Button
@@ -545,15 +546,14 @@ export default function SimpleForm() {
           </div>
         </form>
       </Form>
-      {/* <Button
-          variant={"link"}
-          className="w-full hover:text-blue-500 font-bold"
-          size="sm"
-          asChild
-        >
-          <Link href={"/login"}>Already have an account ? </Link>
-        </Button> */}
-      {/* </CardWrapper> */}
+      <Button
+        variant={"link"}
+        className="w-full hover:text-blue-500 font-bold"
+        size="sm"
+        asChild
+      >
+        <Link href={"/login"}>Already have an account ? </Link>
+      </Button>
     </div>
   );
 }

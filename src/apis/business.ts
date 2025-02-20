@@ -149,3 +149,35 @@ export const getBusinessPageList = async () => {
     return null;
   }
 };
+
+export async function checkUBusinessHandleAvailability(
+  userName: string,
+  type: string,
+) {
+  const response = await apiClient(
+    `userNameAvailability/${encodeURIComponent(userName)}?type=${encodeURIComponent(type)}`,
+    "GET",
+  );
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to check username availability:", response.error);
+    return null;
+  }
+}
+
+export const setProfilePicture = async (id: string, imageId: string) => {
+  const payload = {
+    id: id,
+    imageId: imageId,
+  };
+  const response = await apiClient(`/setExistingBusinessProfileImage`, "PUT", payload);
+
+  if (!response.success) {
+    console.error("Error adding business:", response.error);
+    throw new Error(response.error || "Failed to add business");
+  }
+
+  return response.data;
+};

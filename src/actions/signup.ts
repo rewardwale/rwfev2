@@ -16,6 +16,7 @@ import {
   verifyOTPEmail,
   verifyOTPMobile,
 } from "@/apis/signUp";
+import { apiClient } from "@/lib/apiClient";
 // import { signInWithProviders } from "@/apis/login";
 
 export const NewSignUp = async (values: z.infer<typeof combinedSchema>) => {
@@ -29,6 +30,7 @@ export const PersonalInfo = async (
   longitude: string,
 ) => {
   const validatedFields = PersonalInfoFormSchema.safeParse(values);
+
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
@@ -71,6 +73,7 @@ export const Verification = async (
   longitude: string,
 ) => {
   const validatedFields = OTPFormSchema.safeParse(values);
+
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
@@ -112,14 +115,17 @@ export const Final = async (
   longitude: string,
 ) => {
   const validatedFields = PasswordFormSchema.safeParse(values);
+
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
   const { userName, password, confirmPassword } = validatedFields.data;
 
-  const type = "user";
-
-  const verifyUserName = await checkUserNameAvailability(userName, type);
+  const verifyUserName = await checkUserNameAvailability(
+    userName,
+    latitude,
+    longitude,
+  );
   if (!verifyUserName?.status) {
     return { error: verifyUserName?.message };
   }
@@ -134,6 +140,7 @@ export const simpleForm = async (
   longitude: string,
 ) => {
   const validatedFields = await newSignupRwSchema.parseAsync(values);
+
   if (!validatedFields) {
     return { error: "Invalid fields!" };
   }
@@ -181,6 +188,7 @@ export const simpleProviderForm = async (
   longitude: string,
 ) => {
   const validatedFields = await newSignupSchema.parseAsync(values);
+
   if (!validatedFields) {
     return { error: "Invalid fields!" };
   }
@@ -268,3 +276,19 @@ export const simpleProviderForm = async (
 //     return { error: signup.message };
 //   }
 // };
+
+export const signupWithSocialProvider = async (
+  payload: Record<string, any>,
+) => {
+  try {
+    const response = await apiClient(
+      "/signupWithSocialProvider",
+      "POST",
+      payload,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error replying to comment:", error);
+    throw error;
+  }
+};

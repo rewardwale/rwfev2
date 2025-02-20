@@ -8,10 +8,8 @@ import SimpleForm from "./simpleForm";
 import { GoogleLogin } from "@react-oauth/google";
 import { useState, useEffect } from "react";
 import GoogleSignUp from "./google-signup";
-
-
-
-
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export default function SignupForm() {
   const [signupMethod, setSignupMethod] = useState<"email" | "google" | null>(
@@ -73,6 +71,14 @@ export default function SignupForm() {
             >
               Sign up with Google
             </button>
+            <Button
+              variant={"link"}
+              className="w-full hover:text-blue-500 font-bold"
+              size="sm"
+              asChild
+            >
+              <Link href={"/login"}>Already have an account ? </Link>
+            </Button>
           </div>
         )}
 
@@ -120,6 +126,14 @@ export default function SignupForm() {
                 Back to options
               </button>
             </div>
+            <Button
+              variant={"link"}
+              className="w-full hover:text-blue-500 font-bold"
+              size="sm"
+              asChild
+            >
+              <Link href={"/login"}>Already have an account ? </Link>
+            </Button>
           </div>
         )}
       </div>

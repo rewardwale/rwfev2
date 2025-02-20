@@ -14,13 +14,25 @@ interface BusinessModalProps {
   onClose: () => void;
 }
 
-export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps) {
-  const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
-  type DayOfWeek = typeof daysOfWeek[number];
+export function BusinessModal({
+  business,
+  isOpen,
+  onClose,
+}: BusinessModalProps) {
+  const daysOfWeek = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ] as const;
+  type DayOfWeek = (typeof daysOfWeek)[number];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl h-[60vh] p-0">
+      <DialogContent className="max-w-2xl h-[70vh] p-0 scrollbar-hide">
         <DialogTitle className="sr-only">
           {business.businessName} Details
         </DialogTitle>
@@ -45,7 +57,9 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
               <h2 className="text-2xl font-bold">{business.businessName}</h2>
               <p className="text-muted-foreground">{business.title}</p>
             </div>
-            <Badge variant={business.status === "Active" ? "default" : "secondary"}>
+            <Badge
+              variant={business.status === "Active" ? "default" : "secondary"}
+            >
               {business.status}
             </Badge>
           </div>
@@ -60,7 +74,9 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
             <TabsContent value="overview">
               <ScrollArea className="h-[calc(90vh-400px)]">
                 <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">{business.desc}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {business.desc}
+                  </p>
 
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -69,11 +85,16 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
                     </div>
                     <div className="flex items-center gap-2">
                       <Phone className="w-4 h-4" />
-                      <p className="text-sm">{business.contactUsDetails.indCountryCode} {business.contactUsDetails.indMobileNum}</p>
+                      <p className="text-sm">
+                        {business.contactUsDetails.indCountryCode}{" "}
+                        {business.contactUsDetails.indMobileNum}
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4" />
-                      <p className="text-sm">{business.contactUsDetails.indEmail}</p>
+                      <p className="text-sm">
+                        {business.contactUsDetails.indEmail}
+                      </p>
                     </div>
                     {business.websiteURLs && (
                       <div className="flex items-center gap-2">
@@ -89,18 +110,19 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
             <TabsContent value="photos">
               <ScrollArea className="h-[calc(90vh-400px)]">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {business.businessImages.map((image:any, index:any) => (
-                    image.original && (
-                      <div key={image._id} className="relative aspect-square">
-                        <Image
-                          src={image.original}
-                          alt={`Business image ${index + 1}`}
-                          fill
-                          className="object-cover rounded-lg"
-                        />
-                      </div>
-                    )
-                  ))}
+                  {business.businessImages.map(
+                    (image: any, index: any) =>
+                      image.original && (
+                        <div key={image._id} className="relative aspect-square">
+                          <Image
+                            src={image.original}
+                            alt={`Business image ${index + 1}`}
+                            fill
+                            className="object-cover rounded-lg"
+                          />
+                        </div>
+                      ),
+                  )}
                 </div>
               </ScrollArea>
             </TabsContent>
@@ -108,19 +130,51 @@ export function BusinessModal({ business, isOpen, onClose }: BusinessModalProps)
             <TabsContent value="hours">
               <ScrollArea className="h-[calc(90vh-400px)]">
                 <div className="space-y-2">
-                  {daysOfWeek.map((day) => (
-                    <div key={day} className="flex items-center justify-between py-2">
-                      <span className="capitalize">{day}</span>
-                      <div className="space-y-1">
-                        {business.operationalHours[day as DayOfWeek].map((hours:any) => (
-                          <div key={hours._id} className="flex items-center gap-2">
-                            <Clock className="w-4 h-4" />
-                            <span>{hours.open} - {hours.close}</span>
+                  {daysOfWeek.map((day) => {
+                    const dayHours =
+                      business.operationalHours[day as DayOfWeek];
+                    const isOpenToday = dayHours[0]?.isOpen;
+
+                    return (
+                      <div
+                        key={day}
+                        className="flex items-center justify-between py-2"
+                      >
+                        <div className="flex items-center gap-8">
+                          <span
+                            style={{
+                              minWidth: "100px",
+                            }}
+                            className="capitalize"
+                          >
+                            {day}
+                          </span>
+                          <div>
+                            <Badge
+                              variant={isOpenToday ? "default" : "secondary"}
+                            >
+                              {isOpenToday ? "Open" : "Closed"}
+                            </Badge>
                           </div>
-                        ))}
+                        </div>
+                        {isOpenToday && (
+                          <div className="space-y-1">
+                            {dayHours.map((hours: any) => (
+                              <div
+                                key={hours._id}
+                                className="flex items-center gap-2"
+                              >
+                                <Clock className="w-4 h-4" />
+                                <span>
+                                  {hours.open} - {hours.close}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </ScrollArea>
             </TabsContent>

@@ -18,10 +18,10 @@ export function VideoFeed({ selectedCategories }: VideoFeedProps) {
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
+    // if (hasFetched.current) return;
+    // hasFetched.current = true;
 
-    console.log("inside useEffect loadHomePageData");
+    // console.log("inside useEffect loadHomePageData");
     const loadHomePageData = async () => {
       try {
         const data = await fetchHomePageData(selectedCategories);
