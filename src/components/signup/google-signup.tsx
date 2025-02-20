@@ -28,7 +28,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { getDeviceFingerprint } from "@/lib/api";
 import { toast } from "sonner";
-import { signupWithSocialProvider } from "@/actions/signup";
+import { signupWithSocialProvider } from "@/apis/home";
+
 
 declare global {
   interface Window {
