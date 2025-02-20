@@ -233,7 +233,7 @@ const GoogleSignUp = () => {
           toast.success(
             "Registration Successful, Welcome to Rewardwale, Please Login to Continue",
           );
-          router.push("/home");
+          router.push("/login");
         } else {
           toast.error("Email Already Exists, Please Login..");
           router.push("/login");
