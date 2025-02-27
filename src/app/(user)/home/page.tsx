@@ -6,7 +6,6 @@ import { VideoFeed } from "./components/video-feed";
 import { CategoryFilter } from "./components/category-filter";
 import { Footer } from "@/components/layout";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useAuthRedirect } from "../watch/hooks/use-auth-redirect";
 import { isUserLoggedIn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 

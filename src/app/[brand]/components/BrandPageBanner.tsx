@@ -298,16 +298,20 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                       alignContent: "center",
                       padding: "5px",
                       cursor: "pointer",
+
                     }}
                     onClick={handleLogoClick}
                   >
                     <ResponsiveImages
                       imageSrc={info?.logo}
-                      objectFitProp="contain"
+                      objectFitProp="cover"
                       layout="fixed"
                       classname="circularImage"
                       width={isMobile ? 90 : 180}
                       height={isMobile ? 90 : 180}
+                      style={{
+                        objectFit:'cover'
+                      }}
                     />
                   </div>
                   <div className="h-10 mb-4">
