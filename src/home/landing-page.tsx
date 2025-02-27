@@ -111,9 +111,11 @@ const ShortCard: React.FC<ShortCardProps> = ({
 }) => {
   const router = useRouter();
   return (
-    <div style={{
-      maxWidth:'min-content'
-    }}>
+    <div
+      style={{
+        maxWidth: "min-content",
+      }}
+    >
       <Card
         className="w-[200px] flex-shrink-0 rounded-md cursor-pointer transition-transform
           hover:scale-105"
@@ -203,6 +205,7 @@ const SubHeadingContent: React.FC<{
     <h3
       style={{
         marginLeft: "15px",
+        textAlign: "left",
       }}
       className="text-2xl font-semibold mb-4 pl-5"
     >
@@ -241,6 +244,7 @@ const CategorySection: React.FC<{
         fontWeight: "600",
         marginTop: "32px",
         marginLeft: "15px",
+        textAlign: "left",
       }}
     >
       {categoryName}
@@ -302,7 +306,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
 
   return (
     <>
-      <div  className="min-h-screen">
+      <div className="min-h-screen">
         {allAdvertisements.length > 0 && (
           <HeroSection slides={allAdvertisements} />
         )}
