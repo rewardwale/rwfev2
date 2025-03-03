@@ -9,6 +9,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Script from "next/script";
 import { GoogleAnalytics } from "@/lib/analytics";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "RewardWale - Review honestly Rate diligently Earn Rewards",
@@ -61,7 +62,9 @@ export default function RootLayout({
             `,
               }}
             />
-            <GoogleAnalytics />
+            <Suspense fallback={null}>
+              <GoogleAnalytics />
+            </Suspense>
           </>
         )}
       </head>
