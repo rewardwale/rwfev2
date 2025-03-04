@@ -24,7 +24,7 @@ export async function othersProfileData(userName: string) {
 
 export async function fetchProfilePosts(id: string, count?: number) {
   const queryParams = new URLSearchParams({
-    limit: "10",
+    limit: "100",
     skip: JSON.stringify(count),
     flag: "1",
     userId: id,
