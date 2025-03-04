@@ -59,7 +59,6 @@ export default function BrandPage({ params }: { params: any }) {
   const [profileData, setProfilePageData] = useState<
     ProfileDataProps | undefined
   >(undefined);
-
   const fetchBrandDetails = async () => {
     const handle = window.location.pathname.split("/")[1];
 
@@ -229,7 +228,14 @@ export default function BrandPage({ params }: { params: any }) {
                               gap: "8px",
                             }}
                           >
-                            <span>No Posts Yet</span>
+                            <span
+                              className="cursor-pointer"
+                              onClick={() =>
+                                !isLoggedIn && router.push("/login")
+                              }
+                            >
+                              {`${isLoggedIn ? "No Posts Yet" : "Login to see Posts"}`}
+                            </span>
                             {isOwner && (
                               <Button
                                 variant="default"

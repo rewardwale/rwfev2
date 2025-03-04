@@ -20,6 +20,12 @@ import { useRouter } from "next/navigation";
 import { BusinessModal } from "./BusinessModal";
 import useIsOwner from "@/hooks/use-owner";
 import { EditBusinessDialog } from "./EditBusinessDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@radix-ui/react-tooltip";
 
 export function BrandHeader({ info }: { info: BrandInfo }) {
   const followButtonRef = useRef<HTMLButtonElement>(null);
@@ -298,7 +304,6 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                       alignContent: "center",
                       padding: "5px",
                       cursor: "pointer",
-
                     }}
                     onClick={handleLogoClick}
                   >
@@ -310,7 +315,7 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                       width={isMobile ? 90 : 180}
                       height={isMobile ? 90 : 180}
                       style={{
-                        objectFit:'cover'
+                        objectFit: "cover",
                       }}
                     />
                   </div>
@@ -338,9 +343,23 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                         <div className="font-semibold text-black dark:text-white text-lg">
                           {info.title}{" "}
                         </div>
-                        <div className="text-black dark:text-white pb-3 w-60 h-10 text-sm">
+                        {/* <div className="text-black dark:text-white pb-3 w-60 h-10 text-sm overflow-hidden">
                           {info.desc}{" "}
-                        </div>
+                        </div> */}
+                        <TooltipProvider delayDuration={200}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="text-md text-black dark:text-white w-full max-w-[300px] truncate cursor-pointer">
+                                {info?.desc && info?.desc.length > 80
+                                  ? `${info?.desc.slice(0, 80)}...`
+                                  : info.desc}
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-black text-white p-2 rounded-md max-w-[300px]">
+                              {info.desc}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </div>
                   </div>
@@ -441,11 +460,14 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
               >
                 <ResponsiveImages
                   imageSrc={info?.logo}
-                  objectFitProp="contain"
+                  objectFitProp="cover"
                   layout="fixed"
                   classname="circularImage"
                   width={150}
                   height={150}
+                  style={{
+                    objectFit: "cover",
+                  }}
                 />
               </div>
             </div>
@@ -460,10 +482,29 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 <div className="text-lg font-bold text-black dark:text-white">
                   {info.title}{" "}
                 </div>
-                <div className="text-md text-black dark:text-white">
-                  {" "}
-                  {info.desc}{" "}
-                </div>
+                {/* <div
+                  className="text-md text-black dark:text-white"
+                  style={{
+                    height: "20px",
+                    overflow: "hidden",
+                  }}
+                >
+                  {info.desc}
+                </div> */}
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-md text-black dark:text-white w-full max-w-[300px] truncate cursor-pointer">
+                        {info?.desc && info?.desc.length > 40
+                          ? `${info?.desc.slice(0, 40)}...`
+                          : info.desc}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-black text-white p-2 rounded-md max-w-[300px]">
+                      {info.desc}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <div className="flex gap-2 justify-center w-full">
                   <div className="font-semibold flex gap-1 text-zinc-500">
                     Rating : {}
