@@ -203,8 +203,8 @@ export default function BrandPage({ params }: { params: any }) {
                   <div className="flex w-full justify-center">
                     <ScrollArea className="h-full w-full pb-36">
                       <div
-                        className="flex flex-wrap w-full h-full gap-4 lg:gap-5"
-                        style={{ padding: "10px" }}
+                        className="flex flex-wrap w-full h-full gap-6 lg:gap-5"
+                        style={{ padding: "8%" }}
                       >
                         {videoData.length > 0 ? (
                           videoData.map((item: VideoData, index: number) => (

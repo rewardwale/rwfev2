@@ -79,7 +79,7 @@ export async function uploadBusinessBanner(Id: string, formData: FormData) {
 }
 export async function fetchBusinessPostsVideos(id: string, count?: number) {
   const queryParams = new URLSearchParams({
-    limit: "10",
+    limit: "100",
     skip: "0",
     flag: "1",
     businessPageId: id,

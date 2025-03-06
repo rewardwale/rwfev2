@@ -516,20 +516,20 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                 </div>
               </div>
             </div>
-            <div className="flex gap-5">
-              {!isOwner && (
-                <div>
-                  <Button
-                    ref={followButtonRef}
-                    onClick={isFollowed ? handleUnfollow : handleFollow}
-                    className="px-6"
-                  >
-                    {isFollowed ? "UnFollow" : "Follow"}
-                  </Button>
-                </div>
-              )}
-
+            <div className="flex gap-5 flex-col">
               <div>
+                {!isOwner && (
+                  <div>
+                    <Button
+                      ref={followButtonRef}
+                      onClick={isFollowed ? handleUnfollow : handleFollow}
+                      className="px-6"
+                    >
+                      {isFollowed ? "Following" : "Follow"}
+                    </Button>
+                  </div>
+                )}
+
                 <div className="flex gap-5">
                   <Button onClick={() => setIsDetailsModalOpen(true)}>
                     More Details
@@ -553,17 +553,17 @@ export function BrandHeader({ info }: { info: BrandInfo }) {
                     </Button>
                   )}
                 </div>
+              </div>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleShare}
-                  style={{
-                    border: "none",
-                    margin: "4px",
-                    width: "100%",
-                  }}
-                >
+              <div
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  display: "flex",
+                }}
+              >
+                <Button variant="outline" size="icon" onClick={handleShare}>
                   <Share2 className="h-4 w-4 min-lg:h-1 min-lg:w-1" />
                 </Button>
               </div>
