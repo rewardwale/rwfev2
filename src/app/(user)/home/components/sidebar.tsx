@@ -97,7 +97,11 @@ export function Sidebar({ className }: SidebarProps) {
     }
 
     return (
-      <Button variant="ghost" className="w-full justify-start" onClick={onClick}>
+      <Button
+        variant="ghost"
+        className="w-full justify-start"
+        onClick={onClick}
+      >
         <Icon
           className="mr-2 h-4 w-4"
           style={{ width: "24px", height: "24px" }}
@@ -107,7 +111,11 @@ export function Sidebar({ className }: SidebarProps) {
     );
   };
 
-  const SidebarContent = ({ forceExpanded = false }: { forceExpanded?: boolean }) => (
+  const SidebarContent = ({
+    forceExpanded = false,
+  }: {
+    forceExpanded?: boolean;
+  }) => (
     <ScrollArea className="h-screen">
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
@@ -155,40 +163,39 @@ export function Sidebar({ className }: SidebarProps) {
               forceExpanded={forceExpanded}
             />
 
-            {businessPageData.length > 0 && !(isCollapsed && !forceExpanded) && (
-              <div>
-                <button
-                  onClick={() => setIsBusinessPageOpen(!isBusinessPageOpen)}
-                  className="flex items-center justify-between w-full px-4 py-2"
-                >
-                  My Business Page
-                  <span
-                    className={`transform transition-transform duration-300 ${
-                      isBusinessPageOpen ? "rotate-180" : "rotate-0"
-                    }`}
+            {businessPageData.length > 0 &&
+              !(isCollapsed && !forceExpanded) && (
+                <div>
+                  <button
+                    onClick={() => setIsBusinessPageOpen(!isBusinessPageOpen)}
+                    className="flex items-center justify-between w-full px-4 py-2"
                   >
-                    <ChevronDown />
-                  </span>
-                </button>
-                <div
-                  className={`transition-[max-height] duration-500 overflow-hidden ${
-                    isBusinessPageOpen ? "max-h-96" : "max-h-0"
-                  }`}
-                >
-                  <div className="pl-6 space-y-2">
-                    {businessPageData.map((business) => (
-                      <button
-                        key={business._id}
-                        onClick={() => router.push(`/${business.handle}`)}
-                        className="block w-full text-left px-4 py-2 hover:bg-accent"
-                      >
-                        {business.businessName}
-                      </button>
-                    ))}
+                    My Business Page
+                    <span
+                      className={`transform transition-transform duration-300 ${
+                      isBusinessPageOpen ? "rotate-180" : "rotate-0" }`}
+                    >
+                      <ChevronDown />
+                    </span>
+                  </button>
+                  <div
+                    className={`transition-[max-height] duration-500 overflow-hidden ${
+                    isBusinessPageOpen ? "max-h-96" : "max-h-0" }`}
+                  >
+                    <div className="pl-6 space-y-2">
+                      {businessPageData.map((business) => (
+                        <button
+                          key={business._id}
+                          onClick={() => router.push(`/${business.handle}`)}
+                          className="block w-full text-left px-4 py-2 hover:bg-accent"
+                        >
+                          {business.businessName}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {businessPageData.length > 0 && isCollapsed && !forceExpanded && (
               <TooltipProvider>
@@ -198,7 +205,9 @@ export function Sidebar({ className }: SidebarProps) {
                       variant="ghost"
                       className="w-full justify-center"
                       onClick={() =>
-                        router.push(`/${businessPageData[0].handle}`)
+                        isCollapsed
+                          ? setIsCollapsed(false)
+                          : setIsCollapsed(true)
                       }
                     >
                       <Building2
@@ -227,7 +236,7 @@ export function Sidebar({ className }: SidebarProps) {
           className={cn(
             "pb-12 hidden md:block transition-all duration-300",
             isMobile ? "w-16" : isCollapsed ? "w-16" : "w-64",
-            className
+            className,
           )}
         >
           <SidebarContent />
@@ -239,7 +248,8 @@ export function Sidebar({ className }: SidebarProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
-            <SidebarContent forceExpanded={true} /> {/* Force expanded for mobile */}
+            <SidebarContent forceExpanded={true} />{" "}
+            {/* Force expanded for mobile */}
           </SheetContent>
         </Sheet>
       </>

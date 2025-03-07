@@ -59,7 +59,6 @@ export default function BrandPage({ params }: { params: any }) {
   const [profileData, setProfilePageData] = useState<
     ProfileDataProps | undefined
   >(undefined);
-
   const fetchBrandDetails = async () => {
     const handle = window.location.pathname.split("/")[1];
 
