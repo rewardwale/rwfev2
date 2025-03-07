@@ -7,6 +7,7 @@ import { useVideoContext } from "../providers/video-control-provider";
 import { rateVideo } from "@/apis/watch";
 import { useSearchParams } from "next/navigation";
 import { StarRating } from "../../post/components/StarRating";
+import Hls from "hls.js";
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -14,8 +15,7 @@ interface VideoPlayerProps {
 }
 
 export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
-  const { videoRef, isPlaying, isMuted, togglePlay, toggleMute } =
-    useVideoContext();
+  const { videoRef, isPlaying, isMuted, togglePlay, toggleMute } = useVideoContext();
   const [progress, setProgress] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -23,6 +23,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
   const [countdown, setCountdown] = useState(10);
   const isVideoEnded = useRef(false);
   const [rating, setRating] = useState(0);
+  const hlsRef = useRef<Hls | null>(null);
 
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v") || "";
@@ -31,15 +32,61 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
     const video = videoRef.current;
     if (!video || !videoUrl) return;
 
+    // Clean up previous HLS instance if it exists
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
+
     // Reset video when URL changes
     video.load();
 
-    // Try to autoplay
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.error("Autoplay prevented:", error);
-      });
+    // Check if the video is HLS (.m3u8)
+    if (videoUrl.endsWith('.m3u8')) {
+      // Check if HLS is supported
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+        });
+        hlsRef.current = hls;
+
+        hls.loadSource(videoUrl);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          if (autoPlay) {
+            video.play().catch((error) => {
+              console.error("Autoplay prevented:", error);
+            });
+          }
+        });
+
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                console.error("Network error, trying to recover...");
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                console.error("Media error, trying to recover...");
+                hls.recoverMediaError();
+                break;
+              default:
+                console.error("Fatal error, destroying HLS instance...");
+                hls.destroy();
+                break;
+            }
+          }
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // For Safari which has built-in HLS support
+        video.src = videoUrl;
+      }
+    } else {
+      // Regular video file (e.g., .mp4)
+      video.src = videoUrl;
     }
 
     // Update progress
@@ -50,7 +97,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
     const handleEnded = () => {
       isVideoEnded.current = true;
       setShowOverlay(true);
-      setCountdown(10); // Reset countdown timer
+      setCountdown(10);
     };
 
     video.addEventListener("timeupdate", handleTimeUpdate);
@@ -59,6 +106,10 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
     return () => {
       video.removeEventListener("timeupdate", handleTimeUpdate);
       video.removeEventListener("ended", handleEnded);
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
     };
   }, [videoUrl, videoRef]);
 
@@ -112,7 +163,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
       setShowThankYou(true);
     }
     setShowOverlay(false);
-    setTimeout(() => setShowThankYou(false), 3000); // Show thank you message for 3 seconds
+    setTimeout(() => setShowThankYou(false), 3000);
   };
 
   if (!videoUrl) {
@@ -125,14 +176,13 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
 
   return (
     <div
-      className="relative w-full h-full bg-black group"
+      className="relative w-full bg-black group"
       onClick={toggleMute}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
       <video
         ref={videoRef}
-        src={videoUrl}
         className="w-full h-full object-contain"
         controls={false}
         playsInline
@@ -140,14 +190,11 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
       />
 
       {/* Top controls */}
-
       <div
         className={`absolute inset-0 flex items-center justify-center transition-opacity
           duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
       >
         <div
-          // variant="ghost"
-          // size="icon"
           className="text-white hover:bg-black/30"
         >
           {isMuted ? (
@@ -157,6 +204,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
           )}
         </div>
       </div>
+
       {/* Center play/pause button - only shown when controls are visible */}
       <div
         className={
@@ -164,7 +212,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
         }
       >
         <div
-          className="bg-black/30 rounded-full p-4"
+          className="bg-black/30 rounded-full p-4 cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             togglePlay();

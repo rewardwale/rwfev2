@@ -218,3 +218,19 @@ export async function fetchVideoUsingCategory(categoryId: any) {
     return null;
   }
 }
+
+export async function updateVideoCount(videoId: string) {
+  try {
+    const response = await apiClient(`/videoViews/${videoId}`, "PUT");
+
+    if (response.success && response.data) {
+      return response.data;
+    } else {
+      console.error("Failed to fetch:", response.error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error in Like video", error);
+    return null;
+  }
+}

@@ -29,15 +29,16 @@ export default function HomePage() {
   // console.log("checking for profile data----myProfile", data);
 
   return (
-    <div className="flex bg-background ">
-      {!isMobile && <Sidebar />}
-      <div className="flex-1 h-screen overflow-y-scroll overscroll-none">
-        <Header />
-        {/* <div className="flex justify-center w-full"><SearchInputContainer/></div> */}
-        <Suspense fallback={<div>Loading...</div>}>
-          {data && <ProfilePage profileData={data} id={userId} />}
-        </Suspense>
-        {/* <Footer/> */}
+    <div className="flex h-screen bg-background flex-col">
+      <Header />
+
+      <div className="flex overflow-hidden">
+        <div>{!isMobile && <Sidebar />}</div>
+        <div className={`flex-1 ${isMobile ? "overflow-scroll" : "overflow-hidden"} scrollbar-hide`}>
+          <Suspense fallback={<div>Loading...</div>}>
+            {data && <ProfilePage profileData={data} id={userId} />}
+          </Suspense>
+        </div>
       </div>
     </div>
   );

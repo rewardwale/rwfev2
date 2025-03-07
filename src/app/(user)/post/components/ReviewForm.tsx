@@ -99,8 +99,6 @@ export function ReviewForm() {
         tags,
         latitude: 90,
         longitude: 90,
-        isSponsored: false,
-        isAdvertisement: false,
         isProduct: category === "product",
         isService: category === "service",
         isPlaces: category === "place",

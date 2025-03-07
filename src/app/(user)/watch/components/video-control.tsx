@@ -90,8 +90,6 @@ export function VideoControls({ video }: VideoControlsProps) {
 
   const isMobile = useIsMobile();
 
-  console.log("checking video data", video);
-
   const checkToken = async () => {
     const token = localStorage.getItem("token");
     if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
@@ -306,10 +304,9 @@ export function VideoControls({ video }: VideoControlsProps) {
         <div
           className="absolute top-4"
           style={{
-            top: "2%",
-            right: "21rem",
-            height: "50px",
-            width: "50px",
+            top: "3%",
+            // right: "21rem",
+            left: "2%",
           }}
         >
           <Button
@@ -317,13 +314,10 @@ export function VideoControls({ video }: VideoControlsProps) {
             size="icon"
             className="text-white"
             onClick={navigateBack}
-            style={{
-              height: "50px",
-              width: "50px",
-            }}
+         
           >
-            {/* <MoveLeft size={50} /> */}
-            <ArrowLeft size={40} />
+            <ArrowLeft size={80} 
+            />
           </Button>
         </div>
       )}
@@ -332,7 +326,7 @@ export function VideoControls({ video }: VideoControlsProps) {
         className="absolute top-3/4 transform -translate-y-1/2 flex flex-col gap-6 items-center"
         style={{
           right: `${!isMobile ? "-5rem" : "1rem"}`,
-          top: "66%",
+          top: "64%",
         }}
       >
         {
@@ -398,7 +392,7 @@ export function VideoControls({ video }: VideoControlsProps) {
       <div
         className="absolute bottom-4 left-4 right-16 text-white"
         style={{
-          top: `${isMobile ? "85%" : "82%"}`,
+          top: `${isMobile ? "80%" : "75%"}`,
           // left: `${isMobile && "0"}`,
         }}
       >
