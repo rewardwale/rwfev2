@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { fetchVideoDetails, fetchVideoUsingCategory } from "@/apis/watch";
 import { useInfiniteVideos } from "./hooks/use-infinite-scroll";
 import { ScrollButton } from "./components/scroll-button";
+import { Sidebar } from "../home/components/sidebar";
 
 interface VideoDetails {
   _id: string;
@@ -61,8 +62,6 @@ export default function WatchPage() {
   }, [initialVideo]);
 
   const videos = [...(initialVideo ? [initialVideo] : []), ...fetchedVideos];
-
-  console.log("checking videos in page.tsx", videos);
 
   useEffect(() => {
     // Initialize IntersectionObserver
@@ -184,26 +183,55 @@ export default function WatchPage() {
     return <div>Loading...</div>; // Consider adding a proper loading component
   }
 
-  return (
-    <div className="flex flex-col h-screen bg-black overflow-scroll scrollbar-hide">
-      {!isMobile && (
-        <div
-          onClick={() => router.back()}
-          className="absolute"
-          style={{
-            top: "5%",
-            left: "2%",
-            cursor: "pointer",
-            fontSize: "24px",
-            fontWeight: "600",
-            zIndex: "9999",
-            color: "#ffffff",
-          }}
-        >
-          <span>Back</span>
-        </div>
-      )}
-      <main className="flex-1 relative overflow-y-scroll snap-y snap-mandatory">
+  return !isMobile ? (
+    <div className="flex h-screen bg-background flex-col">
+      <Header />
+
+      <div className="flex overflow-hidden">
+        <div>{!isMobile && <Sidebar />}</div>
+
+        <main className="flex-1 relative overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              className="relative w-full transition-all duration-400 ease-in-out"
+              style={{
+                maxHeight: "-webkit-fill-available",
+                paddingBlock: "12px",
+                maxWidth: `${!isMobile && "420px"}`,
+                width: `${!isMobile && "100%"}`,
+              }}
+              id="video-container"
+            >
+              {videos.map((video, index) => (
+                <div
+                  key={`${video.videoId}-${index}`}
+                  data-index={index}
+                  className={`video-container h-screen w-full snap-start snap-always ${
+                    !isMobile ? "shadow-[0_0_90px_rgba(170,175,170,0.55)]" : "" }
+                    ${index === currentIndex ? "opacity-100" : "opacity-95"}`}
+                  style={{
+                    marginBottom: !isMobile ? "20px" : "0",
+                  }}
+                >
+                  <VideoControlsProvider>
+                    <div className="relative w-full h-full">
+                      <VideoPlayer
+                        videoUrl={video.cdnVideoPath}
+                        autoPlay={index === currentIndex}
+                      />
+                      <VideoControls video={video} />
+                    </div>
+                  </VideoControlsProvider>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  ) : (
+    <div className="flex flex-col h-screen bg-black overflow-scroll">
+      <main className="flex-1 relative overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
         <div className="absolute inset-0 flex items-center justify-center">
           <div
             className="relative w-full transition-all duration-400 ease-in-out"
@@ -219,11 +247,11 @@ export default function WatchPage() {
                 key={`${video.videoId}-${index}`}
                 data-index={index}
                 className={`video-container h-screen w-full snap-start snap-always ${
-                !isMobile ? "shadow-[0_0_20px_rgba(255,255,255,0.75)]" : "" }
-                ${index === currentIndex ? "opacity-100" : "opacity-95"}`}
+                  !isMobile ? "shadow-[0_0_20px_rgba(255,255,255,0.75)]" : "" }
+                  ${index === currentIndex ? "opacity-100" : "opacity-95"}`}
               >
                 <VideoControlsProvider>
-                  <div className="relative w-full h-full">
+                  <div className="flex relative w-full h-full">
                     <VideoPlayer
                       videoUrl={video.cdnVideoPath}
                       autoPlay={index === currentIndex}
@@ -236,41 +264,41 @@ export default function WatchPage() {
           </div>
         </div>
         {/* ${
-                !isMobile ? "shadow-[0_0_20px_rgba(255,255,255,0.75)]" : "" } */}
+              !isMobile ? "shadow-[0_0_20px_rgba(255,255,255,0.75)]" : "" } */}
         {/* {!isMobile && (
+        <div
+          style={{
+            zIndex: "9999",
+          }}
+        >
           <div
+            className="absolute"
             style={{
-              zIndex: "9999",
+              top: "45%",
+              left: "95%",
             }}
           >
-            <div
-              className="absolute"
-              style={{
-                top: "45%",
-                left: "95%",
-              }}
-            >
-              <ScrollButton
-                direction="up"
-                onClick={() => handleScroll("up")}
-                disabled={currentIndex === 0}
-              />
-            </div>
-            <div
-              className="absolute"
-              style={{
-                top: "55%",
-                left: "95%",
-              }}
-            >
-              <ScrollButton
-                direction="down"
-                onClick={() => handleScroll("down")}
-                disabled={currentIndex === videos.length - 1 && !hasMore}
-              />
-            </div>
+            <ScrollButton
+              direction="up"
+              onClick={() => handleScroll("up")}
+              disabled={currentIndex === 0}
+            />
           </div>
-        )} */}
+          <div
+            className="absolute"
+            style={{
+              top: "55%",
+              left: "95%",
+            }}
+          >
+            <ScrollButton
+              direction="down"
+              onClick={() => handleScroll("down")}
+              disabled={currentIndex === videos.length - 1 && !hasMore}
+            />
+          </div>
+        </div>
+      )} */}
       </main>
     </div>
   );

@@ -45,9 +45,9 @@ export default function ProfileItem({
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/90" />
 
-        <div className="absolute right-1 top-1">
+        {/* <div className="absolute right-1 top-1">
           <DeleteModal />
-        </div>
+        </div> */}
 
         <div className="flex-1 w-full absolute bottom-0 p-3">
           <p

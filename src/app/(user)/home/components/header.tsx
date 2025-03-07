@@ -28,6 +28,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { logout } from "@/apis/home";
 import { isUserLoggedIn } from "@/lib/utils";
 
+import whiteLogo from "../../../../../public/brand_logo/PNG/RW_White_Name.png";
+import Image from "next/image";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+
 export function Header() {
   const isMobile = useIsMobile();
   const router = useRouter();
@@ -36,8 +40,12 @@ export function Header() {
   return (
     isLoggedIn && (
       <header
-        className="flex items-center justify-between px-4 h-16 border-b sticky top-0 bg-background
-          z-50"
+        className="flex items-center justify-between px-4 h-16 sticky top-0 bg-background z-50"
+        style={{
+          paddingTop: "12px",
+          paddingBottom: "12px",
+          // marginBlockEnd: "8px",
+        }}
       >
         <div className="flex items-center gap-4">
           {/* <Button variant="ghost" size="icon">
@@ -45,15 +53,22 @@ export function Header() {
         </Button> */}
           {isMobile && <Sidebar />}
         </div>
-
+        {!isMobile && (
+          <Image
+            alt="Rewardwale"
+            src={whiteLogo}
+            className="w-[140px] hidden dark:inline m-3 cursor-pointer"
+            onClick={() => router.push("/")}
+          />
+        )}
         <div className={"flex items-center w-full justify-center"}>
           <SearchInputContainer />
         </div>
 
         <div className="flex items-center gap-2">
-          {/* <Button variant="ghost" size="icon">
-          <Bell className="h-5 w-5" />
-        </Button> */}
+           <div className="hidden md:flex items-center space-x-4">
+            <ThemeModeToggle />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -85,6 +100,7 @@ export function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+         
         </div>
       </header>
     )

@@ -81,7 +81,7 @@ export default function BookMarkComponent() {
   return (
     <div
       className="overflow-scroll overflow-x-hidden max-lg:h-screen py-2 px-2 lg:px-6
-        lg:h-[calc(100vh-80px)] w-full"
+        lg:h-[calc(100vh-80px)] w-full scrollbar-hide"
     >
       <div className="text-2xl mb-2 text-black dark:text-white">
         Bookmarked Reviews
@@ -124,7 +124,7 @@ export default function BookMarkComponent() {
                       }
                     }}
                   >
-                    {unselect ? "Un Select All" : "Select All"}
+                    {unselect ? "Unselect All" : "Select All"}
                   </Button>
 
                   {bookmarkList.length > 0 && (

@@ -27,16 +27,22 @@ export default function HomePage() {
   }, [isLoggedIn, router]);
 
   return (
-    <div className="flex h-screen bg-background">
-      {!isMobile && <Sidebar />}
+    <div className="flex h-screen bg-background flex-col">
+      <Header />
 
-      <div className="flex-1 overflow-hidden">
-        <Header />
-        <CategoryFilter onCategoriesChange={handleCategoriesChange} />
-        <Suspense fallback={<div>Loading...</div>}>
-          <VideoFeed selectedCategories={selectedCategories} />
-        </Suspense>
-        <Footer />
+      <div className="flex overflow-hidden">
+        <div>{!isMobile && <Sidebar />}</div>
+        <div className="flex-1 overflow-hidden">
+          <div>
+            <CategoryFilter onCategoriesChange={handleCategoriesChange} />
+          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <VideoFeed selectedCategories={selectedCategories} />
+          </Suspense>
+          <div>
+            <Footer />
+          </div>
+        </div>
       </div>
     </div>
   );
