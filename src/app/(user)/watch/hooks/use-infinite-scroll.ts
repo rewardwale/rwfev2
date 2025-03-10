@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Video } from "../types/video";
 import { apiClient } from "@/lib/apiClient";
+import { isUserLoggedIn } from "@/lib/utils";
 
 interface ApiResponse {
   message: string;
@@ -38,6 +39,12 @@ export function useInfiniteVideos(
 
   const fetchVideos = async () => {
     if (!categoryId || loading || !hasMore) return;
+
+    if (!isUserLoggedIn()) {
+      setError("Please login to view videos");
+      setHasMore(false);
+      return;
+    }
 
     try {
       setLoading(true);

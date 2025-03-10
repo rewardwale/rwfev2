@@ -6,7 +6,7 @@ import { Header } from "../home/components/header";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect, useRef, useState } from "react";
-import { fetchVideoDetails, fetchVideoUsingCategory } from "@/apis/watch";
+import { fetchVideoDetails } from "@/apis/watch";
 import { useInfiniteVideos } from "./hooks/use-infinite-scroll";
 import { ScrollButton } from "./components/scroll-button";
 import { Sidebar } from "../home/components/sidebar";
