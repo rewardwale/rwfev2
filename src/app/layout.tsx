@@ -69,7 +69,7 @@ export default function RootLayout({
         )}
       </head>
       {isProduction && <GoogleTagManager gtmId="GTM-PTD4M7JZ" />}
-      <body className="max-sm:overscroll-none">
+      <body className="max-sm:overscroll-none overflow-x-hidden">
         {isProduction && (
           <noscript>
             <iframe
