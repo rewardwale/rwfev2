@@ -29,6 +29,8 @@ import { logout } from "@/apis/home";
 import { isUserLoggedIn } from "@/lib/utils";
 
 import whiteLogo from "../../../../../public/brand_logo/PNG/RW_White_Name.png";
+import blackLogo from "../../../../../public/brand_logo/PNG/RW_Black_Name.png";
+
 import Image from "next/image";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 
@@ -53,14 +55,25 @@ export function Header() {
         </Button> */}
           {isMobile && <Sidebar />}
         </div>
-        {!isMobile && (
-          <Image
-            alt="Rewardwale"
-            src={whiteLogo}
-            className="w-[140px] hidden dark:inline m-3 cursor-pointer"
+        <div
             onClick={() => router.push("/")}
-          />
-        )}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") router.push("/");
+            }}
+            tabIndex={0}
+            role="button"
+          >
+            <Image
+              alt="Rewardwale"
+              src={whiteLogo}
+              className="w-[160px] hidden dark:inline"
+            />
+            <Image
+              alt="Rewardwale"
+              src={blackLogo}
+              className="w-[160px] inline dark:hidden"
+            />
+          </div>
         <div className={"flex items-center w-full justify-center"}>
           <SearchInputContainer />
         </div>
