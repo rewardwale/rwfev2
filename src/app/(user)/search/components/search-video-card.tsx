@@ -38,22 +38,24 @@ export default function Video() {
       <div className="flex items-center justify-between w-full mb-4">
         <div className="space-y-1 flex justify-between w-full">
           <div>
-          <h2 className="sm:text-2xl font-semibold tracking-tight text-sm">
-            Reviews
-          </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Top picks for you. Updated daily.
-          </p>
+            <h2 className="sm:text-2xl font-semibold tracking-tight text-sm">
+              Reviews
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Top picks for you. Updated daily.
+            </p>
           </div>
-        
-          <Button variant={"link"}>
-            <Link
-              href={`/search/result/review?i=${searchWord}`}
-              className="text-blue-500 max-sm:text-xs"
-            >
-              See All
-            </Link>
-          </Button>
+
+          {videoData.length > 0 && (
+            <Button variant={"link"}>
+              <Link
+                href={`/search/result/review?i=${searchWord}`}
+                className="text-blue-500 max-sm:text-xs"
+              >
+                See All
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -70,8 +72,6 @@ export default function Video() {
                   className="w-[130px] md:w-[200px] sm:w-[145px]"
                   aspectRatio="portrait"
                 />
-           
-                
               ))
             ) : (
               <div>no data</div>

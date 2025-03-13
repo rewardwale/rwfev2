@@ -169,7 +169,12 @@ const HeroSlideContent = memo(
 
     const handleVideoEnd = useCallback(() => {
       setShowVideo(false);
-    }, []);
+      setTimeout(() => {
+        if (slide.cdnVideoPath) {
+          setShowVideo(true);
+        }
+      }, 2100);
+    }, [slide.cdnVideoPath]);
 
     return (
       <div className="relative w-full h-[70vh] group">
@@ -240,9 +245,15 @@ const HeroSlideContent = memo(
             {slide.cta1Action && slide.cta1URL && (
               <button
                 onClick={() => window.open(slide.cta1URL, "_blank")}
-                className="px-8 py-4 rounded-lg transition-all duration-210 bg-white text-black
-                  font-semibold hover:bg-opacity-90 hover:scale-105 hover:shadow-xl
-                  active:scale-95 transform text-base uppercase tracking-wide"
+                className="rounded-lg transition-all duration-210 bg-white text-black font-semibold
+                  hover:bg-opacity-90 hover:scale-105 hover:shadow-xl active:scale-95 transform
+                  text-base uppercase tracking-wide"
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  paddingInline: "28px",
+                  paddingBlock: "12px",
+                }}
               >
                 {slide.cta1Action}
               </button>
@@ -250,9 +261,16 @@ const HeroSlideContent = memo(
             {slide.cta2Action && slide.cta2URL && (
               <button
                 onClick={() => window.open(slide.cta2URL, "_blank")}
-                className="px-8 py-4 rounded-lg transition-all duration-210 bg-white text-black
-                  font-semibold hover:bg-opacity-90 hover:scale-105 hover:shadow-xl
-                  active:scale-95 transform text-base uppercase tracking-wide"
+                className="rounded-lg transition-all duration-210 bg-white text-black font-semibold
+                  hover:bg-opacity-90 hover:scale-105 hover:shadow-xl active:scale-95 transform
+                  text-base uppercase tracking-wide"
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  paddingInline: "28px",
+                  paddingBlock: "12px",
+                  lineHeight: "20px",
+                }}
               >
                 {slide.cta2Action}
               </button>
@@ -267,14 +285,7 @@ const HeroSlideContent = memo(
 const HeroSection: React.FC<{ slides: HeroSlide[] }> = ({ slides }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  console.log("HeroSection rendering with:", {
-    slidesLength: slides?.length,
-    firstSlide: slides?.[0],
-    allSlides: slides,
-  });
-
   if (!slides || slides.length === 0) {
-    console.log("No slides available for HeroSection");
     return null;
   }
 
@@ -318,6 +329,7 @@ const HeroSection: React.FC<{ slides: HeroSlide[] }> = ({ slides }) => {
         }}
         effect="fade"
         loop={true}
+        allowTouchMove={false}
         className="w-full h-[35rem]"
         pagination={{
           clickable: true,
@@ -328,23 +340,17 @@ const HeroSection: React.FC<{ slides: HeroSlide[] }> = ({ slides }) => {
           crossFade: true,
         }}
         onSlideChange={(swiper) => {
-          console.log("Slide changed to:", swiper.realIndex);
           setActiveIndex(swiper.realIndex);
         }}
       >
-        {slides.map((slide, index) => {
-          return (
-            <SwiperSlide
-              key={`${slide.videoId}-${index}`}
-              className="transition-opacity duration-500 ease-in-out"
-            >
-              <HeroSlideContent
-                slide={slide}
-                isActive={index === activeIndex}
-              />
-            </SwiperSlide>
-          );
-        })}
+        {slides.map((slide, index) => (
+          <SwiperSlide
+            key={`${slide.videoId}-${index}`}
+            className="transition-opacity duration-500 ease-in-out"
+          >
+            <HeroSlideContent slide={slide} isActive={index === activeIndex} />
+          </SwiperSlide>
+        ))}
       </Swiper>
     </div>
   );
@@ -415,6 +421,7 @@ const ShortCard = memo(
                 className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 h-[2.8rem]"
                 style={{
                   height: "4rem",
+                  width: "14rem",
                 }}
               >
                 {description}
@@ -473,7 +480,7 @@ const SubHeadingContent = memo(
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-2xl font-bold mb-6 pl-5 flex items-center gap-2 p-3"
+          className="text-2xl font-bold pl-5 flex items-center gap-2 p-3"
         >
           <span className="w-1.5 h-8 bg-blue-500 rounded-full"></span>
           {title}
