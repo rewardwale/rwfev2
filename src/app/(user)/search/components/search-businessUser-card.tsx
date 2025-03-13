@@ -54,14 +54,16 @@ export default function BusinessUser() {
           <h2 className="text-2xl font-semibold tracking-tight max-sm:text-sm">
             Businesses
           </h2>
-          <Button variant={"link"}>
-            <Link
-              href={`/search/result/merchant?i=${searchWord}`}
-              className="text-blue-600 max-sm:text-xs disabled:text-gray-600/50"
-            >
-              See All
-            </Link>
-          </Button>
+          {userData.length > 0 && (
+            <Button variant={"link"}>
+              <Link
+                href={`/search/result/merchant?i=${searchWord}`}
+                className="text-blue-600 max-sm:text-xs disabled:text-gray-600/50"
+              >
+                See All
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
       <div className="relative">

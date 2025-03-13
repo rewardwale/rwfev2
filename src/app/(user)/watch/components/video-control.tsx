@@ -335,7 +335,7 @@ export function VideoControls({ video }: VideoControlsProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`text-white transition-transform ${isLiked ? "scale-125" : ""}`}
+                className={`transition-transform ${isLiked ? "scale-125" : ""}`}
                 onClick={() =>
                   isLiked
                     ? handleAuthAction(handleunLike)
@@ -346,13 +346,13 @@ export function VideoControls({ video }: VideoControlsProps) {
                   className={`h-6 w-6 ${isLiked ? "fill-white" : ""}`}
                 />
               </Button>
-              <span className="text-white text-sm">Like</span>
+              <span className="text-sm">Like</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Button
                 variant="ghost"
                 size="icon"
-                className={`text-white transition-transform ${isBookmarked ? "scale-125" : ""}`}
+                className={`transition-transform ${isBookmarked ? "scale-125" : ""}`}
                 onClick={() => handleAuthAction(handleBookmark)}
               >
                 {/* <ThumbsDown className={`h-6 w-6 ${unLiked ? "fill-white" : ""}`} /> */}
@@ -360,18 +360,18 @@ export function VideoControls({ video }: VideoControlsProps) {
                   className={`h-6 w-6 ${isBookmarked ? "fill-white" : ""}`}
                 />
               </Button>
-              <span className="text-white text-sm">Bookmark</span>
+              <span className="text-sm">Bookmark</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-white"
+                className=""
                 onClick={() => handleAuthAction(handleShowComments)}
               >
                 <MessageSquare className="h-6 w-6" />
               </Button>
-              <span className="text-white text-sm">Comment</span>
+              <span className="text-sm">Comment</span>
             </div>
           </>
         }
@@ -379,12 +379,12 @@ export function VideoControls({ video }: VideoControlsProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="text-white"
+            className=""
             onClick={handleShare}
           >
             <Share2 className="h-6 w-6" />
           </Button>
-          <span className="text-white text-sm">Share</span>
+          <span className="text-sm">Share</span>
         </div>
       </div>
 
