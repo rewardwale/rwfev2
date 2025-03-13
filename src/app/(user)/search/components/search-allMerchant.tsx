@@ -56,7 +56,7 @@ export default function AllBusinessUser() {
       const responseData = await searchBusinessUsers(
         paramInput,
         count + 60,
-        60
+        60,
       );
 
       let newData = responseData;
@@ -80,9 +80,11 @@ export default function AllBusinessUser() {
     }
   }
 
+  console.log("checking userdata", userData);
+
   return (
     <div className="w-full h-screen">
-      <div className=" max-md:px-3 max-md:pt-3">
+      <div className="max-md:px-3 max-md:pt-3">
         <div className="mb-4">
           <PathBreadCrumbs
             path1="home"
@@ -94,7 +96,7 @@ export default function AllBusinessUser() {
 
         <div className="space-y-1">
           <h2 className="max-sm:text-lg text-2xl font-semibold tracking-tight">
-            Merchants
+            Businesses
           </h2>
           <p className="text-sm text-muted-foreground max-sm:text-xs">
             Displaying the results for the search word {searchWord}
@@ -102,26 +104,34 @@ export default function AllBusinessUser() {
         </div>
       </div>
       <Separator className="my-4" />
-      <ScrollArea
-        className="h-full w-full   pb-36"
-        ref={scrollContainerRef}
-        onScroll={handleScrollEvent}
+
+      {/* <div className="flex flex-wrap w-full h-full   gap-1"> */}
+      <div
+        style={{
+          display: "flex",
+          gap: "12px",
+        }}
       >
-        {/* <div className="flex flex-wrap w-full h-full   gap-1"> */}
         {userData?.length > 0 || !userData ? (
           userData.map((item: Profile, index: number) => (
-            <AllMerchantItem
-              data={item}
-              key={index}
-              handleFollow={handleFollowMerchants}
-            />
+            <div
+              style={{
+                padding: "16px",
+                borderRadius: "12px",
+                background: "grey",
+                flexDirection: "column",
+                cursor: "pointer",
+              }}
+              className="flex gap-4"
+              onClick={() => router.push(`/${item.handle}`)}
+            >
+              <div>{item.businessName}</div>
+            </div>
           ))
         ) : (
           <div>no data</div>
         )}
-        {/* </div> */}
-        <ScrollBar orientation="vertical" />
-      </ScrollArea>
+      </div>
     </div>
   );
 }

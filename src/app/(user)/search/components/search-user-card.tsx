@@ -54,14 +54,16 @@ export default function User() {
           <h2 className="text-2xl font-semibold tracking-tight max-sm:text-sm">
             Users
           </h2>
-          <Button variant={"link"}>
-            <Link
-              href={`/search/result/user?i=${searchWord}`}
-              className="text-blue-500 max-sm:text-xs"
-            >
-              See All
-            </Link>
-          </Button>
+          {userData.length > 0 && (
+            <Button variant={"link"}>
+              <Link
+                href={`/search/result/user?i=${searchWord}`}
+                className="text-blue-500 max-sm:text-xs"
+              >
+                See All
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
       <div className="relative">

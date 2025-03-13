@@ -6,7 +6,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 import { FollowerList } from "./dataTypes";
@@ -17,23 +16,20 @@ import FollowerItem from "./followerItem";
 
 interface Props {
   id: string;
-  usern:string;
-  followers:boolean
+  usern: string;
+  followers: boolean;
 }
-export function FollowingList({ id ,usern,followers}: Props) {
+export function FollowingList({ id, usern, followers }: Props) {
   const [follower, setFollower] = useState<FollowerList[]>([]);
   const [count, setCount] = useState<number>(0);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [myProfile, setMyProfile] = useState<boolean>(false);
 
-
   useEffect(() => {
-
-    if (id&&followers) {
+    if (id && followers) {
       init();
     }
   }, []);
-
 
   const init = async () => {
     const data = localStorage.getItem("uib");
@@ -41,7 +37,7 @@ export function FollowingList({ id ,usern,followers}: Props) {
     if (name === usern) {
       setMyProfile(true);
     }
-    const response = await getfollowingList(name === usern?"":id, count);
+    const response = await getfollowingList(name === usern ? "" : id, count);
     setFollower(response.data.data);
   };
 
@@ -49,7 +45,10 @@ export function FollowingList({ id ,usern,followers}: Props) {
     try {
       if (id) {
         setCount(count + 10);
-        const responseData = await getfollowingList(myProfile?"":id, count + 10);
+        const responseData = await getfollowingList(
+          myProfile ? "" : id,
+          count + 10,
+        );
 
         let newData = responseData?.data.data;
         if (newData.length > 0) {
@@ -78,7 +77,7 @@ export function FollowingList({ id ,usern,followers}: Props) {
       <DialogHeader>
         <DialogTitle>Following</DialogTitle>
         <DialogDescription>
-          You are following {follower.length} people 
+          You are following {follower.length} people
         </DialogDescription>
       </DialogHeader>
       <div className="py-6">
@@ -102,7 +101,6 @@ export function FollowingList({ id ,usern,followers}: Props) {
           </ScrollArea>
         </div>
       </div>
-    
     </DialogContent>
   );
 }

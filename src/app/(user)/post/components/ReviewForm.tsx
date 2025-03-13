@@ -24,6 +24,7 @@ import {
 } from "@/apis/post";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Loader from "@/components/ui/loader";
 
 const STEPS = [
   { number: 1, title: "Upload Video" },
@@ -89,6 +90,15 @@ export function ReviewForm() {
         {} as Record<string, { value: string; rating: number }>,
       );
 
+      const isLocalStorageAvailable =
+        typeof window !== "undefined" && window.localStorage;
+
+      const latitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lat") ?? "90")
+        : "90";
+      const longitude = isLocalStorageAvailable
+        ? (localStorage.getItem("loc-lng") ?? "90")
+        : "90";
       // Get file extension
       const ext = videoFile.name.split(".").pop() || "";
 
@@ -97,8 +107,8 @@ export function ReviewForm() {
         desc: description,
         hashtags,
         tags,
-        latitude: 90,
-        longitude: 90,
+        latitude: latitude,
+        longitude: longitude,
         isProduct: category === "product",
         isService: category === "service",
         isPlaces: category === "place",
@@ -110,7 +120,6 @@ export function ReviewForm() {
       // Get signed URL
       const { data } = await getSignedUrl(body);
       if (data.isSignedURL) {
-
         const videoUpload = await axios.put(data?.location, videoFile, {
           headers: {
             "Content-Type": videoFile.type,
@@ -135,7 +144,6 @@ export function ReviewForm() {
     } finally {
       setIsLoading(false);
       setShowSuccess(true);
-
     }
   };
 
@@ -357,7 +365,6 @@ export function ReviewForm() {
                 </Button>
                 <Button onClick={handleSubmit} disabled={isLoading}>
                   {isLoading ? "Uploading..." : "Submit Review"}
-                  {/* <Toaster richColors /> */}
                 </Button>
               </div>
             </div>
@@ -373,6 +380,7 @@ export function ReviewForm() {
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary md:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row gap-8">
+            {isLoading && <Loader />}
             <StepIndicator currentStep={step} steps={STEPS} />
             {/* for desktop */}
             <div className="flex-1 flex gap-8">
