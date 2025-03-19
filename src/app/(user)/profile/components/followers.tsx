@@ -17,23 +17,20 @@ import FollowerItem from "./followerItem";
 
 interface Props {
   id: string;
-  usern:string;
-  followers:boolean;
+  usern: string;
+  followers: boolean;
 }
-export function FollowersList({ id ,usern,followers}: Props) {
+export function FollowersList({ id, usern, followers }: Props) {
   const [follower, setFollower] = useState<FollowerList[]>([]);
   const [count, setCount] = useState<number>(0);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [myProfile, setMyProfile] = useState<boolean>(false);
 
-
   useEffect(() => {
-
-    if (id &&follower ) {
+    if (id && follower) {
       init();
     }
   }, []);
-
 
   const init = async () => {
     const data = localStorage.getItem("uib");
@@ -41,7 +38,7 @@ export function FollowersList({ id ,usern,followers}: Props) {
     if (name === usern) {
       setMyProfile(true);
     }
-    const response = await getfollowerList(name === usern?"":id, count);
+    const response = await getfollowerList(name === usern ? "" : id, count);
     setFollower(response.data.data);
   };
 
@@ -49,7 +46,10 @@ export function FollowersList({ id ,usern,followers}: Props) {
     try {
       if (id) {
         setCount(count + 10);
-        const responseData = await getfollowerList(myProfile?"":id, count + 10);
+        const responseData = await getfollowerList(
+          myProfile ? "" : id,
+          count + 10,
+        );
 
         let newData = responseData?.data.data;
         if (newData.length > 0) {
@@ -74,12 +74,12 @@ export function FollowersList({ id ,usern,followers}: Props) {
   }
 
   return (
-    <DialogContent className=" max-w-[280px] sm:max-w-[425px] rounded-md">
+    <DialogContent className="max-w-[280px] sm:max-w-[425px] rounded-md">
       <DialogHeader>
         <DialogTitle>Followers</DialogTitle>
-        <DialogDescription>
+        {/* <DialogDescription>
           You have {follower.length} followers
-        </DialogDescription>
+        </DialogDescription> */}
       </DialogHeader>
       <div className="py-6">
         <div className="flex w-full justify-center">
@@ -102,7 +102,6 @@ export function FollowersList({ id ,usern,followers}: Props) {
           </ScrollArea>
         </div>
       </div>
-    
     </DialogContent>
   );
 }
