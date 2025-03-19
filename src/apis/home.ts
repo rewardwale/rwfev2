@@ -31,7 +31,7 @@ export async function fetchHomePageData(selectedCategories?: string[]) {
   console.log("inside video feed fetchHomePageData");
 
   const queryParams = new URLSearchParams({
-    limit: "10",
+    limit: "100",
     skip: "0",
     flag: "0",
   });

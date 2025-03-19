@@ -1,4 +1,4 @@
-import { Hash, Upload, Users, X } from "lucide-react";
+import { Hash, Upload, Users, X, Building2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LocationInput } from "./LocationInput";
@@ -23,20 +23,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { VideoThumbnailGenerator } from "./VideoThumbnailGenerator";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
 
-import { fetchTagSuggestions } from "@/apis/post";
+import { fetchTagSuggestions, fetchBusinessTagSuggestions } from "@/apis/post";
 
 interface Tag {
   id: string;
   handle: string;
-  businessName: string;
+  businessName?: string;
+}
+
+interface TagResponse {
+  id: string;
+  handle: string;
+  businessName?: string;
+}
+
+interface ApiResponse {
+  message: string;
+  data: {
+    count: number;
+    data: TagResponse[];
+  };
 }
 
 interface ReviewDetailsProps {
@@ -80,6 +87,10 @@ export function ReviewDetails({
   const [tagSearchResults, setTagSearchResults] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [activeTab, setActiveTab] = useState<'users' | 'businesses'>('users');
+  const [businessSearchValue, setBusinessSearchValue] = useState("");
+  const [businessSearchResults, setBusinessSearchResults] = useState<Tag[]>([]);
+  const [isBusinessSearching, setIsBusinessSearching] = useState(false);
 
   const form = useForm<ReviewFormData>({
     resolver: zodResolver(reviewFormSchema),
@@ -103,7 +114,7 @@ export function ReviewDetails({
 
   useEffect(() => {
     const searchTags = async () => {
-      if (tagSearchValue.length < 2) {
+      if (!tagSearchValue || tagSearchValue.length < 3) {
         setTagSearchResults([]);
         return;
       }
@@ -111,8 +122,20 @@ export function ReviewDetails({
       setIsSearching(true);
       try {
         const response = await fetchTagSuggestions(tagSearchValue);
-
-        response && setTagSearchResults(response?.data?.data?.data);
+        console.log("Raw API Response:", response);
+        
+        // Check if response exists and has the expected structure
+        if (response?.data?.data) {
+          const suggestions = response.data.data.map((item: TagResponse) => ({
+            id: item.id,
+            handle: item.handle,
+            businessName: item.handle
+          }));
+          console.log("Final suggestions array:", suggestions);
+          setTagSearchResults(suggestions);
+        } else {
+          setTagSearchResults([]);
+        }
       } catch (error) {
         console.error("Failed to search tags:", error);
         setTagSearchResults([]);
@@ -124,6 +147,38 @@ export function ReviewDetails({
     const debounceTimeout = setTimeout(searchTags, 300);
     return () => clearTimeout(debounceTimeout);
   }, [tagSearchValue]);
+
+  useEffect(() => {
+    const searchBusinesses = async () => {
+      if (!businessSearchValue || businessSearchValue.length < 3) {
+        setBusinessSearchResults([]);
+        return;
+      }
+
+      setIsBusinessSearching(true);
+      try {
+        const response = await fetchBusinessTagSuggestions(businessSearchValue);
+        if (response?.data?.data) {
+          const suggestions = response.data.data.map((item: TagResponse) => ({
+            id: item.id,
+            handle: item.handle,
+            businessName: item.handle
+          }));
+          setBusinessSearchResults(suggestions);
+        } else {
+          setBusinessSearchResults([]);
+        }
+      } catch (error) {
+        console.error("Failed to search businesses:", error);
+        setBusinessSearchResults([]);
+      } finally {
+        setIsBusinessSearching(false);
+      }
+    };
+
+    const debounceTimeout = setTimeout(searchBusinesses, 300);
+    return () => clearTimeout(debounceTimeout);
+  }, [businessSearchValue]);
 
   const handleTagSelect = (tag: Tag) => {
     if (!selectedTags.find((t) => t.id === tag.id)) {
@@ -388,20 +443,20 @@ export function ReviewDetails({
           )}
         />
 
-        {/* <FormField
+        <FormField
           control={form.control}
           name="tags"
           render={({ field }) => (
             <FormItem>
               <Label>Tag Users or Businesses</Label>
               <div className="space-y-2">
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-2">
                   {selectedTags.map((tag) => (
                     <div
                       key={tag.id}
                       className="flex items-center gap-1 bg-secondary px-2 py-1 rounded-full text-sm"
                     >
-                      <span>@{tag.businessName || tag.handle}</span>
+                      <span>@{tag.handle}</span>
                       <button
                         type="button"
                         onClick={() => removeTag(tag.id)}
@@ -412,58 +467,138 @@ export function ReviewDetails({
                     </div>
                   ))}
                 </div>
-                <Popover open={tagSearchOpen} onOpenChange={setTagSearchOpen}>
-                  <PopoverTrigger asChild>
-                    <div className="flex items-center gap-2">
+
+                <div className="flex border-b mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('users')}
+                    className={`px-4 py-2 text-sm font-medium ${
+                      activeTab === 'users'
+                        ? 'border-b-2 border-primary text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Users
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('businesses')}
+                    className={`px-4 py-2 text-sm font-medium ${
+                      activeTab === 'businesses'
+                        ? 'border-b-2 border-primary text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Businesses
+                  </button>
+                </div>
+
+                <div className="relative">
+                  <div className="flex items-center gap-2">
+                    {activeTab === 'users' ? (
                       <Users className="h-4 w-4 text-muted-foreground" />
-                      <Input
-                        value={tagSearchValue}
-                        onChange={(e) => setTagSearchValue(e.target.value)}
-                        placeholder="Search users or businesses to tag"
-                        className="flex-1"
-                        onFocus={() => setTagSearchOpen(true)}
-                      />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0" align="start">
-                    <Command>
-                      <CommandInput
-                        placeholder="Search users or businesses..."
-                        value={tagSearchValue}
-                        onValueChange={setTagSearchValue}
-                      />
-                      <CommandEmpty>
-                        {isSearching ? (
-                          <div className="py-6 text-center text-sm text-muted-foreground">
+                    ) : (
+                      <Building2 className="h-4 w-4 text-muted-foreground" />
+                    )}
+                    <Input
+                      value={activeTab === 'users' ? tagSearchValue : businessSearchValue}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (activeTab === 'users') {
+                          setTagSearchValue(value);
+                          if (!value || value.length < 3) {
+                            setTagSearchResults([]);
+                            setIsSearching(false);
+                          }
+                        } else {
+                          setBusinessSearchValue(value);
+                          if (!value || value.length < 3) {
+                            setBusinessSearchResults([]);
+                            setIsBusinessSearching(false);
+                          }
+                        }
+                      }}
+                      placeholder={`Search ${activeTab} to tag (minimum 3 characters)`}
+                      className="flex-1"
+                    />
+                  </div>
+                  
+                  {(activeTab === 'users' ? tagSearchValue : businessSearchValue) && 
+                   (activeTab === 'users' ? tagSearchValue : businessSearchValue).length > 0 && 
+                   (activeTab === 'users' ? tagSearchValue : businessSearchValue).length < 3 && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Please enter at least 3 characters to search
+                    </p>
+                  )}
+                  
+                  {(activeTab === 'users' ? tagSearchValue : businessSearchValue) && 
+                   (activeTab === 'users' ? tagSearchValue : businessSearchValue).length >= 3 && (
+                    <div className="absolute w-full mt-1 bg-popover border rounded-md shadow-md z-50">
+                      {activeTab === 'users' ? (
+                        isSearching ? (
+                          <div className="p-4 text-center text-sm text-muted-foreground">
                             Searching...
                           </div>
+                        ) : tagSearchResults.length > 0 ? (
+                          <div className="max-h-[200px] overflow-y-auto">
+                            {tagSearchResults.map((tag) => (
+                              <button
+                                key={tag.id}
+                                className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-2"
+                                onClick={() => {
+                                  handleTagSelect(tag);
+                                  setTagSearchValue('');
+                                  setTagSearchResults([]);
+                                }}
+                              >
+                                <Users className="h-4 w-4" />
+                                <span>@{tag.handle}</span>
+                              </button>
+                            ))}
+                          </div>
                         ) : (
-                          <div className="py-6 text-center text-sm text-muted-foreground">
+                          <div className="p-4 text-center text-sm text-muted-foreground">
                             No results found
                           </div>
-                        )}
-                      </CommandEmpty>
-                      <CommandGroup>
-                        {tagSearchResults.map((tag) => (
-                          <CommandItem
-                            key={tag.id}
-                            value={tag.businessName || tag.handle}
-                            onSelect={() => handleTagSelect(tag)}
-                          >
-                            <span>{tag.businessName || tag.handle}</span>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <p className="text-sm text-muted-foreground">
-                  Search and select users or businesses to tag in your review
+                        )
+                      ) : (
+                        isBusinessSearching ? (
+                          <div className="p-4 text-center text-sm text-muted-foreground">
+                            Searching...
+                          </div>
+                        ) : businessSearchResults.length > 0 ? (
+                          <div className="max-h-[200px] overflow-y-auto">
+                            {businessSearchResults.map((tag) => (
+                              <button
+                                key={tag.id}
+                                className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-2"
+                                onClick={() => {
+                                  handleTagSelect(tag);
+                                  setBusinessSearchValue('');
+                                  setBusinessSearchResults([]);
+                                }}
+                              >
+                                <Building2 className="h-4 w-4" />
+                                <span>@{tag.handle}</span>
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="p-4 text-center text-sm text-muted-foreground">
+                            No results found
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Search and select {activeTab} to tag in your review
                 </p>
               </div>
             </FormItem>
           )}
-        /> */}
+        />
 
         <FormField
           control={form.control}

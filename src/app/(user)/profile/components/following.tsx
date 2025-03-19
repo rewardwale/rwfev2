@@ -73,7 +73,15 @@ export function FollowingList({ id, usern, followers }: Props) {
   }
 
   return (
-    <DialogContent className="max-w-[280px] sm:max-w-[425px] rounded-md">
+    <DialogContent
+      className="max-w-[280px] sm:max-w-[425px] rounded-md scrollbar-hide"
+      style={{
+        position: "absolute",
+        top: "50%",
+        overflow: "scroll",
+        height: "60vh",
+      }}
+    >
       <DialogHeader>
         <DialogTitle>Following</DialogTitle>
         <DialogDescription>

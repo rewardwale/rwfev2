@@ -32,9 +32,16 @@ export async function onUploadSuccess(videoId: string) {
   }
 }
 
-export async function onUploadVideoThumbnail(videoId: string, formData: FormData) {
+export async function onUploadVideoThumbnail(
+  videoId: string,
+  formData: FormData,
+) {
   try {
-    const response = await apiClient(`/uploadVideoThumbnail/${videoId}`, "PUT", formData);
+    const response = await apiClient(
+      `/uploadVideoThumbnail/${videoId}`,
+      "PUT",
+      formData,
+    );
 
     if (response.success && response.data) {
       return response.data;
@@ -48,9 +55,33 @@ export async function onUploadVideoThumbnail(videoId: string, formData: FormData
   }
 }
 
-
 export async function fetchTagSuggestions(keyword: string) {
-  const response = await apiClient(`/find/${keyword}`, "GET");
+  const queryParams = new URLSearchParams({
+    limit: "10",
+    skip: "0",
+    keyword: keyword,
+    type: "user",
+  }).toString();
+
+  const response = await apiClient(`/find?${queryParams}`, "GET");
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+}
+
+export async function fetchBusinessTagSuggestions(keyword: string) {
+  const queryParams = new URLSearchParams({
+    limit: "10",
+    skip: "0",
+    keyword: keyword,
+    type: "businessPage",
+  }).toString();
+
+  const response = await apiClient(`/find?${queryParams}`, "GET");
 
   if (response.success && response.data) {
     return response.data;

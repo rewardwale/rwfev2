@@ -162,13 +162,13 @@ export const getfollowingList = async (id: string, count: number) => {
   let queryParams;
   if (id.length === 0) {
     queryParams = new URLSearchParams({
-      limit: "10",
+      limit: "100",
       skip: JSON.stringify(count),
       // userId: id,
     }).toString();
   } else {
     queryParams = new URLSearchParams({
-      limit: "10",
+      limit: "100",
       skip: JSON.stringify(count),
       userId: id,
     }).toString();
