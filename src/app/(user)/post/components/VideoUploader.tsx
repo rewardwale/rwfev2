@@ -16,25 +16,48 @@ export function VideoUploader({ onUploadComplete, hasExistingVideo }: VideoUploa
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
+  const checkVideoDuration = (file: File): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.onloadedmetadata = () => {
+        window.URL.revokeObjectURL(video.src);
+        resolve(video.duration <= 60); // 60 seconds = 1 minute
+      };
+      video.src = URL.createObjectURL(file);
+    });
+  };
+
   const handleUpload = async (file: File) => {
     if (!file.type.startsWith('video/')) {
       toast.error('Please upload a video file');
       return;
     }
 
-    setIsUploading(true);
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      currentProgress += 5;
-      setProgress(currentProgress);
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        const videoUrl = URL.createObjectURL(file);
-        onUploadComplete(videoUrl, file);
-        // toast.success("Video uploaded successfully! Click Next to continue.");
-        setIsUploading(false);
+    try {
+      const isWithinDuration = await checkVideoDuration(file);
+      if (!isWithinDuration) {
+        toast.error('Video duration must be 1 minute or less');
+        return;
       }
-    }, 100);
+
+      setIsUploading(true);
+      let currentProgress = 0;
+      const interval = setInterval(() => {
+        currentProgress += 5;
+        setProgress(currentProgress);
+        if (currentProgress >= 100) {
+          clearInterval(interval);
+          const videoUrl = URL.createObjectURL(file);
+          onUploadComplete(videoUrl, file);
+          // toast.success("Video uploaded successfully! Click Next to continue.");
+          setIsUploading(false);
+        }
+      }, 100);
+    } catch (error) {
+      console.error('Error checking video duration:', error);
+      toast.error('Error processing video file');
+    }
   };
 
   return (
@@ -70,7 +93,7 @@ export function VideoUploader({ onUploadComplete, hasExistingVideo }: VideoUploa
           <p className="text-sm text-muted-foreground">
             {hasExistingVideo 
               ? "Select a different video file"
-              : "Drag and drop your video here or click to browse"
+              : "Drag and drop your video here or click to browse (max 1 minute)"
             }
           </p>
         </div>
