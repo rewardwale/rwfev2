@@ -217,7 +217,7 @@ const HeroSlideContent = memo(
             bg-gradient-to-t from-black/90 via-black/50 to-transparent
             group-hover:from-black/95"
         >
-          <motion.h2
+          {/* <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.42, delay: 0.14 }}
@@ -234,7 +234,7 @@ const HeroSlideContent = memo(
               opacity-100 max-w-2xl"
           >
             {slide.description}
-          </motion.p>
+          </motion.p> */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -376,57 +376,58 @@ const ShortCard = memo(
       <motion.div
         whileHover={{ y: -5 }}
         transition={{ duration: 0.14 }}
-        style={{
-          maxWidth: "min-content",
-        }}
+        className="w-[220px] sm:w-[200px] flex-shrink-0"
       >
         <Card
-          className="w-[200px] flex-shrink-0 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl
-            transition-all duration-210 hover:scale-[1.02] bg-black/5 backdrop-blur-sm"
+          className="w-full h-[400px] flex flex-col justify-between rounded-xl overflow-hidden
+            shadow-lg hover:shadow-2xl transition-all duration-210 hover:scale-[1.02]
+            bg-black/5 backdrop-blur-sm"
           onClick={handleClick}
         >
-          <CardContent className="p-0">
+          <CardContent className="p-0 flex flex-col h-full">
+            {/* Image Section */}
             <motion.div
-              className="relative w-full overflow-hidden rounded-md"
+              className="relative w-full h-full overflow-hidden rounded-md"
               whileHover={{ scale: 1.04 }}
               transition={{ duration: 0.14 }}
               whileTap={{ scale: 0.98 }}
+              style={{
+                minHeight: "280px",
+                paddingBlockEnd: "12px",
+              }}
             >
               <Image
                 src={cdnThumbPath[0]}
                 alt={title}
-                width={300}
-                height={500}
-                className="rounded-md object-cover"
-                style={{
-                  aspectRatio: "16/9",
-                  minWidth: "250px",
-                  height: "400px",
-                }}
+                width={220}
+                height={400}
+                className="rounded-md object-cover w-full h-full"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 quality={85}
                 loading="lazy"
               />
             </motion.div>
-            <div className="p-4 space-y-2">
-              <p
-                className="font-semibold text-lg line-clamp-2 h-[3.6rem]"
-                style={{
-                  height: "2rem",
-                }}
-              >
+
+            {/* Text Section */}
+            <div className="p-4 flex flex-col flex-grow">
+              <p className="font-semibold text-base line-clamp-2 h-[42px] overflow-hidden">
                 {title}
               </p>
               <p
-                className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 h-[2.8rem]"
+                className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 h-[40px] overflow-hidden"
                 style={{
-                  height: "4rem",
-                  width: "14rem",
+                  // height: "6rem",
+                  // width: "16rem",
+                  overflow: "hidden",
+                  // padding: "6px",
+                  textAlign: "start",
                 }}
               >
                 {description}
               </p>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
+
+              {/* Views Section */}
+              {/* <div className="flex items-center gap-2 text-sm text-gray-500 mt-auto">
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -447,7 +448,7 @@ const ShortCard = memo(
                   />
                 </svg>
                 <span>{totalViewCount.toLocaleString()} views</span>
-              </div>
+              </div> */}
             </div>
           </CardContent>
         </Card>
