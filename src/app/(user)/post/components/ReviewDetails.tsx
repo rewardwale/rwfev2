@@ -106,7 +106,6 @@ export function ReviewDetails({
     mode: "onChange",
   });
 
-
   const {
     formState: { isValid, errors },
   } = form;
@@ -161,7 +160,7 @@ export function ReviewDetails({
           const suggestions = response.data.data.map((item: TagResponse) => ({
             id: item.id,
             handle: item.handle,
-            businessName: item.handle,
+            businessName: item.businessName || item.handle,
           }));
           setBusinessSearchResults(suggestions);
         } else {
@@ -179,9 +178,31 @@ export function ReviewDetails({
     return () => clearTimeout(debounceTimeout);
   }, [businessSearchValue]);
 
-  const handleTagSelect = (tag: Tag) => {
-    if (!selectedTags.find((t) => t.id === tag.id)) {
-      const newTags = [...selectedTags, tag];
+  const handleBusinessSearchKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (
+      e.key === "Enter" &&
+      businessSearchValue &&
+      businessSearchValue.length >= 3
+    ) {
+      e.preventDefault();
+      // If no results or still searching, add the raw input as a tag
+      if (businessSearchResults.length === 0 || isBusinessSearching) {
+        handleTagSelect(businessSearchValue);
+      }
+    }
+  };
+
+  const handleTagSelect = (tag: Tag | string) => {
+    // If we get a string (from no results case), create a new tag object
+    const newTag =
+      typeof tag === "string"
+        ? { id: tag, handle: tag, businessName: tag }
+        : tag;
+
+    if (!selectedTags.find((t) => t.handle === newTag.handle)) {
+      const newTags = [...selectedTags, newTag];
       setSelectedTags(newTags);
       form.setValue(
         "tags",
@@ -189,8 +210,10 @@ export function ReviewDetails({
       );
       onTagsChange(newTags.map((t) => t.handle));
     }
+
     setTagSearchOpen(false);
     setTagSearchValue("");
+    setBusinessSearchValue("");
   };
 
   const removeTag = (tagId: string) => {
@@ -521,10 +544,50 @@ export function ReviewDetails({
                           }
                         }
                       }}
+                      onKeyDown={
+                        activeTab === "businesses"
+                          ? handleBusinessSearchKeyDown
+                          : undefined
+                      }
                       placeholder={`Search ${activeTab} to tag (minimum 3 characters)`}
                       className="flex-1"
                     />
                   </div>
+
+                  {activeTab === "businesses" &&
+                    (isBusinessSearching ? (
+                      <div className="p-4 text-center text-sm text-muted-foreground">
+                        Searching...
+                      </div>
+                    ) : businessSearchResults.length > 0 ? (
+                      <div className="max-h-[200px] overflow-y-auto">
+                        {businessSearchResults.map((tag) => (
+                          <button
+                            key={tag.id}
+                            className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-2"
+                            onClick={() => {
+                              handleTagSelect(tag);
+                              setBusinessSearchValue("");
+                              setBusinessSearchResults([]);
+                            }}
+                          >
+                            <Building2 className="h-4 w-4" />
+                            <span>@{tag.handle}</span>
+                          </button>
+                        ))}
+                      </div>
+                    ) : businessSearchValue.length >= 3 ? (
+                      <button
+                        className="w-full px-4 py-2 text-left hover:bg-accent flex items-center gap-2"
+                        onClick={() => {
+                          handleTagSelect(businessSearchValue);
+                          setBusinessSearchValue("");
+                        }}
+                      >
+                        <Building2 className="h-4 w-4" />
+                        <span>Add "@{businessSearchValue}" as tag</span>
+                      </button>
+                    ) : null)}
 
                   {(activeTab === "users"
                     ? tagSearchValue
