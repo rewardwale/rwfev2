@@ -26,6 +26,7 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import Hls from "hls.js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import dynamic from "next/dynamic";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 interface ShortCardProps {
   title: string;
@@ -81,106 +82,195 @@ const HLSVideo = memo(
     className,
     style,
     onVideoEnd,
+    isVisible,
   }: {
     src: string;
     poster: string;
     className?: string;
     style?: React.CSSProperties;
     onVideoEnd?: () => void;
+    isVisible?: boolean;
   }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const hlsRef = useRef<Hls | null>(null);
+    const playbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
+    // Video timing constants
+    const VIDEO_PLAY_DURATION = 10000; // 10 seconds of playback
 
     useEffect(() => {
       const video = videoRef.current;
       if (!video) return;
 
-      let timeoutId: NodeJS.Timeout;
+      const cleanup = () => {
+        if (playbackTimerRef.current) {
+          clearTimeout(playbackTimerRef.current);
+          playbackTimerRef.current = null;
+        }
 
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(src);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().catch((e) => console.log("Playback failed:", e));
-          timeoutId = setTimeout(() => {
-            video.pause();
-            if (onVideoEnd) onVideoEnd();
-          }, 15000);
-        });
+        if (hlsRef.current) {
+          hlsRef.current.destroy();
+          hlsRef.current = null;
+        }
 
-        return () => {
-          hls.destroy();
-          if (timeoutId) clearTimeout(timeoutId);
-        };
-      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = src;
-        video.play().catch((e) => console.log("Playback failed:", e));
-        timeoutId = setTimeout(() => {
-          video.pause();
-          if (onVideoEnd) onVideoEnd();
-        }, 15000);
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        setIsVideoLoaded(false);
+      };
+
+      if (!isVisible) {
+        cleanup();
+        return;
       }
 
-      return () => {
-        if (timeoutId) clearTimeout(timeoutId);
+      const startPlayback = () => {
+        video
+          .play()
+          .then(() => {
+            playbackTimerRef.current = setTimeout(() => {
+              video.pause();
+              onVideoEnd?.();
+            }, VIDEO_PLAY_DURATION);
+          })
+          .catch((e) => console.error("Playback failed:", e));
       };
-    }, [src, onVideoEnd]);
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          maxMaxBufferLength: 5,
+          maxBufferSize: 0,
+          maxBufferLength: 5,
+          enableWorker: true,
+        });
+        hlsRef.current = hls;
+
+        hls.loadSource(src);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          setIsVideoLoaded(true);
+          startPlayback();
+        });
+
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls.recoverMediaError();
+                break;
+              default:
+                cleanup();
+                break;
+            }
+          }
+        });
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = src;
+        video.addEventListener(
+          "loadeddata",
+          () => {
+            setIsVideoLoaded(true);
+            startPlayback();
+          },
+          { once: true },
+        );
+      }
+
+      return cleanup;
+    }, [src, isVisible, onVideoEnd]);
+
+    if (!isVisible) return null;
 
     return (
-      <video
-        ref={videoRef}
-        poster={poster}
-        className={className}
-        style={style}
-        autoPlay
-        muted
-        playsInline
-      />
+      <div className="relative w-full h-full">
+        {!isVideoLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+            <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+          </div>
+        )}
+
+        <video
+          ref={videoRef}
+          poster={poster}
+          className={className}
+          style={style}
+          autoPlay
+          muted
+          playsInline
+          onEnded={onVideoEnd}
+          preload="none" // Prevent preloading
+        />
+      </div>
     );
   },
 );
 
-// Memoize the HeroSlideContent component
 const HeroSlideContent = memo(
   ({ slide, isActive }: { slide: HeroSlide; isActive: boolean }) => {
     const [showVideo, setShowVideo] = useState(false);
+    const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
     const isMobile = useIsMobile();
+    const [ref, isInView] = useIntersectionObserver({
+      threshold: 0.5,
+      rootMargin: "100px",
+    });
+
+    // Timing constants
+    const VIDEO_TRANSITION_DELAY = 1800; // 2s delay before video appears
+    const VIDEO_PLAY_DURATION = 10000; // 10s video playback
+    const TOTAL_SLIDE_DURATION = 10000; // 10s total (2s + 8s)
+
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-      let timeoutId: NodeJS.Timeout;
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
 
-      if (isActive) {
+      if (isActive && isInView) {
+        setShouldLoadVideo(true);
         setShowVideo(false);
-        timeoutId = setTimeout(() => {
-          if (slide.cdnVideoPath) {
-            setShowVideo(true);
-          }
-        }, 2100);
+
+        timeoutRef.current = setTimeout(() => {
+          setShowVideo(true);
+        }, VIDEO_TRANSITION_DELAY);
       } else {
         setShowVideo(false);
+        if (!isActive) {
+          setShouldLoadVideo(false);
+        }
       }
 
       return () => {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
         }
       };
-    }, [isActive, slide.cdnVideoPath]);
+    }, [isActive, isInView]);
 
     const handleVideoEnd = useCallback(() => {
       setShowVideo(false);
-      setTimeout(() => {
-        if (slide.cdnVideoPath) {
+      timeoutRef.current = setTimeout(() => {
+        if (isInView) {
           setShowVideo(true);
         }
-      }, 2100);
-    }, [slide.cdnVideoPath]);
+      }, VIDEO_TRANSITION_DELAY);
+    }, [isInView]);
 
     return (
-      <div className="relative w-full h-[70vh] group">
+      <div className="relative w-full h-[70vh] group" ref={ref}>
+        {/* Background Image (always shown) */}
         <div
-          className={`absolute inset-0 transition-all duration-700
-            ${showVideo ? "opacity-0 scale-105" : "opacity-100 scale-100"}`}
+          className={`absolute inset-0 transition-all duration-700 ${
+            showVideo ? "opacity-0 scale-105" : "opacity-100 scale-100" }`}
         >
           <Image
             src={slide.cdnThumbPath[0]}
@@ -191,56 +281,39 @@ const HeroSlideContent = memo(
             priority={isActive}
             sizes="100vw"
             quality={85}
+            loading={isActive ? "eager" : "lazy"}
           />
         </div>
 
-        {slide.cdnVideoPath && showVideo && (
+        {/* Video Container (only when shouldLoadVideo is true) */}
+        {shouldLoadVideo && slide.cdnVideoPath && (
           <div
-            className={`absolute inset-0 transition-all duration-700
-            ${showVideo ? "opacity-100 scale-100" : "opacity-0 scale-105"}`}
+            className={`absolute inset-0 transition-all duration-700 ${
+            showVideo ? "opacity-100 scale-100" : "opacity-0 scale-105" }`}
           >
             <HLSVideo
               src={slide.cdnVideoPath}
               poster={slide.cdnThumbPath[0]}
-              className="w-full object-cover transition-transform duration-500 ease-in-out
+              className="w-full h-full object-cover transition-transform duration-500 ease-in-out
                 group-hover:scale-105"
-              style={{
-                height: "70vh",
-              }}
+              isVisible={showVideo}
               onVideoEnd={handleVideoEnd}
             />
           </div>
         )}
 
+        {/* Content Overlay */}
         <div
           className="absolute inset-0 flex flex-col justify-end p-12 transition-all duration-350
             bg-gradient-to-t from-black/90 via-black/50 to-transparent
             group-hover:from-black/95"
         >
-          {/* <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.42, delay: 0.14 }}
-            className="text-4xl text-white mb-4 transform transition-all duration-350 translate-y-0
-              opacity-100 font-bold"
-          >
-            {slide.title}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.42, delay: 0.28 }}
-            className="text-xl text-white/90 mb-8 transform transition-all duration-350 translate-y-0
-              opacity-100 max-w-2xl"
-          >
-            {slide.description}
-          </motion.p> */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.42, delay: 0.42 }}
-            className={`flex gap-6 transform transition-all duration-350 translate-y-0 opacity-100
-              ${isMobile ? "justify-center" : "justify-start"}`}
+            className={`flex gap-6 transform transition-all duration-350 ${
+              isMobile ? "justify-center" : "justify-start" }`}
           >
             {slide.cta1Action && slide.cta1URL && (
               <button
@@ -281,6 +354,8 @@ const HeroSlideContent = memo(
     );
   },
 );
+
+HeroSlideContent.displayName = "HeroSlideContent";
 
 const HeroSection: React.FC<{ slides: HeroSlide[] }> = ({ slides }) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -324,7 +399,7 @@ const HeroSection: React.FC<{ slides: HeroSlide[] }> = ({ slides }) => {
         modules={[Navigation, Autoplay, Pagination, EffectFade]}
         navigation
         autoplay={{
-          delay: 8000,
+          delay: 10000,
           disableOnInteraction: false,
         }}
         effect="fade"
@@ -344,10 +419,7 @@ const HeroSection: React.FC<{ slides: HeroSlide[] }> = ({ slides }) => {
         }}
       >
         {slides.map((slide, index) => (
-          <SwiperSlide
-            key={`${slide.videoId}-${index}`}
-            className="transition-opacity duration-500 ease-in-out"
-          >
+          <SwiperSlide key={`${slide.videoId}-${index}`}>
             <HeroSlideContent slide={slide} isActive={index === activeIndex} />
           </SwiperSlide>
         ))}
