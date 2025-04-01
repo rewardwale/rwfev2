@@ -93,4 +93,17 @@ body {
   border-radius: 10px;
   
 }
+/* Add smooth scrolling behavior */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
 
+/* Ensure cards maintain their aspect ratio */
+.aspect-9-16 {
+  aspect-ratio: 9/16;
+}
+
+/* Better hover transitions */
+.transition-all {
+  transition: all 0.3s ease;
+}

@@ -558,7 +558,7 @@ const SubHeadingContent = memo(
           <span className="w-1.5 h-8 bg-blue-500 rounded-full"></span>
           {title}
         </motion.h3>
-        <div className="">
+        <div>
           <div className="flex space-x-6 p-4 min-w-max scrollbar-hide">
             <HorizontalScrollWithArrows
               arrowType="white"

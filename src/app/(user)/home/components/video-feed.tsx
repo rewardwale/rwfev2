@@ -6,6 +6,7 @@ import { VideoCard } from "./video-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Category } from "../types/video";
 import { fetchHomePageData } from "@/apis/home";
+import HorizontalScrollWithArrows from "@/components/horizontalScrollWithArrows/HorizontalScrollWithArrows.component";
 
 interface VideoFeedProps {
   selectedCategories: string[];
@@ -18,10 +19,6 @@ export function VideoFeed({ selectedCategories }: VideoFeedProps) {
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    // if (hasFetched.current) return;
-    // hasFetched.current = true;
-
-    // console.log("inside useEffect loadHomePageData");
     const loadHomePageData = async () => {
       try {
         const data = await fetchHomePageData(selectedCategories);
@@ -67,27 +64,32 @@ export function VideoFeed({ selectedCategories }: VideoFeedProps) {
       </div>
     );
   }
-
   return (
-    <ScrollArea className="h-[calc(100vh-8.5rem)]">
+    <div className="scrollbar-hide">
       {categories.map(
         (category) =>
           category.reviews.length > 0 && (
             <div key={category.categoryId} className="mb-8">
               <h2 className="text-2xl font-semibold px-4 mb-4">
                 {category.categoryName}
-                <span className="text-sm text-muted-foreground ml-2">
-                  {/* ({category.totalReviews} reviews) */}
-                </span>
+                {/* <span className="text-sm text-muted-foreground ml-2">
+                  ({category.totalReviews} reviews)
+                </span> */}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 px-4">
-                {category.reviews.map((review) => (
-                  <VideoCard key={review._id} review={review} />
-                ))}
-              </div>
+              <HorizontalScrollWithArrows
+                arrowType="white"
+                data={category.reviews}
+                className="pl-5"
+              >
+                <div className="flex gap-4 px-4">
+                  {category.reviews.map((review) => (
+                    <VideoCard key={review._id} review={review} />
+                  ))}
+                </div>
+              </HorizontalScrollWithArrows>
             </div>
           ),
       )}
-    </ScrollArea>
+    </div>
   );
 }

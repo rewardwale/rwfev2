@@ -30,19 +30,19 @@ export default function HomePage() {
     <div className="flex h-screen bg-background flex-col">
       <Header />
 
-      <div className="flex overflow-hidden">
+      <div className="flex scrollbar-hide">
         <div>{!isMobile && <Sidebar />}</div>
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden scrollbar-hide">
           <div>
             <CategoryFilter onCategoriesChange={handleCategoriesChange} />
           </div>
           <Suspense fallback={<div>Loading...</div>}>
             <VideoFeed selectedCategories={selectedCategories} />
           </Suspense>
-          <div>
-            <Footer />
-          </div>
         </div>
+      </div>
+      <div>
+        <Footer />
       </div>
     </div>
   );
