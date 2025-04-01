@@ -9,12 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import { MoreVertical, ThumbsUp, Share2, Bookmark } from "lucide-react";
 import { useRouter } from "next/navigation"
 import { Review } from "../types/video";
@@ -27,11 +22,13 @@ export function VideoCard({ review }: VideoCardProps) {
   const router = useRouter();
   // console.log("checking review in videoCard", review?.userDetails?.firstName[0]);
   return (
-    // remove link
 
     <Card
       className="group overflow-hidden cursor-pointer"
       onClick={() => router.push(`/watch?v=${review.videoId}`)}
+      style={{
+        minWidth: "220px",
+      }}
     >
       <CardContent className="p-0">
         <div className="relative">
@@ -155,7 +152,7 @@ export function VideoCard({ review }: VideoCardProps) {
         </div>
 
         {/* Hashtags */}
-        <div className="px-3 py-2 flex flex-wrap gap-1">
+        {/* <div className="px-3 py-2 flex flex-wrap gap-1">
           {review.hashtags.map(
             (tag, index) =>
               index < 4 && (
@@ -168,7 +165,7 @@ export function VideoCard({ review }: VideoCardProps) {
                 </Badge>
               )
           )}
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );
