@@ -211,14 +211,19 @@ export function ReviewForm() {
         );
       case 2:
         return (
-          <div className="">
+          <div 
+          style={{
+            height: "100%",
+          }}
+          >
             <div
               style={{
                 height: `${!isMobile && "88vh"}`,
                 overflowY: "scroll",
-                padding: "12px",
+                padding: "20px",
                 // overflowY:'hidden'
                 minHeight: `${isMobile && "100vh"}`,
+                marginBottom: `${isMobile && "20px"}`,
               }}
               className="space-y-6 scrollbar-hide"
             >
