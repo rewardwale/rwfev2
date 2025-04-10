@@ -13,6 +13,7 @@ import {
   CirclePlus,
   ChevronDown,
   Building2,
+  History,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -156,6 +157,12 @@ export function Sidebar({ className }: SidebarProps) {
               onClick={() => router.push("/bookmark")}
               forceExpanded={forceExpanded}
             />
+            {/* <NavButton
+              icon={History}
+              label="History"
+              onClick={() => router.push("/history")}
+              forceExpanded={forceExpanded}
+            /> */}
             <NavButton
               icon={UserRound}
               label="My Profile"
