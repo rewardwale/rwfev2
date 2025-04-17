@@ -26,8 +26,6 @@ export default function HomePage() {
     init();
   }, []);
 
-  // console.log("checking for profile data----myProfile", data);
-
   return (
     <div className="flex h-screen bg-background flex-col">
       <Header />

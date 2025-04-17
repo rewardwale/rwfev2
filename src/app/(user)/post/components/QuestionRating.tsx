@@ -6,7 +6,6 @@ export interface Question {
   id: string;
   text: string;
   rating: number;
-  // feedback: string;
 }
 
 interface QuestionRatingProps {

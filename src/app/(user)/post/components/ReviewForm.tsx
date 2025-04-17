@@ -25,6 +25,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Loader from "@/components/ui/loader";
+import { getStoredLocation } from "@/lib/utils";
 
 const STEPS = [
   { number: 1, title: "Upload Video" },
@@ -34,9 +35,9 @@ const STEPS = [
 ];
 
 const INITIAL_QUESTIONS: Question[] = [
-  { id: "price", text: "Price", rating: 0 },
-  { id: "Quality", text: "Quality", rating: 0 },
-  { id: "Valueformoney", text: "Value For Money", rating: 0 },
+  { id: "1", text: "Price", rating: 0 },
+  { id: "2", text: "Quality", rating: 0 },
+  { id: "3", text: "Value For Money", rating: 0 },
 ];
 
 export function ReviewForm() {
@@ -84,21 +85,13 @@ export function ReviewForm() {
       // Convert ratings to the required format
       const ratingsObject = questions.reduce(
         (acc, curr) => {
-          // acc[curr.id] = { value: curr.feedback, rating: curr.rating };
+          acc[curr.id] = { value: curr.text, rating: curr.rating };
           return acc;
         },
         {} as Record<string, { value: string; rating: number }>,
       );
 
-      const isLocalStorageAvailable =
-        typeof window !== "undefined" && window.localStorage;
-
-      const latitude = isLocalStorageAvailable
-        ? (localStorage.getItem("loc-lat") ?? "90")
-        : "90";
-      const longitude = isLocalStorageAvailable
-        ? (localStorage.getItem("loc-lng") ?? "90")
-        : "90";
+    const [latitude, longitude] = getStoredLocation();
       // Get file extension
       const ext = videoFile.name.split(".").pop() || "";
 

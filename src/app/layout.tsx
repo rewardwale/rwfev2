@@ -23,6 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
+  const mapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   return (
     <html
       lang="en"
@@ -30,6 +31,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {mapsApiKey && (
+          <Script
+            src={`https://maps.googleapis.com/maps/api/js?key=${mapsApiKey}&libraries=places`}
+            strategy="beforeInteractive"
+          />
+        )}
         {process.env.NEXT_PUBLIC_ENV === "uat" ? (
           <meta name="robots" content="noindex" />
         ) : process.env.NEXT_PUBLIC_ENV === "development" ? (
@@ -40,7 +47,6 @@ export default function RootLayout({
             content="DEIRrbWosKczqXEVZHLW-9aDo_oF3p8iqe4Ndl_kPyY"
           />
         )}
-
         {/* Google Analytics (GA4) */}
         {isProduction && (
           <>

@@ -83,7 +83,6 @@ export async function validatePhone(
   latitude: string,
   longitude: string,
 ) {
-  console.log("validatePhone\t", countryCode, mobile);
   try {
     console.log(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validatePhoneNumber/${countryCode}/${mobile}?isBusinessUser=false`,

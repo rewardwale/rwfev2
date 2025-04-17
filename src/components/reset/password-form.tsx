@@ -17,7 +17,7 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { useEffect, useState, useTransition } from "react";
 import { reset } from "@/actions/reset";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { newPassword } from "@/actions/new-password";
 import { validateToken } from "@/apis/resetPassword";
 
@@ -29,6 +29,10 @@ export default function NewPasswordForm() {
   const [success, setSuccess] = useState<string | undefined>();
   const [tokenVerification, setTokenVerification] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("....Loading");
+
+  const Router = useRouter();
+
+  // const router = useRouter();
 
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
@@ -44,6 +48,7 @@ export default function NewPasswordForm() {
       newPassword(values, token).then((res) => {
         setError(res?.error);
         setSuccess(res?.success);
+        Router.push("/login");
         //start transition will tell when the validation has ended till then the feilds will be disabled
       });
     });
@@ -81,16 +86,16 @@ export default function NewPasswordForm() {
           <div className="flex flex-col items-center">
             <img
               alt="Rewardwale"
-              src="/brand_logo/png/RW_White_Name.png"
+              src="https://d1scqik6tlhrr8.cloudfront.net/Assets/IMG/original/RW_White_Name.png"
               className="w-[220px] hidden dark:inline"
             />
             <img
               alt="Rewardwale"
-              src="/brand_logo/png/RW_Black_Name.png"
+              src="https://d1scqik6tlhrr8.cloudfront.net/Assets/IMG/original/RW_Black_Name.png"
               className="w-[220px] inline dark:hidden"
             />
             <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
-              Sign In
+              Choose a new password
             </h2>
           </div>
         </div>{" "}

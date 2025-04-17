@@ -1,25 +1,32 @@
 import api, { getDeviceFingerprint } from "@/lib/api";
+import { getStoredLocation } from "@/lib/utils";
 import axios from "axios";
 
-export async function sendForgotPassword(email: string) {
+export async function sendForgotPassword(body: {
+  type: "EMAIL" | "SMS";
+  indEmail?: string;
+  indCountryCode?: string;
+  indMobileNum?: string;
+}) {
   try {
-    // Check for localStorage availability
-    const isLocalStorageAvailable =
-      typeof window !== "undefined" && window.localStorage;
-
     // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
+    const [latitude, longitude] = getStoredLocation();
+
     const fingerPrints = getDeviceFingerprint();
+
+    // Create the request body based on reset type
+    const requestBody = {
+      type: body.type,
+      ...(body.type === "EMAIL" && { indEmail: body.indEmail }),
+      ...(body.type === "SMS" && {
+        indCountryCode: body.indCountryCode,
+        indMobileNum: body.indMobileNum,
+      }),
+    };
+
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/forgotPassword`,
-      {
-        indEmail: email,
-      },
+      requestBody,
       {
         headers: {
           "Content-Type": "application/json",
@@ -28,20 +35,26 @@ export async function sendForgotPassword(email: string) {
           longitude: longitude,
           lan: "en",
         },
-        timeout: 10000, // Include timeout as part of the Axios config
+        timeout: 10000,
       },
     );
-    if (response.status === 200) {
-      return {
-        status: true,
-        message: "Reset passwork link has been Please check your Mail",
-      };
-    } else {
-      return { status: false, message: response.data.message };
-    }
+
+    return {
+      success: response.status === 200,
+      message:
+        response.data.message ||
+        (body.type === "EMAIL"
+          ? "Reset password link has been sent. Please check your email"
+          : "Reset instructions have been sent to your phone number"),
+    };
   } catch (error: any) {
-    console.error("error", error.response);
-    return { status: false, message: error.response.data.message };
+    console.error("API Error:", error.response?.data);
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "Failed to send reset instructions. Please try again later.",
+    };
   }
 }
 
@@ -52,12 +65,7 @@ export async function sendResetPassword(token: string, password: string) {
       typeof window !== "undefined" && window.localStorage;
 
     // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
+    const [latitude, longitude] = getStoredLocation();
     const fingerPrints = getDeviceFingerprint();
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/resetPassword/${token}`,
@@ -94,12 +102,7 @@ export async function validateToken(token: string) {
       typeof window !== "undefined" && window.localStorage;
 
     // Safely access location data from localStorage
-    const latitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lat") ?? "90")
-      : "90";
-    const longitude = isLocalStorageAvailable
-      ? (localStorage.getItem("loc-lng") ?? "90")
-      : "90";
+    const [latitude, longitude] = getStoredLocation();
     const fingerPrints = getDeviceFingerprint();
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}api/validateLink/${token}`,
@@ -125,16 +128,3 @@ export async function validateToken(token: string) {
     return { status: false, message: error.response.data.message };
   }
 }
-
-export const handleGetLandingPage = async () => {
-  try {
-    //   const response = await apiClient(
-    //     `viewProfileByUsername/vanathixy`,
-    //     "GET"
-    //   );
-
-    const response = await api.get(`profile`);
-  } catch (error) {
-    console.log("error=>", error);
-  }
-};
