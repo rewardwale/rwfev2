@@ -1,4 +1,5 @@
 import { apiClient } from "../lib/apiClient";
+import { toast } from "sonner";
 
 export async function fetchHomeCategories() {
   const queryParams = new URLSearchParams({ type: "video" }).toString();
@@ -38,21 +39,46 @@ export async function fetchHomePageData(selectedCategories?: string[]) {
 
   // Add selected categories to query params if provided
   if (selectedCategories?.length) {
-    queryParams.append('categories', selectedCategories.join(','));
+    queryParams.append("categories", selectedCategories.join(","));
   }
 
   try {
-    const response = await apiClient(`/homepageData?${queryParams.toString()}`, "GET");
+    const response = await apiClient(
+      `/homepageData?${queryParams.toString()}`,
+      "GET",
+    );
     if (response.success && response.data) {
       return response;
     } else {
       console.error("Failed to fetch landing page data:", response.error);
+      // Show toast and redirect when response is not successful
+      toast.error("Session expired. Please login again.");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500); // Redirect after 1.5 seconds to allow toast to be seen
       return null;
     }
   } catch (error) {
     console.error("Error fetching home page data:", error);
+
+    // Type checking the error
+    if (isApiError(error) && error.response?.status === 401) {
+      toast.error("Session expired. Please login again.");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+    }
     return null;
   }
+}
+
+// Type guard for API errors
+
+// Type guard to check if the error is an API error with response
+function isApiError(
+  error: unknown,
+): error is { response?: { status?: number } } {
+  return typeof error === "object" && error !== null && "response" in error;
 }
 
 export async function logout() {
