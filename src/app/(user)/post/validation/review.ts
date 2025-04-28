@@ -6,15 +6,25 @@ export const reviewFormSchema = z.object({
     .min(3, "Title must be at least 3 characters")
     .max(20, "Title must be less than 20 characters")
     .nonempty("Title cannot be empty"),
-  category: z.string().nonempty("Category cannot be empty"),
+  category: z
+    .string()
+    .nonempty("Category cannot be empty"),
   description: z
     .string()
     .min(20, "Description must be at least 20 characters")
     .nonempty("Description cannot be empty"),
-  location: z.string().nonempty("Location cannot be empty"),
-  thumbnailUrl: z.string().nonempty("Cover photo is required"),
-  hashtags: z.array(z.string()).default([]),
-  tags: z.array(z.string()).default([]),
+  location: z
+    .string()
+    .nonempty("Location cannot be empty"),
+  thumbnailUrl: z
+    .string()
+    .optional(),
+  hashtags: z
+    .array(z.string())
+    .default([]),
+  tags: z
+    .array(z.string())
+    .default([])
 });
 
 export type ReviewFormData = z.infer<typeof reviewFormSchema>;

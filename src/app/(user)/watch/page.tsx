@@ -6,7 +6,7 @@ import { Header } from "../home/components/header";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect, useRef, useState } from "react";
-import { fetchVideoDetails } from "@/apis/watch";
+import { fetchVideoDetails, updateViewCount } from "@/apis/watch";
 import { useInfiniteVideos } from "./hooks/use-infinite-scroll";
 import { ScrollButton } from "./components/scroll-button";
 import { Sidebar } from "../home/components/sidebar";
@@ -166,6 +166,32 @@ export default function WatchPage() {
     }
   }, [videoId]);
 
+  // useEffect(() => {
+  //   if (videos[currentIndex]?.videoId) {
+  //     router.replace(`?v=${videos[currentIndex].videoId}`, { scroll: false });
+  //   }
+  // }, [currentIndex, videos]);
+
+  useEffect(() => {
+    const updateViews = async () => {
+      if (videos[currentIndex]?.videoId) {
+        try {
+          await updateViewCount(videos[currentIndex].videoId);
+          console.log('View count updated for:', videos[currentIndex].videoId);
+        } catch (error) {
+          console.error('Error updating view count:', error);
+        }
+      }
+    };
+  
+    // Only update if we have a valid video ID and not the initial load
+    if (currentIndex >= 0 && videos.length > 0) {
+      updateViews();
+    }
+  }, [currentIndex, videos])
+
+  
+
   const handleScroll = (direction: "up" | "down") => {
     const newIndex =
       direction === "up"
@@ -224,6 +250,7 @@ export default function WatchPage() {
                         <VideoPlayer
                           videoUrl={video.cdnVideoPath}
                           autoPlay={index === currentIndex}
+                          videoId={video.videoId}
                         />
                         <VideoControls video={video} />
                       </div>
@@ -261,6 +288,7 @@ export default function WatchPage() {
                       <VideoPlayer
                         videoUrl={video.cdnVideoPath}
                         autoPlay={index === currentIndex}
+                        videoId={video.videoId}
                       />
                       <VideoControls video={video} />
                     </div>
@@ -315,6 +343,7 @@ export default function WatchPage() {
                     <VideoPlayer
                       videoUrl={video.cdnVideoPath}
                       autoPlay={index === currentIndex}
+                      videoId={video.videoId}
                     />
                     <VideoControls video={video} />
                   </div>

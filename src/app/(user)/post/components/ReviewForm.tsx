@@ -21,11 +21,34 @@ import {
   getSignedUrl,
   onUploadSuccess,
   onUploadVideoThumbnail,
+  updatePostDetail,
 } from "@/apis/post";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Loader from "@/components/ui/loader";
 import { getStoredLocation } from "@/lib/utils";
+
+interface InitialData {
+  videoUrl: string;
+  title: string;
+  category: string;
+  desc: string;
+  hashtags: string[];
+  tags: string[];
+  uploaderRating: Record<string, { value: string; rating: number }>;
+  videoId: string;
+}
+
+interface ReviewFormProps {
+  isEdit?: boolean;
+  initialData?: InitialData;
+}
+
+interface Tag {
+  id: string;
+  handle: string;
+  businessName?: string;
+}
 
 const STEPS = [
   { number: 1, title: "Upload Video" },
@@ -40,23 +63,57 @@ const INITIAL_QUESTIONS: Question[] = [
   { id: "3", text: "Value For Money", rating: 0 },
 ];
 
-export function ReviewForm() {
+export function ReviewForm({ isEdit = false, initialData }: ReviewFormProps) {
+
+  console.log(initialData, 'initialData');
+
+  const [step, setStep] = useState(isEdit ? 2 : 1);
+  const [videoUrl, setVideoUrl] = useState(
+    isEdit ? initialData?.videoUrl || "" : "",
+  );
   const searchParams = useSearchParams();
   const businessID = searchParams.get("data") || "";
-  const [step, setStep] = useState(1);
-  const [videoUrl, setVideoUrl] = useState("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(isEdit ? initialData?.title || "" : "");
+  const [category, setCategory] = useState(
+    isEdit ? initialData?.category || "" : "",
+  );
+  const [description, setDescription] = useState(
+    isEdit ? initialData?.desc || "" : "",
+  );
   const [location, setLocation] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-  const [questions, setQuestions] = useState<Question[]>(INITIAL_QUESTIONS);
+  const [thumbnailFile, setThumbnailFile] = useState<File | Blob | null>(null);
+  const [questions, setQuestions] = useState<Question[]>(() => {
+    if (isEdit && initialData?.uploaderRating) {
+      return INITIAL_QUESTIONS.map((q) => ({
+        ...q,
+        rating: initialData.uploaderRating[q.id]?.rating || 0,
+        feedback: initialData.uploaderRating[q.id]?.value || "",
+      }));
+    }
+    return INITIAL_QUESTIONS;
+  });
   const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [hashtags, setHashtags] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
+  const [hashtags, setHashtags] = useState<string[]>(
+    isEdit ? initialData?.hashtags || [] : [],
+  );
+  const [tags, setTags] = useState<Tag[]>(
+    isEdit
+      ? initialData?.tags.map((tag) => ({
+          id: tag,
+          handle: tag,
+          businessName: tag,
+        })) || []
+      : [],
+  );
+
+  useEffect(() => {
+    if (isEdit && initialData?.videoUrl) {
+      setVideoUrl(initialData.videoUrl);
+    }
+  }, [isEdit, initialData]);
 
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -74,15 +131,14 @@ export function ReviewForm() {
   };
 
   const handleSubmit = async () => {
-    if (!videoFile || !thumbnailFile) {
-      toast.error("Video and thumbnail are required");
-      return;
-    }
+    // if (!videoFile || !thumbnailFile) {
+    //   toast.error("Video and thumbnail are required");
+    //   return;
+    // }
 
     setIsLoading(true);
 
     try {
-      // Convert ratings to the required format
       const ratingsObject = questions.reduce(
         (acc, curr) => {
           acc[curr.id] = { value: curr.text, rating: curr.rating };
@@ -91,47 +147,72 @@ export function ReviewForm() {
         {} as Record<string, { value: string; rating: number }>,
       );
 
-    const [latitude, longitude] = getStoredLocation();
-      // Get file extension
-      const ext = videoFile.name.split(".").pop() || "";
+      const [latitude, longitude] = getStoredLocation();
 
-      const body = {
-        ext,
-        desc: description,
-        hashtags,
-        tags,
-        latitude: latitude,
-        longitude: longitude,
-        isProduct: category === "product",
-        isService: category === "service",
-        isPlaces: category === "place",
-        title,
-        uploaderRating: ratingsObject,
-        ...(businessID && { businessPageId: businessID }),
-      };
+      if (isEdit) {
+        const updateData = {
+          title,
+          desc: description,
+          hashtags,
+          tags: tags.map((tag) => tag.handle),
+          isProduct: category === "product",
+          isService: category === "service",
+          isPlaces: category === "place",
+          uploaderRating: ratingsObject,
+        };
 
-      // Get signed URL
-      const { data } = await getSignedUrl(body);
-      if (data.isSignedURL) {
-        const videoUpload = await axios.put(data?.location, videoFile, {
-          headers: {
-            "Content-Type": videoFile.type,
-          },
-          maxBodyLength: Infinity,
-        });
-        // Trigger onUploadSuccess after receiving 200 status from videoUpload
-        if (videoUpload.status === 200) {
-          try {
-            // const res = await onUploadSuccess(data.videoId);
-            const formData = new FormData();
-            formData.append("image", thumbnailFile);
-            const thumbnailRes = await onUploadVideoThumbnail(
-              data?.videoId,
-              formData,
-            );
-          } catch (error) {
-            console.error("Error in onUploadSuccess:", error);
+        await updatePostDetail(initialData!.videoId, updateData);
+        toast.success("Review updated successfully!");
+        // router.push("/"); // Or wherever you want to redirect after editing
+      } else {
+        if (!videoFile || !thumbnailFile) {
+          toast.error("Video and thumbnail are required");
+          return;
+        }
+        // Get file extension
+        const ext = videoFile.name.split(".").pop() || "";
+
+        const body = {
+          ext,
+          desc: description,
+          hashtags,
+          tags,
+          latitude: latitude,
+          longitude: longitude,
+          isProduct: category === "product",
+          isService: category === "service",
+          isPlaces: category === "place",
+          title,
+          uploaderRating: ratingsObject,
+          ...(businessID && { businessPageId: businessID }),
+        };
+
+        // Get signed URL
+        const { data } = await getSignedUrl(body);
+        if (data.isSignedURL) {
+          const videoUpload = await axios.put(data?.location, videoFile, {
+            headers: {
+              "Content-Type": videoFile.type,
+            },
+            maxBodyLength: Infinity,
+          });
+          // Trigger onUploadSuccess after receiving 200 status from videoUpload
+          if (videoUpload.status === 200) {
+            try {
+              // const res = await onUploadSuccess(data.videoId);
+              const formData = new FormData();
+              formData.append("image", thumbnailFile);
+              const thumbnailRes = await onUploadVideoThumbnail(
+                data?.videoId,
+                formData,
+              );
+            } catch (error) {
+              console.error("Error in onUploadSuccess:", error);
+            }
           }
+        }
+        else {
+          toast.error(isEdit ? "Failed to update review" : "Failed to upload video. Please try again.");
         }
       }
     } finally {
@@ -144,7 +225,7 @@ export function ReviewForm() {
     setHashtags(newHashtags);
   };
 
-  const handleTagsChange = (newTags: string[]) => {
+  const handleTagsChange = (newTags: Tag[]) => {
     setTags(newTags);
   };
 
@@ -178,6 +259,18 @@ export function ReviewForm() {
                     );
                   }}
                 />
+                {/* {videoUrl && (
+                  <>
+                    <div className="md:hidden">
+                      <VideoPreview videoUrl={videoUrl} />
+                    </div>
+                    <div className="flex justify-end">
+                      <Button onClick={() => setStep(2)} disabled={!videoUrl}>
+                        Next
+                      </Button>
+                    </div>
+                  </>
+                )} */}
               </div>
             )}
             {videoUrl && (
@@ -204,10 +297,10 @@ export function ReviewForm() {
         );
       case 2:
         return (
-          <div 
-          style={{
-            height: "100%",
-          }}
+          <div
+            style={{
+              height: "100%",
+            }}
           >
             <div
               style={{
@@ -233,11 +326,14 @@ export function ReviewForm() {
                 onDescriptionChange={setDescription}
                 onLocationChange={setLocation}
                 onThumbnailUpload={(url, file) => {
-                  setThumbnailUrl(url);
-                  setThumbnailFile(file);
+                  if (!isEdit) {
+                    setThumbnailUrl(url);
+                    setThumbnailFile(file);
+                  }
                 }}
                 onHashtagsChange={handleHashtagsChange}
                 onTagsChange={handleTagsChange}
+                isEdit={isEdit}
                 onNext={() => setStep(3)}
                 setStep={setStep}
               />
@@ -362,7 +458,13 @@ export function ReviewForm() {
                   Back
                 </Button>
                 <Button onClick={handleSubmit} disabled={isLoading}>
-                  {isLoading ? "Uploading..." : "Submit Review"}
+                  {isLoading
+                    ? isEdit
+                      ? "Updating..."
+                      : "Uploading..."
+                    : isEdit
+                      ? "Update Review"
+                      : "Submit Review"}
                 </Button>
               </div>
             </div>

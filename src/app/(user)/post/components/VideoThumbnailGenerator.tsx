@@ -6,7 +6,7 @@ import { Grid2X2, Upload, X } from "lucide-react";
 
 interface VideoThumbnailGeneratorProps {
   videoUrl: string;
-  selectedThumbnail: string;
+  selectedThumbnail: string | undefined;
   onThumbnailSelect: (thumbnailUrl: string, blob: Blob) => void;
 }
 

@@ -123,7 +123,10 @@ export const addNewComment = async (
 
 // delete comment
 
-export async function deleteComment(videoId: string | undefined, commentId: string) {
+export async function deleteComment(
+  videoId: string | undefined,
+  commentId: string,
+) {
   try {
     const response = await apiClient(
       `/comment/${videoId}/${commentId}`,
@@ -193,12 +196,11 @@ export const getReplyComment = async (commentId: string, count: number) => {
   }
 };
 
-
 export async function fetchVideoUsingCategory(categoryId: any) {
   const queryParams = new URLSearchParams({
     limit: "10",
-    skip: '0',
-    radius: "0",
+    skip: "0",
+    radius: "5000",
   });
 
   const payload = {
@@ -219,7 +221,7 @@ export async function fetchVideoUsingCategory(categoryId: any) {
   }
 }
 
-export async function updateVideoCount(videoId: string) {
+export async function updateViewCount(videoId: string) {
   try {
     const response = await apiClient(`/videoViews/${videoId}`, "PUT");
 
@@ -234,3 +236,4 @@ export async function updateVideoCount(videoId: string) {
     return null;
   }
 }
+

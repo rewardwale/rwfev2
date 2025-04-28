@@ -68,11 +68,20 @@ export const ForgotEmailSchema = z.object({
     }),
 });
 
-export const NewPasswordSchema = z.object({
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
-});
+export const NewPasswordSchema = z
+  .object({
+    password: z.string().min(1, {
+      message: "Password is required",
+    }),
+    confirmPassword: z.string().min(1, {
+      message: "Confirm Password is required",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 
 export const PersonalInfoFormSchema = z.object({
   gender: z.string({ message: "choose your gender" }).nonempty({

@@ -20,6 +20,7 @@ import { reset } from "@/actions/reset";
 import { useRouter, useSearchParams } from "next/navigation";
 import { newPassword } from "@/actions/new-password";
 import { validateToken } from "@/apis/resetPassword";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function NewPasswordForm() {
   const searchParams = useSearchParams();
@@ -29,6 +30,8 @@ export default function NewPasswordForm() {
   const [success, setSuccess] = useState<string | undefined>();
   const [tokenVerification, setTokenVerification] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("....Loading");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const Router = useRouter();
 
@@ -48,7 +51,9 @@ export default function NewPasswordForm() {
       newPassword(values, token).then((res) => {
         setError(res?.error);
         setSuccess(res?.success);
-        Router.push("/login");
+        if (res?.success) {
+          Router.push("/login");
+        }
         //start transition will tell when the validation has ended till then the feilds will be disabled
       });
     });
@@ -110,20 +115,69 @@ export default function NewPasswordForm() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="name@domain.com"
-                          type="password"
-                          disabled={pending}
-                        />
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter password"
+                            disabled={pending}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-500"
+                          >
+                            {showPassword ? (
+                              <EyeOff size={18} />
+                            ) : (
+                              <Eye size={18} />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="Re-enter password"
+                            disabled={pending}
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowConfirmPassword((prev) => !prev)
+                            }
+                            className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-500"
+                          >
+                            {showConfirmPassword ? (
+                              <EyeOff size={18} />
+                            ) : (
+                              <Eye size={18} />
+                            )}
+                          </button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
               {error && <FormError message={error} />}
               {success && <FormSuccess message={success} />}
+
               <Button type="submit" className="w-full">
                 Reset Password
               </Button>

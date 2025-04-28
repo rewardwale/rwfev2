@@ -59,9 +59,10 @@ interface ReviewDetailsProps {
   onLocationChange: (value: string) => void;
   onThumbnailUpload: (url: string, file: File) => void;
   onHashtagsChange: (hashtags: string[]) => void;
-  onTagsChange: (tags: string[]) => void;
+  onTagsChange: (tags: Tag[]) => void;
   onNext: () => void;
   setStep: (step: any) => void;
+  isEdit?: boolean;
 }
 
 export function ReviewDetails({
@@ -80,6 +81,7 @@ export function ReviewDetails({
   onTagsChange,
   onNext,
   setStep,
+  isEdit = false,
 }: ReviewDetailsProps) {
   const [hashtagInput, setHashtagInput] = useState("");
   const [tagSearchOpen, setTagSearchOpen] = useState(false);
@@ -99,7 +101,7 @@ export function ReviewDetails({
       category,
       description,
       location,
-      thumbnailUrl,
+      thumbnailUrl: isEdit ? undefined : thumbnailUrl,
       hashtags: [],
       tags: [],
     },
@@ -109,6 +111,10 @@ export function ReviewDetails({
   const {
     formState: { isValid, errors },
   } = form;
+
+  const isHLSStream = (url: string) => {
+    return url.includes(".m3u8") || url.endsWith(".mls");
+  };
 
   useEffect(() => {
     const searchTags = async () => {
@@ -208,7 +214,8 @@ export function ReviewDetails({
         "tags",
         newTags.map((t) => t.handle),
       );
-      onTagsChange(newTags.map((t) => t.handle));
+      // onTagsChange(newTags.map((t) => t.handle));
+      onTagsChange(newTags);
     }
 
     setTagSearchOpen(false);
@@ -223,7 +230,8 @@ export function ReviewDetails({
       "tags",
       newTags.map((t) => t.handle),
     );
-    onTagsChange(newTags.map((t) => t.handle));
+    onTagsChange(newTags);
+    // onTagsChange(newTags.map((t) => t.handle));
   };
 
   const handleThumbnailUpload = (file: File | Blob) => {
@@ -364,64 +372,66 @@ export function ReviewDetails({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="thumbnailUrl"
-          render={({ field }) => (
-            <FormItem>
-              <VideoThumbnailGenerator
-                videoUrl={videoUrl}
-                selectedThumbnail={field.value}
-                onThumbnailSelect={(url, blob) => {
-                  handleThumbnailUpload(blob);
-                }}
-              />
-              <div
-                className="mt-4 border-2 border-dashed rounded-lg p-4 hover:bg-secondary/50
-                  transition-colors cursor-pointer"
-                onClick={() => {
-                  const input = document.createElement("input");
-                  input.type = "file";
-                  input.accept = "image/*";
-                  input.onchange = (e) => {
-                    const file = (e.target as HTMLInputElement).files?.[0];
-                    if (file) handleThumbnailUpload(file);
-                  };
-                  input.click();
-                }}
-              >
-                {field.value ? (
-                  <div className="aspect-video relative">
-                    <img
-                      src={field.value}
-                      alt="Thumbnail"
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-black/70 rounded-full text-white
-                        transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveThumbnail();
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-2 py-4">
-                    <Upload className="h-8 w-8 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">
-                      Click to upload a custom cover photo
-                    </p>
-                  </div>
-                )}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!isEdit && (
+          <FormField
+            control={form.control}
+            name="thumbnailUrl"
+            render={({ field }) => (
+              <FormItem>
+                <VideoThumbnailGenerator
+                  videoUrl={videoUrl}
+                  selectedThumbnail={field.value}
+                  onThumbnailSelect={(url, blob) => {
+                    handleThumbnailUpload(blob);
+                  }}
+                />
+                <div
+                  className="mt-4 border-2 border-dashed rounded-lg p-4 hover:bg-secondary/50
+                    transition-colors cursor-pointer"
+                  onClick={() => {
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = "image/*";
+                    input.onchange = (e) => {
+                      const file = (e.target as HTMLInputElement).files?.[0];
+                      if (file) handleThumbnailUpload(file);
+                    };
+                    input.click();
+                  }}
+                >
+                  {field.value ? (
+                    <div className="aspect-video relative">
+                      <img
+                        src={field.value}
+                        alt="Thumbnail"
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-black/70 rounded-full text-white
+                          transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveThumbnail();
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 py-4">
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">
+                        Click to upload a custom cover photo
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -696,9 +706,11 @@ export function ReviewDetails({
 
         <div className="flex justify-end gap-4">
           {" "}
-          <Button variant="outline" onClick={() => setStep(1)}>
-            Back
-          </Button>
+          {!isEdit && (
+            <Button variant="outline" onClick={() => setStep(1)}>
+              Back
+            </Button>
+          )}
           <Button type="submit" disabled={!isValid}>
             Next
           </Button>

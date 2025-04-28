@@ -90,3 +90,18 @@ export async function fetchBusinessTagSuggestions(keyword: string) {
     return null;
   }
 }
+export async function updatePostDetail(videoId: string,payload: Record<string, any>) {
+  try {
+    const response = await apiClient(`/video/${videoId}`, "PUT", payload);
+
+    if (response.success && response.data) {
+      return response.data;
+    } else {
+      console.error("Failed to fetch signed URL:", response.error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error in getSignedUrl function:", error);
+    return null;
+  }
+}

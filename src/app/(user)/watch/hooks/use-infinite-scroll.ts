@@ -51,7 +51,7 @@ export function useInfiniteVideos(
       const queryParams = new URLSearchParams({
         limit: "10",
         skip: skip.toString(),
-        radius: "0",
+        radius: "5000",
       });
 
       const payload = {
