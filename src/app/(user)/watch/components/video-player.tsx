@@ -12,10 +12,16 @@ import Hls from "hls.js";
 interface VideoPlayerProps {
   videoUrl?: string;
   autoPlay?: boolean;
+  videoId?: string; // Add videoId prop
 }
 
-export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
-  const { videoRef, isPlaying, isMuted, togglePlay, toggleMute } = useVideoContext();
+export function VideoPlayer({
+  videoUrl,
+  autoPlay = false,
+  videoId,
+}: VideoPlayerProps) {
+  const { videoRef, isPlaying, isMuted, togglePlay, toggleMute } =
+    useVideoContext();
   const [progress, setProgress] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -25,8 +31,12 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
   const [rating, setRating] = useState(0);
   const hlsRef = useRef<Hls | null>(null);
 
-  const searchParams = useSearchParams();
-  const videoId = searchParams.get("v") || "";
+  // const searchParams = useSearchParams();
+  // const videoId = searchParams.get("v") || "";
+
+  // console.log("checking videoId", videoId);
+
+
 
   useEffect(() => {
     const video = videoRef.current;
@@ -42,7 +52,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
     video.load();
 
     // Check if the video is HLS (.m3u8)
-    if (videoUrl.endsWith('.m3u8')) {
+    if (videoUrl.endsWith(".m3u8")) {
       // Check if HLS is supported
       if (Hls.isSupported()) {
         const hls = new Hls({
@@ -80,7 +90,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
             }
           }
         });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
         // For Safari which has built-in HLS support
         video.src = videoUrl;
       }
@@ -154,11 +164,11 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
   }, [showOverlay]);
 
   const handleRatingChange = async (rating: number) => {
+    if (!videoId) return; // Add null check
+
     setRating(rating);
-    let payload = {
-      rating: rating,
-    };
-    let res = await rateVideo(videoId, payload);
+    const payload = { rating };
+    const res = await rateVideo(videoId, payload); // Use prop instead of searchParams
     if (res) {
       setShowThankYou(true);
     }
@@ -194,9 +204,7 @@ export function VideoPlayer({ videoUrl, autoPlay = false }: VideoPlayerProps) {
         className={`absolute inset-0 flex items-center justify-center transition-opacity
           duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
       >
-        <div
-          className="text-white hover:bg-black/30"
-        >
+        <div className="text-white hover:bg-black/30">
           {isMuted ? (
             <VolumeX className="h-12 w-12" />
           ) : (

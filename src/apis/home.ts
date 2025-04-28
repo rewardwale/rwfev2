@@ -106,3 +106,19 @@ export const signupWithSocialProvider = async (
     throw error;
   }
 };
+
+export const sendPushSubscription = async (
+  payload: Record<string, any>,
+) => {
+  try {
+    const response = await apiClient(
+      "/notificationObj",
+      "POST",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error sending push subscription:", error);
+    throw error;
+  }
+};

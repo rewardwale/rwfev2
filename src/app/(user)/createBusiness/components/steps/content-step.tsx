@@ -21,8 +21,10 @@ interface ContentStepProps {
 export function ContentStep({ form }: ContentStepProps) {
   const [newKey, setNewKey] = useState("");
   const [newValue, setNewValue] = useState("");
+  const [newKeyword, setNewKeyword] = useState("");
 
   const content = form.watch("content") || {};
+  const keywords = form.watch("keywords") || [];
 
   const addContent = () => {
     if (newKey && newValue) {
@@ -47,6 +49,27 @@ export function ContentStep({ form }: ContentStepProps) {
         ...content,
         [key]: newValues,
       });
+    }
+  };
+
+  const addKeyword = () => {
+    if (newKeyword.trim()) {
+      form.setValue("keywords", [...keywords, newKeyword.trim()]);
+      setNewKeyword("");
+    }
+  };
+
+  const removeKeyword = (indexToRemove: number) => {
+    form.setValue(
+      "keywords",
+      keywords.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addKeyword();
     }
   };
 
@@ -103,26 +126,49 @@ export function ContentStep({ form }: ContentStepProps) {
       </div>
 
       <FormField
-        control={form.control}
-        name="keywords"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Keywords</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter keywords separated by commas"
-                value={field.value?.join(", ") || ""}
-                onChange={(e) =>
-                  field.onChange(
-                    e.target.value.split(",").map((k) => k.trim()).filter(Boolean)
-                  )
-                }
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+              control={form.control}
+              name="keywords"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Keywords</FormLabel>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <FormControl>
+                        <Input
+                          placeholder="Add a keyword and press Enter"
+                          value={newKeyword}
+                          onChange={(e) => setNewKeyword(e.target.value)}
+                          onKeyPress={handleKeyPress}
+                        />
+                      </FormControl>
+                      <Button type="button" onClick={addKeyword} size="icon">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {keywords.map((keyword, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-1 rounded-md"
+                        >
+                          <span>{keyword}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-4 w-4 p-0 hover:bg-transparent"
+                            onClick={() => removeKeyword(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
     </div>
   );
 }

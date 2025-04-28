@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -32,3 +33,18 @@ export const getStoredLocation = (): [number, number] => {
   return [parsedLat, parsedLng];
 };
 
+export function isOwnProfilePath(pathname: string): boolean {
+  // Normalize path (remove trailing slashes)
+  const normalizedPath = pathname.replace(/\/+$/, '');
+  
+  // Case 1: Exactly '/profile' → own profile
+  if (normalizedPath === '/profile') return true;
+  
+  // Case 2: Has '/profile/' but no username after → treat as own profile
+  if (normalizedPath.startsWith('/profile/')) {
+    const parts = normalizedPath.split('/');
+    return parts.length <= 2; // ['', 'profile'] or ['', 'profile', '']
+  }
+  
+  return false;
+}

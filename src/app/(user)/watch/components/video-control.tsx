@@ -95,6 +95,8 @@ export function VideoControls({ video }: VideoControlsProps) {
     if (token) token.length > 0 ? setIsLoggedIn(true) : setIsLoggedIn(false);
   };
 
+  console.log("videoDetails", video);
+
   useEffect(() => {
     checkToken();
   }, []);

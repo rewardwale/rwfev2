@@ -1,14 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { MdDelete } from "react-icons/md";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import AllVideoCardItem from "../../search/components/search-allReviews-item";
-import { ScrollBar } from "@/components/ui/scroll-area";
 import { VideoData } from "./dataTypes";
-import { cn } from "@/lib/utils";
-import { Trash2Icon } from "lucide-react";
+import { cn, isOwnProfilePath } from "@/lib/utils";
+import { Pencil, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeleteModal from "./deleteModal";
 
@@ -28,6 +23,10 @@ export default function ProfileItem({
   ...props
 }: videoProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isOwnProfile = isOwnProfilePath(pathname);
+
+
   return (
     <div className={cn(" relative h-full w-full p-0.5", className)} {...props}>
       <div
@@ -45,9 +44,25 @@ export default function ProfileItem({
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/90" />
 
-        {/* <div className="absolute right-1 top-1">
-          <DeleteModal />
-        </div> */}
+        {isOwnProfile && (
+          <>
+            <div
+              className="absolute right-14"
+              style={{
+                top: "3%",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push("/edit/" + data.videoId);
+              }}
+            >
+              <Pencil />
+            </div>
+            <div className="absolute right-1 top-1">
+              <DeleteModal />
+            </div>
+          </>
+        )}
 
         <div className="flex-1 w-full absolute bottom-0 p-3">
           <p

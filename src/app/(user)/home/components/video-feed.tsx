@@ -70,7 +70,7 @@ export function VideoFeed({ selectedCategories }: VideoFeedProps) {
         (category) =>
           category.reviews.length > 0 && (
             <div key={category.categoryId} className="mb-8">
-              <h2 className="text-2xl font-semibold px-4 mb-4">
+              <h2 className="text-2xl font-semibold mb-4 py-4 px-4">
                 {category.categoryName}
                 {/* <span className="text-sm text-muted-foreground ml-2">
                   ({category.totalReviews} reviews)
