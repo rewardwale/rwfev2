@@ -14,7 +14,7 @@ export default function HomePage() {
 
       <div className="flex overflow-hidden">
         <div>{!isMobile && <Sidebar />}</div>
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-scroll scrollbar-hide">
           <Suspense fallback={<div>Loading...</div>}>
             <main
               className="min-h-screen bg-gradient-to-b from-background to-secondary h-full

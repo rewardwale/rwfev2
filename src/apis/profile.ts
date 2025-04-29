@@ -212,3 +212,14 @@ export const getShareUrl = async (shortCode: string) => {
     return null;
   }
 };
+
+export const deletePost = async (id: string) => {
+  const response = await apiClient(`/video/${id}`, "DELETE");
+
+  if (response.success && response.data) {
+    return response.data;
+  } else {
+    console.error("Failed to fetch landing page data:", response.error);
+    return null;
+  }
+};
