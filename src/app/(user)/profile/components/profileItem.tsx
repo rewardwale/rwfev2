@@ -58,8 +58,12 @@ export default function ProfileItem({
             >
               <Pencil />
             </div>
-            <div className="absolute right-1 top-1">
-              <DeleteModal />
+            <div className="absolute right-1 top-1 z-50"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            >
+              <DeleteModal videoId={data.videoId}/>
             </div>
           </>
         )}

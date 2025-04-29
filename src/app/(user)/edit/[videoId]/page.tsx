@@ -64,14 +64,14 @@ export default function EditPost() {
 
       <div className="flex overflow-hidden">
         <div>{!isMobile && <Sidebar />}</div>
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-scroll scrollbar-hide">
           <main
             className="min-h-screen bg-gradient-to-b from-background to-secondary h-full
               overflow-scroll scrollbar-hide"
           >
             <div className="max-w-7xl mx-auto">
-              <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold mb-2">Edit Your Review</h1>
+              <div className="text-center mb-6">
+                <h1 className="text-4xl font-bold">Edit Your Review</h1>
               </div>
               <ReviewForm
                 isEdit={true}
