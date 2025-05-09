@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from "react";
-
 import { BusinessPage, BusinessPost } from "./types/brands";
 import {
   fetchbusinessPageData,
@@ -15,9 +14,11 @@ import { Header } from "../(user)/home/components/header";
 import { isUserLoggedIn } from "@/lib/utils";
 import { Sidebar } from "../(user)/home/components/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import useIsOwner from "@/hooks/use-owner";
 
 export default function Home() {
+  const isLoggedIn = isUserLoggedIn();
+  const isMobile = useIsMobile();
+
   const [businessData, setBusinessData] = useState<BusinessPage | null>(null);
   const [businessPosts, setBusinessPosts] = useState<BusinessPost[]>([]);
   const [taggedVideos, setTaggedVideos] = useState<BusinessPost[]>([]);
@@ -111,8 +112,6 @@ export default function Home() {
     fetchData();
   }, []);
 
-  console.log("checking posts data", businessPosts);
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -159,14 +158,12 @@ export default function Home() {
     );
   }
 
-  const isLoggedIn = isUserLoggedIn();
-
   return (
     <div className="flex h-screen bg-background flex-col">
       {isLoggedIn && <Header />}
 
       <div className="flex overflow-hidden">
-        <div>{<Sidebar />}</div>
+        <div>{!isMobile && <Sidebar />}</div>
         <div className="flex-1 overflow-scroll">
           <div>
             <BusinessHeader business={businessData} />

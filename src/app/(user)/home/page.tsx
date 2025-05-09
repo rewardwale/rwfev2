@@ -22,9 +22,9 @@ export default function HomePage() {
 
   // useEffect(() => {
   //   if (!isLoggedIn) {
-  //     router.push("/login");
+  //     router.push("/home");
   //   }
-  // }, [isLoggedIn, router]);
+  // }, []);
 
   return (
     <div className="flex h-screen bg-background flex-col">
