@@ -1,293 +1,201 @@
 "use client";
-import { animateCards } from "@/lib/animation";
-import { Metadata } from "next";
-import React, { Suspense, useEffect, useRef, useState } from "react";
-import { BrandHeader } from "./components/BrandPageBanner";
-import {
-  ProfileDataProps,
-  VideoData,
-} from "../(user)/profile/components/dataTypes";
 
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { Separator } from "@radix-ui/react-select";
-import ProfileItem from "../(user)/profile/components/profileItem";
-import { ScrollBar } from "@/components/ui/scroll-area";
+import React, { Suspense, useEffect, useState } from "react";
+
+import { BusinessPage, BusinessPost } from "./types/brands";
 import {
   fetchbusinessPageData,
+  fetchBusinessPendingPostsVideos,
   fetchBusinessPostsVideos,
   fetchBusinessTaggedVideos,
 } from "@/apis/business";
-import { useRouter } from "next/navigation";
+import BusinessHeader from "./components/BusinessHeader";
+import BusinessPosts from "./components/BusinessPosts";
 import { Header } from "../(user)/home/components/header";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Sidebar } from "../(user)/home/components/sidebar";
-import { Button } from "@/components/ui/button";
-import useIsOwner from "@/hooks/use-owner";
 import { isUserLoggedIn } from "@/lib/utils";
+import { Sidebar } from "../(user)/home/components/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import useIsOwner from "@/hooks/use-owner";
 
-// import SingleCategoryShorts from "./components/postSection";
+export default function Home() {
+  const [businessData, setBusinessData] = useState<BusinessPage | null>(null);
+  const [businessPosts, setBusinessPosts] = useState<BusinessPost[]>([]);
+  const [taggedVideos, setTaggedVideos] = useState<BusinessPost[]>([]);
+  const [pendingPosts, setPendingPosts] = useState<BusinessPost[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<{
+    business?: string;
+    posts?: string;
+    tagged?: string;
+  } | null>(null);
+  const [businessId, setBusinessId] = useState<string>("");
 
-interface BrandInfo {
-  name: string;
-  logo: string;
-  rating: number;
-  banner: string;
-  Id: string;
-  isFollow: boolean;
-  businessPageOwner: string[];
-  title?: string;
-  desc?: string;
-  _id: string;
-  custId: string;
-  handle: string;
-  websiteURLs: string[];
-  defaultCommunication: string;
-  [key: string]: any; // Allow additional properties for flexibility
-}
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-export default function BrandPage({ params }: { params: any }) {
-  const resolvedParams = React.useMemo(() => params, [params]);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [count, setCount] = useState<number>(0);
-  const [videoData, setVideoData] = useState<VideoData[] | []>([]);
-  const [taggedVideo, setTaggedVideo] = useState<VideoData[] | []>([]);
-  const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [businessId, setBusinessID] = useState("");
-  const [selectedTab, setSelectedTab] = useState("posts");
-  const [profileData, setProfilePageData] = useState<
-    ProfileDataProps | undefined
-  >(undefined);
-  const fetchBrandDetails = async () => {
-    const handle = window.location.pathname.split("/")[1];
+        // Get handle from pathname
+        const handle = window.location.pathname.split("/")[1] || "Cocobolo"; // Fallback for testing
 
-    try {
-      const data = await fetchbusinessPageData(handle);
-      setBusinessID(data.data[0]._id);
+        // Fetch business page data
+        const businessResponse = await fetchbusinessPageData(handle);
+        if (businessResponse.data && businessResponse.data.length > 0) {
+          const businessData = businessResponse.data[0];
+          setBusinessData(businessData);
+          setBusinessId(businessData._id);
 
-      const brandData: BrandInfo = {
-        _id: data.data[0]?._id || "",
-        name: data.data[0]?.businessName || "Unknown Brand",
-        logo: data.data[0]?.defaultBusinessImage.original || "",
-        rating: data.data[0]?.avgRating || 0,
-        banner: data.data[0]?.defaultBusinessBanner.original || "",
-        Id: data.data[0]?._id || "",
-        isFollow: data.data[0]?.isFollow || false,
-        businessPageOwner: data.data[0]?.businessPageOwner || [],
-        title: data.data[0]?.title || "Default Title",
-        desc: data.data[0]?.desc || "Default Description",
-        custId: data.data[0]?.custId || "",
-        handle: data.data[0]?.handle || "",
-        websiteURLs: data.data[0]?.websiteURLs || [],
-        // Include other properties if needed
-        ...data.data[0],
-      };
+          // Fetch business posts/videos and tagged videos after getting business ID
+          try {
+            const postsResponse = await fetchBusinessPostsVideos(
+              businessData._id,
+            );
+            console.log("checking postsResponse data", postsResponse.data);
 
-      if (data.data) {
-        setBrandInfo(brandData);
+            if (postsResponse.data) {
+              setBusinessPosts(postsResponse.data);
+            }
+          } catch (err) {
+            console.error("Error fetching posts:", err);
+            setError((prev) => ({
+              ...prev,
+              posts: "Failed to load posts. Please try again later.",
+            }));
+          }
+
+          try {
+            const taggedResponse = await fetchBusinessTaggedVideos(
+              businessData._id,
+            );
+            if (taggedResponse.data) {
+              setTaggedVideos(taggedResponse.data);
+            }
+          } catch (err) {
+            console.error("Error fetching tagged videos:", err);
+            setError((prev) => ({
+              ...prev,
+              tagged: "Failed to load tagged videos. Please try again later.",
+            }));
+          }
+
+          try {
+            const pendingResponse = await fetchBusinessPendingPostsVideos(
+              businessData._id,
+            );
+            if (pendingResponse.data) {
+              setPendingPosts(pendingResponse.data);
+            }
+          } catch (err) {
+            console.error("Error fetching tagged videos:", err);
+            setError((prev) => ({
+              ...prev,
+              tagged: "Failed to load tagged videos. Please try again later.",
+            }));
+          }
+        } else {
+          setError((prev) => ({ ...prev, business: "Business not found." }));
+        }
+
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching business data:", err);
+        setError((prev) => ({
+          ...prev,
+          business: "Failed to load business data. Please try again later.",
+        }));
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching brand details:", error);
-    }
-  };
-
-  const isOwner = useIsOwner(brandInfo?.businessPageOwner || []);
-
-  useEffect(() => {
-    fetchBrandDetails();
-  }, []);
-
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      setIsLoggedIn(isUserLoggedIn());
     };
 
-    checkLoginStatus();
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    if (contentRef.current) {
-      animateCards(contentRef.current);
-    }
-  }, []);
+  console.log("checking posts data", businessPosts);
 
-  const getPostData = async () => {
-    try {
-      if (businessId) {
-        const responseData = await fetchBusinessPostsVideos(
-          businessId,
-          count + 10,
-        );
-        const newData = responseData?.data;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-t-4 border-b-4 border-gray-900 rounded-full animate-spin"></div>
+          <p className="mt-4 text-lg font-medium text-gray-700">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-        if (newData.length > 0) {
-          setVideoData(videoData.concat(newData));
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching post data:", error);
-    }
-  };
+  if (error?.business || !businessData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center px-4 py-8 max-w-md">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-12 w-12 text-red-500 mx-auto mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Oops! Something went wrong
+          </h2>
+          <p className="text-gray-600 mb-6">
+            {error?.business || "Failed to load business data."}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  const getTaggedData = async () => {
-    try {
-      if (businessId) {
-        setCount(count + 10);
-        const responseData = await fetchBusinessTaggedVideos(
-          businessId,
-          count + 10,
-        );
-        const newData = responseData?.data;
-
-        if (newData.length > 0) {
-          setTaggedVideo(taggedVideo.concat(newData));
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching tagged data:", error);
-    }
-  };
-
-  useEffect(() => {
-    getPostData();
-    getTaggedData();
-  }, [businessId]);
-
-  const isMobile = useIsMobile();
-
-  const router = useRouter();
+  const isLoggedIn = isUserLoggedIn();
 
   return (
     <div className="flex h-screen bg-background flex-col">
       {isLoggedIn && <Header />}
 
       <div className="flex overflow-hidden">
-        <div>{!isMobile && <Sidebar />}</div>
+        <div>{<Sidebar />}</div>
         <div className="flex-1 overflow-scroll">
           <div>
-            {brandInfo ? (
-              <BrandHeader info={brandInfo} />
+            <BusinessHeader business={businessData} />
+          </div>
+
+          <div className="container">
+            {error?.posts ? (
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                  <p className="text-red-800">{error.posts}</p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="mt-2 text-sm text-red-600 hover:text-red-800 font-medium"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              </div>
             ) : (
-              <div>Loading...</div>
+              // Update the BusinessPosts import
+              <BusinessPosts
+                posts={businessPosts}
+                reviews={taggedVideos}
+                pending={pendingPosts}
+                businessName={businessData.businessName}
+                isOwnerData={businessData.businessPageOwner}
+              />
             )}
           </div>
-          <Suspense fallback={<div>Loading...</div>}>
-            <div className="container">
-              <Tabs
-                defaultValue="posts"
-                className="w-full mt-44 md:mt-52 max-sm:mt-72 p-2 font-bold"
-              >
-                <TabsList className="w-full flex items-center justify-center dark:text-white text-white rounded-lg">
-                  <TabsTrigger
-                    value="posts"
-                    className={`max-lg:text-sm text-md rounded-md m-3 w-full px-2 ${
-                      selectedTab === "posts"
-                        ? "text-black dark:bg-gray-800 dark:text-white"
-                        : "text-gray-200 dark:bg-black dark:text-gray-400"
-                      }`}
-                    onClick={() => setSelectedTab("posts")}
-                  >
-                    POSTS
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="tag"
-                    className={`max-lg:text-sm text-md rounded-md m-3 w-full px-2 ${
-                      selectedTab === "tag"
-                        ? "text-black dark:bg-gray-800 dark:text-white"
-                        : "text-gray-200 dark:bg-black dark:text-gray-400"
-                      }`}
-                    onClick={() => setSelectedTab("tag")}
-                  >
-                    TAGGED
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="posts">
-                  <Separator />
-                  <div className="py-6">
-                    <div className="flex w-full justify-center">
-                      <ScrollArea className="h-full w-full pb-36">
-                        <div
-                          className="flex flex-wrap w-full h-full gap-4 lg:gap-5"
-                          style={{ padding: "10px" }}
-                        >
-                          {videoData.length > 0 ? (
-                            videoData.map((item: VideoData, index: number) => (
-                              <ProfileItem
-                                data={item}
-                                key={index}
-                                height={1000}
-                                width={1000}
-                                className="w-[127px] h-[200px] max-sm:w-[160px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
-                                aspectRatio="portrait"
-                              />
-                            ))
-                          ) : (
-                            <div
-                              className="w-full text-center"
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <span>No Posts Yet</span>
-                              {isOwner && (
-                                <Button
-                                  variant="default"
-                                  style={{ width: "25%" }}
-                                  onClick={() =>
-                                    router.push(
-                                      `/post?data=${encodeURIComponent(businessId)}`,
-                                    )
-                                  }
-                                >
-                                  Post now
-                                </Button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        <ScrollBar orientation="vertical" />
-                      </ScrollArea>
-                    </div>
-                  </div>
-                </TabsContent>
-                <TabsContent value="tag">
-                  <Separator />
-                  <div className="py-6">
-                    <div className="flex w-full justify-center">
-                      <ScrollArea className="h-full w-full pb-36">
-                        <div className="flex flex-wrap w-full h-full gap-3 lg:gap-5">
-                          {taggedVideo.length > 0 ? (
-                            taggedVideo.map(
-                              (item: VideoData, index: number) => (
-                                <ProfileItem
-                                  data={item}
-                                  key={index}
-                                  height={1000}
-                                  width={1000}
-                                  className="w-[127px] h-[200px] sm:w-[140px] sm:h-[300px] lg:w-[220px] lg:h-[380px]"
-                                  aspectRatio="portrait"
-                                />
-                              ),
-                            )
-                          ) : (
-                            <div className="w-full text-center">
-                              No Tags Yet
-                            </div>
-                          )}
-                        </div>
-                        <ScrollBar orientation="vertical" />
-                      </ScrollArea>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </div>
-          </Suspense>
         </div>
       </div>
     </div>
