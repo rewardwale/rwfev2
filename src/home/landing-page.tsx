@@ -27,6 +27,7 @@ import Hls from "hls.js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import dynamic from "next/dynamic";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { isUserLoggedIn } from "@/lib/utils";
 
 interface ShortCardProps {
   title: string;
@@ -638,15 +639,17 @@ const CategorySection = memo(
 );
 
 const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
+  const router = useRouter();
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("LandingPage Data:", {
-      hasData: !!categoriesData?.data,
-      categories: categoriesData?.data ? Object.keys(categoriesData.data) : [],
-      fullData: categoriesData,
-    });
+    if (isUserLoggedIn()) {
+      router.replace("/home"); // Redirects to /home
+    }
+  }, []);
 
+  useEffect(() => {
     if (scrollContainerRef.current) {
       let ctx = gsap.context(() => {
         gsap.to(scrollContainerRef.current, {
@@ -675,11 +678,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
 
   // Get global advertisements (null category)
   const globalAds = categoriesData.data["null"]?.advertisement || [];
-  console.log("Global Ads:", {
-    hasGlobalAds: !!globalAds?.length,
-    adsCount: globalAds?.length,
-    ads: globalAds,
-  });
 
   return (
     <>

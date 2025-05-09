@@ -26,9 +26,9 @@ const Navbar = () => {
     checkToken();
   }, []);
 
-  useEffect(() => {
-    isLoggedIn && router.push("/home");
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   isLoggedIn && router.push("/home");
+  // }, [isLoggedIn]);
 
   return (
     <div>

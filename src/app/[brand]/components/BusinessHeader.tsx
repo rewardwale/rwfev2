@@ -259,11 +259,14 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
               />
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold mb-2 dark:text-white">
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 dark:text-white">
               {business.businessName}
             </h1>
+             <p className="text-xl md:text-xl font-bold mb-1 dark:text-white">
+              {business.title}
+            </p>
 
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-1">
               <span
                 className={`px-2 py-1 text-sm rounded-full ${
                   isBusinessOpen()
@@ -281,11 +284,11 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
               </span>
             </div>
 
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-gray-600 dark:text-gray-400 mb-2">
               {business.location}
             </p>
 
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-2">
               <a
                 href={`tel:${business.contactUsDetails.indCountryCode}${business.contactUsDetails.indMobileNum}`}
                 className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
