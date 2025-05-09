@@ -20,11 +20,11 @@ export default function HomePage() {
   const isLoggedIn = isUserLoggedIn();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push("/login");
-    }
-  }, [isLoggedIn, router]);
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     router.push("/login");
+  //   }
+  // }, [isLoggedIn, router]);
 
   return (
     <div className="flex h-screen bg-background flex-col">

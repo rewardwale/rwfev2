@@ -27,7 +27,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Business, BusinessHours } from "../types/brands";
+import { Business, BusinessHours, BusinessPage } from "../types/brands";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRef, useState } from "react";
@@ -81,7 +81,7 @@ type FormValues = z.infer<typeof formSchema>;
 type Day = (typeof DAYS)[number];
 
 interface EditBusinessDialogProps {
-  business: Business;
+  business: BusinessPage;
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: z.infer<typeof formSchema>) => void;
@@ -521,12 +521,12 @@ export function EditBusinessDialog({
                               <X className="h-4 w-4" />
                             </Button> */}
                           </div>
-                          {business.defaultBusinessImage._id === image._id && (
+                          {business._id === image._id && (
                             <div
                               className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs px-2 py-1
                                 rounded-full"
                             >
-                              Profile Picture
+                              Profile PicturedefaultBusinessBanner
                             </div>
                           )}
                         </div>

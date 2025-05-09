@@ -77,14 +77,14 @@ export async function uploadBusinessBanner(Id: string, formData: FormData) {
     return null;
   }
 }
-export async function fetchBusinessPostsVideos(id: string, count?: number) {
+export async function fetchBusinessPostsVideos(id: string) {
   const queryParams = new URLSearchParams({
     limit: "100",
     skip: "0",
     flag: "1",
     businessPageId: id,
   }).toString();
-  const response = await apiClient(`/userPosts?${queryParams}`, "GET");
+  const response = await apiClient(`/businessPosts?${queryParams}`, "GET");
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -93,14 +93,30 @@ export async function fetchBusinessPostsVideos(id: string, count?: number) {
   }
 }
 
-export async function fetchBusinessTaggedVideos(id: string, count: number) {
+export async function fetchBusinessPendingPostsVideos(id: string) {
+  const queryParams = new URLSearchParams({
+    limit: "100",
+    skip: "0",
+    flag: "2",
+    businessPageId: id,
+  }).toString();
+  const response = await apiClient(`/businessPosts?${queryParams}`, "GET");
+  if (response.success && response.data) {
+    return response.data.data;
+  } else {
+    console.error("Failed to fetch fetchProfilePosts data:", response.error);
+    return null;
+  }
+}
+
+export async function fetchBusinessTaggedVideos(id: string) {
   const queryParams = new URLSearchParams({
     limit: "100",
     skip: "0",
     // flag: "1",
     businessPageId: id,
   }).toString();
-  const response = await apiClient(`/userTaggedPosts?${queryParams}`, "GET");
+  const response = await apiClient(`/businessTaggedPosts?${queryParams}`, "GET");
   if (response.success && response.data) {
     return response.data.data;
   } else {
@@ -181,3 +197,5 @@ export const setProfilePicture = async (id: string, imageId: string) => {
 
   return response.data;
 };
+
+
