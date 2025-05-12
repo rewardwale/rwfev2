@@ -5,7 +5,6 @@ import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import BusinessDetailsDialog from "./BusinessDetailsDialog";
-import { formatHours } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { BusinessPage } from "../types/brands";
 import useIsOwner from "@/hooks/use-owner";
@@ -18,7 +17,7 @@ import {
 } from "@/apis/business";
 import { toast } from "sonner";
 import { EditBusinessDialog } from "./EditBusinessDialog";
-import { Pencil } from "lucide-react";
+import { Pencil, Share2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface BusinessHeaderProps {
@@ -61,10 +60,14 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
     setIsModalOpen(true);
   };
 
-  const handleFollowClick = () => {
-    setIsAnimating(true);
-    setIsFollowing(!isFollowing);
-    setTimeout(() => setIsAnimating(false), 300);
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard!");
+    } catch (error) {
+      console.error("Failed to copy:", error);
+      toast.error("Failed to copy link");
+    }
   };
 
   const handleClaimPage = () => {
@@ -262,7 +265,7 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
             <h1 className="text-2xl md:text-3xl font-bold mb-1 dark:text-white">
               {business.businessName}
             </h1>
-             <p className="text-xl md:text-xl font-bold mb-1 dark:text-white">
+            <p className="text-xl md:text-xl font-bold mb-1 dark:text-white">
               {business.title}
             </p>
 
@@ -365,58 +368,77 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
                 </a>
               )}
             </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: `${!isMobile ? "row" : "column"}`,
+                gap: "20px",
+              }}
+            >
+              <div className="flex gap-3">
+                {isOwner && (
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="rounded-full lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                  >
+                    Edit
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  className="rounded-full border-gray-300 dark:border-gray-600 hover:bg-gray-100
+                    dark:hover:bg-gray-700"
+                  onClick={handleShare}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+                {!isOwner && (
+                  <Button
+                    variant={isFollowing ? "default" : "outline"}
+                    className={`rounded-full transition-all duration-300 ${
+                    isAnimating ? "scale-95" : "scale-100" } ${
+                    isFollowing
+                        ? `bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800
+                          dark:hover:bg-gray-100`
+                        : "border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    }`}
+                    onClick={isFollowed ? handleUnfollow : handleFollow}
+                  >
+                    {isFollowing ? "Following" : "Follow"}
+                  </Button>
+                )}
 
-            <div className="flex gap-3">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="rounded-full border-gray-300 dark:border-gray-600 hover:bg-gray-100
+                        dark:hover:bg-gray-700 transition-all duration-300"
+                    >
+                      More Details
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[80vw] md:max-w-[70vw] lg:max-w-[60vw] max-h-[90vh] overflow-hidden p-0">
+                    <BusinessDetailsDialog business={business} />
+                  </DialogContent>
+                </Dialog>
+              </div>
+
               {isOwner && (
                 <Button
+                  variant="outline"
                   onClick={() =>
                     router.push(
                       `/post?data=${encodeURIComponent(business._id)}`,
                     )
                   }
-                  className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
+                  className="rounded-full lg:text-xs lg:p-2 xl:text-sm xl:p-3"
                 >
                   Post Review
                 </Button>
               )}
-              {isOwner && (
-                <Button
-                  onClick={() => setIsEditModalOpen(true)}
-                  className="lg:text-xs lg:p-2 xl:text-sm xl:p-3"
-                >
-                  Edit
-                </Button>
-              )}
-              {!isOwner && (
-                <Button
-                  variant={isFollowing ? "default" : "outline"}
-                  className={`rounded-full transition-all duration-300 ${
-                  isAnimating ? "scale-95" : "scale-100" } ${
-                  isFollowing
-                      ? `bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800
-                        dark:hover:bg-gray-100`
-                      : "border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  }`}
-                  onClick={isFollowed ? handleUnfollow : handleFollow}
-                >
-                  {isFollowing ? "Following" : "Follow"}
-                </Button>
-              )}
-
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="rounded-full border-gray-300 dark:border-gray-600 hover:bg-gray-100
-                      dark:hover:bg-gray-700 transition-all duration-300"
-                  >
-                    More Details
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[80vw] md:max-w-[70vw] lg:max-w-[60vw] max-h-[90vh] overflow-hidden p-0">
-                  <BusinessDetailsDialog business={business} />
-                </DialogContent>
-              </Dialog>
             </div>
           </div>
         </div>

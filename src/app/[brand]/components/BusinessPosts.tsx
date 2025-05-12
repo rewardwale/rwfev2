@@ -253,7 +253,7 @@ const BusinessPosts: React.FC<BusinessPostsProps> = ({
                     {post.desc}
                   </p>
 
-                  <div className="flex items-center mt-3 text-xs text-gray-300">
+                  {/* <div className="flex items-center mt-3 text-xs text-gray-300">
                     <div className="flex items-center mr-3">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +271,7 @@ const BusinessPosts: React.FC<BusinessPostsProps> = ({
                       </svg>
                       Awaiting Approval
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Play Button */}
