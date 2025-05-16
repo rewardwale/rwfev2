@@ -110,13 +110,14 @@ export default function ResetForm() {
           <div className="flex flex-col items-center">
             <img
               alt="Rewardwale"
-              src="/brand_logo/png/RW_White_Name.png"
+              src="https://d1scqik6tlhrr8.cloudfront.net/Assets/IMG/original/RW_White_Name.png"
               className="w-[220px] hidden dark:inline"
             />
             <img
               alt="Rewardwale"
-              src="/brand_logo/png/RW_Black_Name.png"
+              src="https://d1scqik6tlhrr8.cloudfront.net/Assets/IMG/original/RW_Black_Name.png"
               className="w-[220px] inline dark:hidden"
+              
             />
             <h2 className="mt-6 text-2xl/9 tracking-tight text-primary font-Inter font-bold">
               Reset your Password
