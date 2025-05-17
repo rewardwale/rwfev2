@@ -54,8 +54,8 @@ const BusinessPosts: React.FC<BusinessPostsProps> = ({
         <button
           className={`px-6 py-3 text-base font-medium ${
             selectedTab === "posts"
-              ? "text-gray-900 border-b-2 border-gray-900"
-              : "text-gray-500 hover:text-gray-700"
+              ? "border-b-2 border-gray-900"
+              : "text-gray-400 hover:text-gray-700"
             }`}
           onClick={() => setSelectedTab("posts")}
         >
@@ -64,8 +64,8 @@ const BusinessPosts: React.FC<BusinessPostsProps> = ({
         <button
           className={`px-6 py-3 text-base font-medium ${
             selectedTab === "reviews"
-              ? "text-gray-900 border-b-2 border-gray-900"
-              : "text-gray-500 hover:text-gray-700"
+              ? "border-b-2 border-gray-900"
+              : "text-gray-400 hover:text-gray-700"
             }`}
           onClick={() => setSelectedTab("reviews")}
         >
@@ -75,8 +75,8 @@ const BusinessPosts: React.FC<BusinessPostsProps> = ({
           <button
             className={`px-6 py-3 text-base font-medium ${
             selectedTab === "pending"
-                ? "text-gray-900 border-b-2 border-gray-900"
-                : "text-gray-500 hover:text-gray-700"
+                ? "border-b-2 border-gray-900"
+                : "text-gray-400 hover:text-gray-700"
             }`}
             onClick={() => setSelectedTab("pending")}
           >
@@ -323,7 +323,8 @@ const BusinessPosts: React.FC<BusinessPostsProps> = ({
               <div
                 key={post._id}
                 className="group relative rounded-xl overflow-hidden aspect-[9/16] shadow-md
-                  hover:shadow-xl transition-all duration-300"
+                  hover:shadow-xl transition-all duration-300 cursor-pointer"
+                onClick={() => router.push(`/watch?v=${post.videoId}`)}
               >
                 {/* Thumbnail */}
                 <img
