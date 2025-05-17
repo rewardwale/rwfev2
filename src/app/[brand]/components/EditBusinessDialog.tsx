@@ -33,7 +33,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
-import { Upload, UserCircle2, X } from "lucide-react";
+import { Plus, Trash, Upload, UserCircle2, X } from "lucide-react";
 import { setProfilePicture, uploadBusinessProfile } from "@/apis/business";
 
 const timeSchema = z.object({
@@ -75,6 +75,7 @@ const formSchema = z.object({
   }),
   defaultCommunication: z.string().optional(),
   keywords: z.array(z.string()),
+   content: z.record(z.array(z.string())),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -114,8 +115,10 @@ export function EditBusinessDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newContentKey, setNewContentKey] = useState("");
+  const [newContentValue, setNewContentValue] = useState("");
 
-  const form = useForm<FormValues>({
+   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       businessName: business.businessName,
@@ -131,7 +134,8 @@ export function EditBusinessDialog({
       location: business.location,
       socialUrls: business.socialUrls,
       defaultCommunication: business.defaultCommunication,
-      keywords: [],
+      keywords: business.keywords || [],
+      content: business.content || {},
     },
   });
 
@@ -159,6 +163,21 @@ export function EditBusinessDialog({
     form.setValue(`operationalHours.${day}` as const, updatedHours);
   };
 
+    const handleRemoveContentItem = (key: string, index: number) => {
+    const currentContent = form.getValues("content");
+    const values = currentContent[key];
+    
+    if (values.length === 1) {
+      const { [key]: _, ...rest } = currentContent;
+      form.setValue("content", rest);
+    } else {
+      form.setValue("content", {
+        ...currentContent,
+        [key]: values.filter((_, i) => i !== index),
+      });
+    }
+  };
+
   const handlePhotoUpload = async (file: File) => {
     setIsUploading(true);
     try {
@@ -184,7 +203,7 @@ export function EditBusinessDialog({
       const response = await setProfilePicture(business._id, imageId);
       if (response.message === "Success.") {
         toast.success("Profile picture updated successfully");
-        window.location.reload()
+        window.location.reload();
       } else {
         toast.error("Failed to update profile picture");
       }
@@ -193,6 +212,45 @@ export function EditBusinessDialog({
       toast.error("Failed to update profile picture");
     }
   };
+
+    const handleAddKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && event.currentTarget.value.trim()) {
+      event.preventDefault();
+      const newKeyword = event.currentTarget.value.trim();
+      const currentKeywords = form.getValues("keywords");
+      
+      if (!currentKeywords.includes(newKeyword)) {
+        form.setValue("keywords", [...currentKeywords, newKeyword]);
+      }
+      
+      event.currentTarget.value = '';
+    }
+  };
+
+   const handleAddContentItem = () => {
+    if (!newContentKey || !newContentValue) return;
+
+    const currentContent = form.getValues("content");
+    const currentValues = currentContent[newContentKey] || [];
+
+    form.setValue("content", {
+      ...currentContent,
+      [newContentKey]: [...currentValues, newContentValue],
+    });
+
+    setNewContentKey("");
+    setNewContentValue("");
+  };
+
+  const handleRemoveKeyword = (keywordToRemove: string) => {
+    const currentKeywords = form.getValues("keywords");
+    form.setValue(
+      "keywords",
+      currentKeywords.filter((keyword) => keyword !== keywordToRemove),
+    );
+  };
+
+  console.log("checking newcontent", form.getValues("content"));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -207,11 +265,13 @@ export function EditBusinessDialog({
             className="space-y-4"
           >
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="contact">Contact</TabsTrigger>
                 <TabsTrigger value="hours">Hours</TabsTrigger>
                 <TabsTrigger value="photos">Photos</TabsTrigger>
+                <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="keywords">Keywords</TabsTrigger>
               </TabsList>
 
               <ScrollArea className="h-[60vh] pr-4">
@@ -464,6 +524,100 @@ export function EditBusinessDialog({
                           ))}
                     </div>
                   ))}
+                </TabsContent>
+
+                <TabsContent value="content" className="space-y-4">
+                  <div className="flex gap-2 mb-4">
+                    <Input
+                      placeholder="Key"
+                      value={newContentKey}
+                      onChange={(e) => setNewContentKey(e.target.value)}
+                    />
+                    <Input
+                      placeholder="Value"
+                      value={newContentValue}
+                      onChange={(e) => setNewContentValue(e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleAddContentItem}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {Object.entries(form.watch("content")).map(
+                      ([key, values]) => (
+                        <div
+                          key={key}
+                          className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg"
+                        >
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
+                            {key}
+                          </h4>
+                          <div className="space-y-2">
+                            {values.map((value, index) => (
+                              <div
+                                key={index}
+                                className="flex items-center gap-2"
+                              >
+                                <Input
+                                  value={value}
+                                  onChange={(e) => {
+                                    const newValues = [...values];
+                                    newValues[index] = e.target.value;
+                                    form.setValue(`content.${key}`, newValues);
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() =>
+                                    handleRemoveContentItem(key, index)
+                                  }
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="keywords" className="space-y-4">
+                  <FormItem>
+                    <FormLabel>Keywords</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Type a keyword and press Enter"
+                        onKeyDown={handleAddKeyword}
+                      />
+                    </FormControl>
+                  </FormItem>
+
+                  <div className="flex flex-wrap gap-2">
+                    {form.watch("keywords").map((keyword, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full"
+                      >
+                        <span className="text-sm">{keyword}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveKeyword(keyword)}
+                          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="photos" className="space-y-6">

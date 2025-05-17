@@ -78,6 +78,8 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
     try {
       const formattedData = {
         ...data,
+        keywords: data.keywords || [],
+        content: data.content || {},
         websiteURLs:
           Array.isArray(data.websiteURLs) && data.websiteURLs.length > 0
             ? data.websiteURLs[0]
@@ -85,7 +87,7 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
       };
 
       const response = await editBusiness(business.handle, formattedData);
-      console.log("checking response fo edit business", response.message);
+      console.log("checking response fo edit business", data);
       if (response.message === "Success.") {
         toast.success("Business details updated successfully");
         setIsEditModalOpen(false);
