@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Building2,
   History,
+  CreditCard,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -168,6 +169,11 @@ export function Sidebar({ className }: SidebarProps) {
               label="My Profile"
               onClick={() => router.push("/profile")}
               forceExpanded={forceExpanded}
+            />
+            <NavButton
+              icon={CreditCard}
+              label="Pricing"
+              onClick={() => router.push("/pricing")}
             />
 
             {businessPageData.length > 0 &&
