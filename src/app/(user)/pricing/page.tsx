@@ -9,6 +9,10 @@ import { Check } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Script from "next/script";
+import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface PricingPlan {
   _id: string;
@@ -26,8 +30,10 @@ export default function PricingPage() {
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [responseData, setResponseData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isYearly, setIsYearly] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
+  const [showPlanModal, setShowPlanModal] = useState(false);
+  
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -40,7 +46,6 @@ export default function PricingPage() {
     const fetchPlans = async () => {
       try {
         const response = await apiClient("/subscriptionPlans", "GET");
-
         if (response.success && response.data?.data) {
           setPlans(response.data.data);
         }
@@ -57,51 +62,44 @@ export default function PricingPage() {
   const updatePaymentRecord = async () => {
     try {
       const res = await apiClient('/payment-update', 'POST', responseData);
-      
-    //   await api.post("payment-update", {
-    //     ...responseData,
-    //   });
       console.log("Payment record updated:", res);
     } catch (error) {
       console.error("Error updating payment record:", error);
     }
   };
+
   const handleCreatePayment = async (planId: string) => {
     try {
-      //   const res = await api.post(`createSubscriptionPayment`, {
-      //     planId,
-      //   });
-
-      const res = await apiClient(
-        `/createSubscriptionPayment/${planId}`,
-        "POST",
-      );
-
+      const res = await apiClient(`/createSubscriptionPayment/${planId}`, "POST");
       const paymentData = res.data.data.accessToken;
-      // const { access_key } = paymentData;
-
-      console.log("checking key", paymentData);
-      const easebuzzCheckout = new (window as any).EasebuzzCheckout(
-        paymentData,
-        "test",
-      ); // Use "prod" in production
+      
+      const easebuzzCheckout = new (window as any).EasebuzzCheckout(paymentData, "test");
 
       const options = {
-        access_key: paymentData, // access key received via Initiate Payment
+        access_key: paymentData,
         onResponse: (response: any) => {
           setResponseData(response);
-          setIsModalOpen(true);
-          console.log("Payment response:", responseData);
-          // Handle success or failure responses
+          console.log("Payment response:", response);
         },
-        theme: "#123456", // Customize the iframe theme color
+        theme: "#123456",
       };
 
-      // Initiate the payment via the iframe
       easebuzzCheckout.initiatePayment(options);
     } catch (error) {
       console.error("Error initiating payment:", error);
     }
+  };
+
+  const calculatePrice = (basePrice: number) => {
+    if (isYearly) {
+      return (basePrice * 12 * 0.8).toFixed(0);
+    }
+    return basePrice;
+  };
+
+  const handlePlanSelect = (plan: PricingPlan) => {
+    setSelectedPlan(plan);
+    setShowPlanModal(true);
   };
 
   if (loading) {
@@ -140,48 +138,67 @@ export default function PricingPage() {
       <Header />
       <div className="flex">
         {!isMobile && <Sidebar />}
-
         <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold text-center mb-8">
-            Choose Your Plan
-          </h1>
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
-            style={{
-              display: `${isMobile ? "" : "flex"}`,
-              justifyContent: "center",
-              // alignItems:'center'
-            }}
-          >
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+              Choose Your Plan
+            </h1>
+            <div className="flex items-center justify-center gap-3">
+              <span className={cn(
+                "transition-colors duration-200",
+                !isYearly ? "font-semibold text-primary" : "text-muted-foreground"
+              )}>
+                6 Months
+              </span>
+              <Switch
+                checked={isYearly}
+                onCheckedChange={setIsYearly}
+                className="data-[state=checked]:bg-primary"
+              />
+              <span className={cn(
+                "transition-colors duration-200",
+                isYearly ? "font-semibold text-primary" : "text-muted-foreground"
+              )}>
+                Yearly
+              </span>
+              {isYearly && (
+                <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary dark:bg-primary/20">
+                  Save 20%
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {plans.map((plan) => (
               <Card
                 key={plan._id}
-                className={`p-6 flex flex-col ${
-                plan.name === "Growth"
-                    ? "border-2 border-primary relative"
-                    : ""
-                }`}
+                className={cn(
+                  "p-6 flex flex-col cursor-pointer transition-all duration-300",
+                  "hover:shadow-lg hover:shadow-primary/5 dark:hover:shadow-primary/10",
+                  "dark:bg-background/95 backdrop-blur-sm",
+                  plan.name === "Half Yearly" && "relative border-2 border-primary dark:border-primary/80"
+                )}
+                onClick={() => handlePlanSelect(plan)}
               >
-                {plan.name === "Growth" && (
+                {plan.name === "Half Yearly" && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium dark:bg-primary/90">
                       Recommended
                     </span>
                   </div>
                 )}
                 <div className="mb-6">
-                  <h2 className="text-2xl font-bold">{plan.name}</h2>
-                  <p className="text-muted-foreground mt-2">
-                    {plan.description}
-                  </p>
+                  <h2 className="text-2xl font-bold text-foreground">{plan.name}</h2>
+                  <p className="text-muted-foreground mt-2">{plan.description}</p>
                 </div>
                 <div className="mb-6">
                   <div className="flex items-baseline">
-                    <span className="text-3xl font-bold">{plan.currency}</span>
-                    <span className="text-5xl font-bold">{plan.price}</span>
+                    <span className="text-3xl font-bold text-foreground">{plan.currency}</span>
+                    <span className="text-5xl font-bold text-foreground">{calculatePrice(plan.price)}</span>
                     {plan.bilingCycle !== "none" && (
                       <span className="text-muted-foreground ml-2">
-                        /{plan.bilingCycle === "yearly" ? "year" : "6 months"}
+                        /{isYearly ? "year" : "6 months"}
                       </span>
                     )}
                   </div>
@@ -193,16 +210,24 @@ export default function PricingPage() {
                 </div>
                 <div className="space-y-4 flex-grow">
                   {plan.features.map((feature, index) => (
-                    <div key={index} className="flex items-center">
-                      <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
+                    <div key={index} className="flex items-center group">
+                      <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0 transition-transform group-hover:scale-110" />
+                      <span className="text-sm text-foreground">{feature}</span>
                     </div>
                   ))}
                 </div>
                 <Button
-                  className={`mt-6 ${plan.name === "Growth" ? "bg-primary" : ""}`}
-                  variant={plan.name === "Growth" ? "default" : "outline"}
-                  onClick={() => handleCreatePayment(plan._id)}
+                  className={cn(
+                    "mt-6 transition-all duration-300",
+                    plan.name === "Half Yearly" 
+                      ? "bg-primary hover:bg-primary/90 dark:hover:bg-primary/80" 
+                      : "hover:bg-primary/10 dark:hover:bg-primary/20"
+                  )}
+                  variant={plan.name === "Half Yearly" ? "default" : "outline"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCreatePayment(plan._id);
+                  }}
                 >
                   {plan.price === 0 ? "Get Started" : "Subscribe Now"}
                 </Button>
@@ -211,6 +236,51 @@ export default function PricingPage() {
           </div>
         </main>
       </div>
+
+      <Dialog open={showPlanModal} onOpenChange={setShowPlanModal}>
+        <DialogContent className="dark:bg-background/95 backdrop-blur-sm">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">{selectedPlan?.name} Plan Details</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center">
+                <span className="text-3xl font-bold text-foreground">{selectedPlan?.currency}</span>
+                <span className="text-5xl font-bold text-foreground">
+                  {selectedPlan && calculatePrice(selectedPlan.price)}
+                </span>
+                <span className="text-muted-foreground ml-2">
+                  /{isYearly ? "year" : "6 months"}
+                </span>
+              </div>
+              {selectedPlan?.trialPeriodDays ? (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Includes {selectedPlan.trialPeriodDays} days free trial
+                </p>
+              ) : null}
+            </div>
+            <div className="space-y-4">
+              {selectedPlan?.features.map((feature, index) => (
+                <div key={index} className="flex items-center group">
+                  <Check className="h-5 w-5 text-primary mr-2 transition-transform group-hover:scale-110" />
+                  <span className="text-foreground">{feature}</span>
+                </div>
+              ))}
+            </div>
+            <Button 
+              className="w-full mt-6 bg-primary hover:bg-primary/90 dark:hover:bg-primary/80"
+              onClick={() => {
+                if (selectedPlan) {
+                  handleCreatePayment(selectedPlan._id);
+                }
+                setShowPlanModal(false);
+              }}
+            >
+              Subscribe Now
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
