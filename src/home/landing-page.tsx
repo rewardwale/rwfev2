@@ -28,6 +28,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import dynamic from "next/dynamic";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { isUserLoggedIn } from "@/lib/utils";
+import PushNotifications from "@/components/PushNotification";
 
 interface ShortCardProps {
   title: string;
@@ -681,6 +682,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
 
   return (
     <>
+      <PushNotifications />
       <div className="min-h-screen">
         {globalAds && globalAds.length > 0 && (
           <div className="mb-12">

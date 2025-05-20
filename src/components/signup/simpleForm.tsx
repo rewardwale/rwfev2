@@ -4,11 +4,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  newSignupRwSchema,
-  newSignupSchema,
-  PersonalInfoFormSchema,
-} from "@/schema";
+import { newSignupRwSchema } from "@/schema";
 import {
   Form,
   FormControl,
@@ -138,7 +134,7 @@ export default function SimpleForm() {
     //validate otp here
     const validateOtp = await verifyOTPEmail(
       otp,
-      val.email,
+      encodeURIComponent(val.email),
       fingerPrints,
       latitude,
       longitude,
@@ -343,13 +339,6 @@ export default function SimpleForm() {
                     Password<span className="text-red-600"> *</span>
                   </FormLabel>
                   <FormControl>
-                    {/* <Input
-                        {...field}
-                        placeholder="********"
-                        type="password"
-                        disabled={pending}
-                      /> */}
-
                     <div
                       className="flex border shadow-sm focus:ring-1 max-sm:text-xs max-sm:p-2 max-sm:h-7
                         justify-center items-center active:ring-1 selection:ring-1 rounded-sm"
