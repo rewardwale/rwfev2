@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { isUserLoggedIn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import PushNotifications from "@/components/PushNotification";
 
 export default function HomePage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -29,6 +30,8 @@ export default function HomePage() {
   return (
     <div className="flex h-screen bg-background flex-col">
       <Header />
+
+      <PushNotifications />
 
       <div className="flex scrollbar-hide">
         <div>{!isMobile && <Sidebar />}</div>
