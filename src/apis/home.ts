@@ -122,3 +122,51 @@ export const sendPushSubscription = async (
     throw error;
   }
 };
+
+export async function getViewingHistory() {
+  const queryParams = new URLSearchParams({
+    limit: "100",
+    skip: "0",
+    latestFirst : "true",
+  });
+  try {
+      const response = await apiClient(
+      `/viewingHistory?${queryParams.toString()}`,
+      "GET",
+    );
+    return response;
+  } catch (error) {
+    console.error("Error fetching viewing history:", error);
+    throw error;
+  }
+}
+
+export async function getLikedVideos() {
+  try {
+    const userDataString = localStorage.getItem("uib");
+    if (!userDataString) {
+      throw new Error("User data not found");
+    }
+
+    const userData = JSON.parse(userDataString);
+    const userId = userData._id;
+
+    if (!userId) {
+      throw new Error("User ID not found");
+    }
+
+    const queryParams = new URLSearchParams({
+      limit: "100",
+      skip: "0",
+    });
+
+    const response = await apiClient(
+      `/likesHistory/${userId}?${queryParams.toString()}`,
+      "GET",
+    );
+    return response;
+  } catch (error) {
+    console.error("Error fetching liked videos:", error);
+    throw error;
+  }
+}

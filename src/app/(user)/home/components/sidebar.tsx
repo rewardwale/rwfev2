@@ -15,6 +15,9 @@ import {
   Building2,
   History,
   CreditCard,
+  Watch,
+  HistoryIcon,
+  ThumbsUp,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -36,10 +39,11 @@ export function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
       const storedValue = localStorage.getItem("sidebarCollapsed");
-      return storedValue ? JSON.parse(storedValue) : false;
+      return storedValue ? JSON.parse(storedValue) : true; // Default to true (collapsed)
     }
-    return false;
+    return true;
   });
+  const [isHovered, setIsHovered] = useState(false);
   const isLoggedIn = isUserLoggedIn();
   const isMobile = useIsMobile();
 
@@ -68,15 +72,16 @@ export function Sidebar({ className }: SidebarProps) {
     icon: Icon,
     label,
     onClick,
-    forceExpanded = false, // New prop to force expanded state
+    forceExpanded = false,
   }: {
     icon: any;
     label: string;
     onClick: () => void;
     forceExpanded?: boolean;
   }) => {
-    // Use forceExpanded to override isCollapsed
-    if (isCollapsed && !forceExpanded) {
+    const shouldShowCollapsed = (isCollapsed && !isHovered) && !forceExpanded;
+    
+    if (shouldShowCollapsed) {
       return (
         <TooltipProvider>
           <Tooltip>
@@ -158,16 +163,22 @@ export function Sidebar({ className }: SidebarProps) {
               onClick={() => router.push("/bookmark")}
               forceExpanded={forceExpanded}
             />
-            {/* <NavButton
-              icon={History}
-              label="History"
-              onClick={() => router.push("/history")}
-              forceExpanded={forceExpanded}
-            /> */}
             <NavButton
               icon={UserRound}
               label="My Profile"
               onClick={() => router.push("/profile")}
+              forceExpanded={forceExpanded}
+            />
+              <NavButton
+              icon={HistoryIcon}
+              label="History"
+              onClick={() => router.push("/history")}
+              forceExpanded={forceExpanded}
+            />
+                <NavButton
+              icon={ThumbsUp}
+              label="Likes"
+              onClick={() => router.push("/likes")}
               forceExpanded={forceExpanded}
             />
             <NavButton
@@ -176,41 +187,42 @@ export function Sidebar({ className }: SidebarProps) {
               onClick={() => router.push("/pricing")}
             />
 
-            {businessPageData.length > 0 &&
-              !(isCollapsed && !forceExpanded) && (
-                <div>
-                  <button
-                    onClick={() => setIsBusinessPageOpen(!isBusinessPageOpen)}
-                    className="flex items-center justify-between w-full px-4 py-2"
+            {(businessPageData.length > 0 && (!isCollapsed || isHovered || forceExpanded)) && (
+              <div>
+                <button
+                  onClick={() => setIsBusinessPageOpen(!isBusinessPageOpen)}
+                  className="flex items-center justify-between w-full px-4 py-2"
+                >
+                  My Business Page
+                  <span
+                    className={`transform transition-transform duration-100 ${
+                      isBusinessPageOpen ? "rotate-180" : "rotate-0"
+                    }`}
                   >
-                    My Business Page
-                    <span
-                      className={`transform transition-transform duration-300 ${
-                      isBusinessPageOpen ? "rotate-180" : "rotate-0" }`}
-                    >
-                      <ChevronDown />
-                    </span>
-                  </button>
-                  <div
-                    className={`transition-[max-height] duration-500 overflow-hidden ${
-                    isBusinessPageOpen ? "max-h-96" : "max-h-0" }`}
-                  >
-                    <div className="pl-6 space-y-2">
-                      {businessPageData.map((business) => (
-                        <button
-                          key={business._id}
-                          onClick={() => router.push(`/${business.handle}`)}
-                          className="block w-full text-left px-4 py-2 hover:bg-accent"
-                        >
-                          {business.businessName}
-                        </button>
-                      ))}
-                    </div>
+                    <ChevronDown />
+                  </span>
+                </button>
+                <div
+                  className={`transition-[max-height] duration-500 overflow-hidden ${
+                    isBusinessPageOpen ? "max-h-96" : "max-h-0"
+                  }`}
+                >
+                  <div className="pl-6 space-y-2">
+                    {businessPageData.map((business) => (
+                      <button
+                        key={business._id}
+                        onClick={() => router.push(`/${business.handle}`)}
+                        className="block w-full text-left px-4 py-2 hover:bg-accent"
+                      >
+                        {business.businessName}
+                      </button>
+                    ))}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-            {businessPageData.length > 0 && isCollapsed && !forceExpanded && (
+            {businessPageData.length > 0 && (isCollapsed && !isHovered && !forceExpanded) && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -248,9 +260,11 @@ export function Sidebar({ className }: SidebarProps) {
         <aside
           className={cn(
             "pb-12 hidden md:block transition-all duration-300",
-            isMobile ? "w-16" : isCollapsed ? "w-16" : "w-64",
+            isMobile ? "w-16" : isCollapsed && !isHovered ? "w-16" : "w-64",
             className,
           )}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           <SidebarContent />
         </aside>
@@ -261,8 +275,7 @@ export function Sidebar({ className }: SidebarProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
-            <SidebarContent forceExpanded={true} />{" "}
-            {/* Force expanded for mobile */}
+            <SidebarContent forceExpanded={true} />
           </SheetContent>
         </Sheet>
       </>
