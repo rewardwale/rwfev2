@@ -175,7 +175,7 @@ export function Sidebar({ className }: SidebarProps) {
               onClick={() => router.push("/history")}
               forceExpanded={forceExpanded}
             />
-                <NavButton
+                {/* <NavButton
               icon={ThumbsUp}
               label="Likes"
               onClick={() => router.push("/likes")}
@@ -185,7 +185,7 @@ export function Sidebar({ className }: SidebarProps) {
               icon={CreditCard}
               label="Pricing"
               onClick={() => router.push("/pricing")}
-            />
+            /> */}
 
             {(businessPageData.length > 0 && (!isCollapsed || isHovered || forceExpanded)) && (
               <div>
