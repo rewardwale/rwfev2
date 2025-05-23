@@ -682,7 +682,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
 
   return (
     <>
-      <PushNotifications />
       <div className="min-h-screen">
         {globalAds && globalAds.length > 0 && (
           <div className="mb-12">

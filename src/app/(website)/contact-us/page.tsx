@@ -11,6 +11,7 @@ import { describe } from "node:test";
 import { contactUs } from "@/apis/landing-page";
 import { Toast } from "@/components/ui/toast";
 import { Header } from "@/components/layout";
+import { toast } from "sonner";
 
 export default function ContactUs() {
   const [name, setName] = useState("");
@@ -32,9 +33,14 @@ export default function ContactUs() {
       description: message,
     };
     try {
-         const landingPageData = await contactUs(body);
-    //   const { data } = await api.post("contactUs", body);
-    //   Toast.success("Message sent successfully!");
+      const res = await contactUs(body);
+      console.log("checking res of contact us", res);
+      if(res){
+        toast.success("Message sent successfully!");
+      }else{
+        toast.error("Something went wrong");
+      }
+      // Toast.success("Message sent successfully!");
       // Clear input fields after successful API call
       setName("");
       setEmail("");
@@ -191,30 +197,40 @@ export default function ContactUs() {
         </div>
       </div> */}
       <section
-        className=" bg-white dark:bg-zinc-900
-       max-md:min-h-screen 
-       xl:min-h-screen border rounded-lg flex md:justify-center 
-      dark:border-gray-900  dark:shadow-black
-      md:my-10 md:mx-16 lg:mx-40 md:inset-x-0 shadow-lg shadow-violet-200
-       text-neutral-700"
+        className="bg-white dark:bg-zinc-900 max-md:min-h-screen xl:min-h-screen border rounded-lg
+          flex md:justify-center dark:border-gray-900 dark:shadow-black md:my-10 md:mx-16
+          lg:mx-40 md:inset-x-0 shadow-lg shadow-violet-200 text-neutral-700"
       >
-        <div className="flex-col justify-start 4k:justify-evenly items-center gap-7 inline-flex p-7 2xl:max-w-4xl 4k:max-w-6xl">
+        <div
+          className="flex-col justify-start 4k:justify-evenly items-center gap-7 inline-flex p-7
+            2xl:max-w-4xl 4k:max-w-6xl"
+        >
           <div className="flex-col justify-start gap-2.5 inline-flex pt-7 md:p-7">
-            <h1 className="text-neutral-700 dark:text-stone-300 text-xl 2xl:text-2xl 4k:text-5xl font-semibold md:text-center">
-              <span className="text-violet-500 font-bold md:text-neutral-700 dark:md:text-stone-300 md:font-semibold">
+            <h1
+              className="text-neutral-700 dark:text-stone-300 text-xl 2xl:text-2xl 4k:text-5xl
+                font-semibold md:text-center"
+            >
+              <span
+                className="text-violet-500 font-bold md:text-neutral-700 dark:md:text-stone-300
+                  md:font-semibold"
+              >
                 Contact
               </span>{" "}
               Us
             </h1>
-            <p className="text-neutral-700 dark:text-stone-300 text-xs sm:text-sm 2xl:text-lg 4k:text-4xl text-center">
+            <p
+              className="text-neutral-700 dark:text-stone-300 text-xs sm:text-sm 2xl:text-lg 4k:text-4xl
+                text-center"
+            >
               Still in disbelief about what you read? Please reach out and let
               us amaze you!
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-7 4k:h-[40em] 4k:w-[90em] justify-center max-md:hidden ">
+          <div className="grid grid-cols-2 gap-7 4k:h-[40em] 4k:w-[90em] justify-center max-md:hidden">
             <a
               href="tel:+918071176648"
-              className="cursor-pointer flex items-center 4k:gap-5 gap-3 p-5 rounded-lg shadow-lg shadow-violet-200 dark:shadow-black"
+              className="cursor-pointer flex items-center 4k:gap-5 gap-3 p-5 rounded-lg shadow-lg
+                shadow-violet-200 dark:shadow-black"
             >
               <div className="w-16 h-16 4k:w-20 4k:h-20 relative">
                 <div className="w-16 h-16 4k:w-20 4k:h-20 absolute bg-pink-200 rounded-full" />
@@ -222,7 +238,7 @@ export default function ContactUs() {
                   <IoCall className="w-9 h-9 4k:w-11 4k:h-11 text-[#A844D8]" />
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-start gap-1.5 4k:gap-3  dark:text-stone-300">
+              <div className="flex flex-col justify-center items-start gap-1.5 4k:gap-3 dark:text-stone-300">
                 <h3 className="font-semibold 2xl:text-xl 4k:text-5xl">Call</h3>
                 <p className="text-sm 2xl:text-lg 4k:text-3xl">
                   +91 8071176648
@@ -231,7 +247,8 @@ export default function ContactUs() {
             </a>
             <a
               href="mailto:contact@rewardwale.com"
-              className="flex items-center gap-3 p-5 rounded-lg shadow-lg shadow-violet-200 dark:shadow-black"
+              className="flex items-center gap-3 p-5 rounded-lg shadow-lg shadow-violet-200
+                dark:shadow-black"
             >
               <div className="w-16 h-16 4k:w-20 4k:h-20 relative">
                 <div className="w-16 h-16 4k:w-20 4k:h-20 absolute bg-pink-200 rounded-full" />
@@ -239,7 +256,7 @@ export default function ContactUs() {
                   <IoIosMail className="w-9 h-9 4k:w-11 4k:h-11 text-[#A844D8]" />
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-start gap-1.5 4k:gap-3  dark:text-stone-300">
+              <div className="flex flex-col justify-center items-start gap-1.5 4k:gap-3 dark:text-stone-300">
                 <h3 className="font-semibold 2xl:text-xl 4k:text-5xl">Mail</h3>
                 {/* <p className="text-sm 2xl:text-lg">customer.support@rewardwale.com</p> */}
                 <p className="text-sm 2xl:text-lg 4k:text-3xl">
@@ -248,14 +265,17 @@ export default function ContactUs() {
                 </p>
               </div>
             </a>
-            <div className="flex items-center 4k:gap-8 gap-3 p-5 rounded-lg shadow-lg  shadow-violet-200 dark:shadow-black">
+            <div
+              className="flex items-center 4k:gap-8 gap-3 p-5 rounded-lg shadow-lg shadow-violet-200
+                dark:shadow-black"
+            >
               <div className="w-16 h-16 4k:w-20 4k:h-20 relative">
                 <div className="w-16 h-16 4k:w-20 4k:h-20 absolute bg-pink-200 rounded-full" />
                 <div className="left-[13px] top-[13px] 4k:left-[18px] 4k:top-[18px] absolute">
                   <FaLocationDot className="w-9 h-9 4k:w-11 4k:h-11 text-[#A844D8]" />
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-start gap-1.5 4k:gap-3  dark:text-stone-300">
+              <div className="flex flex-col justify-center items-start gap-1.5 4k:gap-3 dark:text-stone-300">
                 <h3 className="font-semibold 2xl:text-xl 4k:text-5xl">
                   Registered Office
                 </h3>
@@ -267,14 +287,20 @@ export default function ContactUs() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-5 rounded-lg shadow-lg shadow-violet-200 dark:shadow-black">
+            <div
+              className="flex items-center gap-3 p-5 rounded-lg shadow-lg shadow-violet-200
+                dark:shadow-black"
+            >
               <div className="w-16 h-16 4k:w-20 4k:h-20 relative">
                 <div className="w-16 h-16 4k:w-20 4k:h-20 absolute bg-pink-200 rounded-full" />
                 <div className="left-[13px] top-[13px] 4k:left-[18px] 4k:top-[18px] absolute">
                   <FaLocationDot className="w-9 h-9 4k:w-11 4k:h-11 text-[#A844D8]" />
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-start gap-1.5 4k:gap-3  p-5 dark:text-stone-300">
+              <div
+                className="flex flex-col justify-center items-start gap-1.5 4k:gap-3 p-5
+                  dark:text-stone-300"
+              >
                 <h3 className="font-semibold 2xl:text-xl 4k:text-5xl">
                   Location
                 </h3>
@@ -302,7 +328,7 @@ export default function ContactUs() {
             </a>
             <a
               href="mailto:contact@rewardwale.com"
-              className="flex gap-3 items-center "
+              className="flex gap-3 items-center"
             >
               <div className="w-5 h-5 relative">
                 <div className="w-5 h-5 left-0 top-0 absolute bg-violet-50 rounded-full" />
@@ -341,7 +367,10 @@ export default function ContactUs() {
                   <FaLocationDot className="w-3 h-3 text-violet-500" />
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-start gap-1 text-neutral-700 dark:text-stone-300">
+              <div
+                className="flex flex-col justify-center items-start gap-1 text-neutral-700
+                  dark:text-stone-300"
+              >
                 <h1 className="text-xs font-semibold">Location</h1>
                 <div className="text-xs">
                   <p>MSVP Innovations Private Limited</p>
@@ -352,11 +381,15 @@ export default function ContactUs() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col  4k:w-[90em] 4k:gap-4 gap-2">
+          <div className="flex flex-col 4k:w-[90em] 4k:gap-4 gap-2">
             <div className="grid grid-cols-2 gap-2.5 4k:gap-10 md:gap-7">
               <div className="4k:py-4">
                 <input
-                  className="shadow-sm bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 4k:text-4xl 4k:p-6"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                    focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700
+                    dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                    dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
+                    4k:text-4xl 4k:p-6"
                   type="text"
                   name="name"
                   id="name"
@@ -373,7 +406,11 @@ export default function ContactUs() {
               </div>
               <div className="4k:py-4">
                 <input
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light  4k:text-4xl 4k:p-6"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                    focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700
+                    dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                    dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
+                    4k:text-4xl 4k:p-6"
                   type="text"
                   name="email"
                   id="email"
@@ -391,7 +428,11 @@ export default function ContactUs() {
             </div>
             <div className="4k:py-4">
               <textarea
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light  4k:text-4xl 4k:p-6"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700
+                  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                  dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
+                  4k:text-4xl 4k:p-6"
                 rows={4}
                 placeholder="Description"
                 value={message}
@@ -408,8 +449,8 @@ export default function ContactUs() {
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="px-6 py-2 font-semibold tracking-wide text-white capitalize
-               bg-gradient-to-r from-[#D64ACF] via-[#A844D8] to-[#883FDE] rounded-lg"
+              className="px-6 py-2 font-semibold tracking-wide text-white capitalize bg-gradient-to-r
+                from-[#D64ACF] via-[#A844D8] to-[#883FDE] rounded-lg"
               onClick={sendMessage}
               disabled={
                 (error.descriptionFlag != "green" &&
