@@ -211,7 +211,15 @@ const HLSVideo = memo(
 );
 
 const HeroSlideContent = memo(
-  ({ slide, isActive }: { slide: HeroSlide; isActive: boolean }) => {
+  ({
+    slide,
+    isActive,
+    isSingleSlide = false,
+  }: {
+    slide: HeroSlide;
+    isActive: boolean;
+    isSingleSlide?: boolean;
+  }) => {
     const [showVideo, setShowVideo] = useState(false);
     const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
     const isMobile = useIsMobile();
@@ -222,8 +230,6 @@ const HeroSlideContent = memo(
 
     // Timing constants
     const VIDEO_TRANSITION_DELAY = 1800; // 2s delay before video appears
-    const VIDEO_PLAY_DURATION = 10000; // 10s video playback
-    const TOTAL_SLIDE_DURATION = 10000; // 10s total (2s + 8s)
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -238,9 +244,11 @@ const HeroSlideContent = memo(
         setShouldLoadVideo(true);
         setShowVideo(false);
 
-        timeoutRef.current = setTimeout(() => {
-          setShowVideo(true);
-        }, VIDEO_TRANSITION_DELAY);
+         if (!isSingleSlide) {
+          timeoutRef.current = setTimeout(() => {
+            setShowVideo(true);
+          }, VIDEO_TRANSITION_DELAY);
+        }
       } else {
         setShowVideo(false);
         if (!isActive) {
@@ -254,7 +262,7 @@ const HeroSlideContent = memo(
           timeoutRef.current = null;
         }
       };
-    }, [isActive, isInView]);
+    }, [isActive, isInView, isSingleSlide]);
 
     const handleVideoEnd = useCallback(() => {
       setShowVideo(false);
@@ -269,7 +277,7 @@ const HeroSlideContent = memo(
       <div className="relative w-full h-[70vh] group" ref={ref}>
         {/* Background Image (always shown) */}
         <div
-          className={`absolute inset-0 transition-all duration-700 ${
+          className={`relative h-[400px] inset-0 transition-all duration-700 ${
             showVideo ? "opacity-0 scale-105" : "opacity-100 scale-100" }`}
         >
           <Image
@@ -280,7 +288,7 @@ const HeroSlideContent = memo(
             className="transition-transform duration-500 ease-in-out group-hover:scale-105"
             priority={isActive}
             sizes="100vw"
-            quality={85}
+            quality={100}
             loading={isActive ? "eager" : "lazy"}
           />
         </div>
@@ -358,12 +366,29 @@ const HeroSlideContent = memo(
 HeroSlideContent.displayName = "HeroSlideContent";
 
 const HeroSection: React.FC<{ slides: HeroSlide[] }> = ({ slides }) => {
+  console.log("HeroSection", slides.length);
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (!slides || slides.length === 0) {
     return null;
   }
 
+  if (slides.length === 1) {
+    return (
+      <div className="w-full relative">
+        <div className="w-full h-[35rem]">
+          <HeroSlideContent
+            slide={slides[0]}
+            isActive={true}
+            // Add this prop to prevent the video transition
+            isSingleSlide={true}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // For multiple slides, use Swiper
   return (
     <div className="w-full relative">
       <style jsx global>{`
