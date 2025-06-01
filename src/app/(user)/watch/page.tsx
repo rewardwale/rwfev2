@@ -188,7 +188,7 @@ export default function WatchPage() {
     if (currentIndex >= 0 && videos.length > 0) {
       updateViews();
     }
-  }, [currentIndex, videos])
+  }, [currentIndex])
 
   
 
