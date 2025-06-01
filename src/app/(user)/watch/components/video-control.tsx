@@ -99,24 +99,24 @@ export function VideoControls({ video }: VideoControlsProps) {
     checkToken();
   }, []);
 
-  useEffect(() => {
-    const loadVideoDetails = async () => {
-      try {
-        const response = await fetchVideoDetails(videoId);
-        setVideoDetails(response?.data);
-        setIsLiked(response?.data?.isLiked);
-        setIsBookmarked(response?.data?.isBookmarked);
-        setUserId(response?.data?.userId);
-        setIsFollowed(response?.data?.isFollowed);
-      } catch (error) {
-        console.error("Error loading video details:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const loadVideoDetails = async () => {
+  //     try {
+  //       const response = await fetchVideoDetails(videoId);
+  //       setVideoDetails(response?.data);
+  //       setIsLiked(response?.data?.isLiked);
+  //       setIsBookmarked(response?.data?.isBookmarked);
+  //       setUserId(response?.data?.userId);
+  //       setIsFollowed(response?.data?.isFollowed);
+  //     } catch (error) {
+  //       console.error("Error loading video details:", error);
+  //     }
+  //   };
 
-    if (videoId) {
-      loadVideoDetails();
-    }
-  }, [videoId]);
+  //   if (videoId) {
+  //     loadVideoDetails();
+  //   }
+  // }, [videoId]);
 
   const handleAuthAction = (action: () => Promise<void>) => {
     if (!isLoggedIn) {
@@ -138,8 +138,8 @@ export function VideoControls({ video }: VideoControlsProps) {
         setIsLiked(false);
       }
       // Refresh video details to get updated counts
-      const response = await fetchVideoDetails(videoId);
-      setVideoDetails(response.data);
+      // const response = await fetchVideoDetails(videoId);
+      // setVideoDetails(response.data);
     } catch (error) {
       console.error("Error liking video:", error);
     }
