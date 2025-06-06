@@ -8,6 +8,7 @@ import {
   Share2,
   Bookmark,
   ArrowLeft,
+  Gift,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { useVideoContext } from "../providers/video-control-provider";
 import { CommentsModal } from "./comments-modal";
 import { LikeAnimation } from "./like-animation";
+import { RewardModal } from "./reward-modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import { unLikeVideo, fetchVideoDetails, likeVideo } from "@/apis/watch";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -86,9 +88,21 @@ export function VideoControls({ video }: VideoControlsProps) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showContactUs, setShowContactUs] = useState(false);
+  const [showReward, setShowReward] = useState(false);
   // const [totalLikes, setTotalLikes] = useState(video?.totalLikes || 0);
 
   const isMobile = useIsMobile();
+
+  const currentVideoId = video?.videoId || "";
+
+  useEffect(() => {
+    if (video) {
+      setIsLiked(video.isLiked);
+      setIsBookmarked(video.isBookmarked);
+      setUserId(video.userId);
+      setIsFollowed(video.isFollowed);
+    }
+  }, [video]);
 
   const checkToken = async () => {
     const token = localStorage.getItem("token");
@@ -126,20 +140,23 @@ export function VideoControls({ video }: VideoControlsProps) {
     action();
   };
 
+  const handleReward = async () => {
+    setShowReward(true);
+    return Promise.resolve();
+  };
+
   const handleLike = async () => {
     try {
       if (!isLiked) {
-        await likeVideo(videoId);
+        await likeVideo(currentVideoId);
         setShowLikeAnimation(true);
         setIsLiked(true);
         setIsUnLiked(false);
         setTimeout(() => setShowLikeAnimation(false), 1500);
       } else {
+        await unLikeVideo(currentVideoId);
         setIsLiked(false);
       }
-      // Refresh video details to get updated counts
-      // const response = await fetchVideoDetails(videoId);
-      // setVideoDetails(response.data);
     } catch (error) {
       console.error("Error liking video:", error);
     }
@@ -300,6 +317,12 @@ export function VideoControls({ video }: VideoControlsProps) {
         onClose={() => setShowAuthModal(false)}
       />
 
+      <RewardModal
+        isOpen={showReward}
+        onClose={() => setShowReward(false)}
+        videoId={currentVideoId}
+      />
+
       {isMobile && (
         <div
           className="absolute top-4"
@@ -329,6 +352,17 @@ export function VideoControls({ video }: VideoControlsProps) {
       >
         {
           <>
+            <div className="flex flex-col items-center gap-1">
+              {/* <Button
+                variant="ghost"
+                size="icon"
+                className="text-white"
+                onClick={() => handleAuthAction(handleReward)}
+              >
+                <Gift className="h-6 w-6" />
+              </Button> */}
+              <span className="text-white text-sm">Reward</span>
+            </div>
             <div className="flex flex-col items-center gap-1">
               <Button
                 variant="ghost"

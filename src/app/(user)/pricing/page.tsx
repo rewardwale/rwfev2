@@ -33,6 +33,8 @@ export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
   const [showPlanModal, setShowPlanModal] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<'success' | 'failed' | null>(null);
   
   const isMobile = useIsMobile();
 
@@ -62,9 +64,15 @@ export default function PricingPage() {
   const updatePaymentRecord = async () => {
     try {
       const res = await apiClient('/payment-update', 'POST', responseData);
-      console.log("Payment record updated:", res);
+      if (res.success) {
+        setPaymentStatus('success');
+        setShowThankYou(true);
+      } else {
+        setPaymentStatus('failed');
+      }
     } catch (error) {
       console.error("Error updating payment record:", error);
+      setPaymentStatus('failed');
     }
   };
 
@@ -87,6 +95,7 @@ export default function PricingPage() {
       easebuzzCheckout.initiatePayment(options);
     } catch (error) {
       console.error("Error initiating payment:", error);
+      setPaymentStatus('failed');
     }
   };
 
@@ -101,6 +110,39 @@ export default function PricingPage() {
     setSelectedPlan(plan);
     setShowPlanModal(true);
   };
+
+  if (showThankYou) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex">
+          {!isMobile && <Sidebar />}
+          <main className="flex-1 flex items-center justify-center p-6">
+            <Card className="max-w-md w-full p-8 text-center">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8 text-green-600" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Thank You!</h2>
+                <p className="text-muted-foreground">
+                  Your payment has been processed successfully. You now have access to all premium features.
+                </p>
+              </div>
+              <Button 
+                className="w-full" 
+                onClick={() => {
+                  setShowThankYou(false);
+                  setPaymentStatus(null);
+                }}
+              >
+                Return to Plans
+              </Button>
+            </Card>
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

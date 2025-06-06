@@ -68,7 +68,7 @@ export default function User() {
       </div>
       <div className="relative">
         <ScrollArea className="w-full">
-          <div className="flex gap-4 pb-4">
+          <div className="flex gap-4 pb-4 cursor-pointer">
             {userData.length > 0 || !userData ? (
               userData.map((item: Profile, index: number) => (
                 <UserItem

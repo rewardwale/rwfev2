@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 import { getLikedVideos } from "@/apis/home";
-
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LikedVideo {
   _id: string;
@@ -35,6 +28,7 @@ export default function LikesPage() {
   const [likes, setLikes] = useState<LikedVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -57,7 +51,7 @@ export default function LikesPage() {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="flex">
-        <Sidebar />
+        {!isMobile && <Sidebar />}
         <main className="flex-1 p-6">
           <h1 className="text-2xl font-bold mb-6">Liked Videos</h1>
           {loading ? (
@@ -99,7 +93,10 @@ export default function LikesPage() {
                         @{like.userName}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Liked {formatDistanceToNow(new Date(like.likeDateTime), { addSuffix: true })}
+                        Liked{" "}
+                        {formatDistanceToNow(new Date(like.likeDateTime), {
+                          addSuffix: true,
+                        })}
                       </p>
                     </div>
                   </div>

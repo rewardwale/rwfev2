@@ -42,7 +42,7 @@ export async function fetchTaggedVideos(id: string, count: number) {
   const queryParams = new URLSearchParams({
     limit: "10",
     skip: JSON.stringify(count),
-    // flag: "1",
+    // flag: "2",
     userId: id,
   }).toString();
   const response = await apiClient(`/userTaggedPosts?${queryParams}`, "GET");

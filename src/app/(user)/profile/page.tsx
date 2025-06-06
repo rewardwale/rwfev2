@@ -16,7 +16,6 @@ export default function HomePage() {
 
   const isMobile = useIsMobile();
 
-  console.log("data in profile", data);
 
   const init = async () => {
     const profileData = await fetchProfileData();
