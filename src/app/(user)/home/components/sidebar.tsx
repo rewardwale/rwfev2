@@ -175,12 +175,12 @@ export function Sidebar({ className }: SidebarProps) {
               onClick={() => router.push("/history")}
               forceExpanded={forceExpanded}
             />
-            <NavButton
+            {/* <NavButton
               icon={ThumbsUp}
               label="Likes"
               onClick={() => router.push("/likes")}
               forceExpanded={forceExpanded}
-            />
+            /> */}
             {/* <NavButton
               icon={CreditCard}
               label="Pricing"

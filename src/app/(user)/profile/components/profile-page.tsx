@@ -151,7 +151,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
           twitter: profileData?.socialUrls?.twitter || "", // Added
         }));
 
-        const responseData = await fetchProfilePosts(profileData?._id, count);
+        const responseData = await fetchProfilePosts(profileData?._id, count, 1);
         setvideodata(responseData?.data);
         const responseDataTagged = await fetchTaggedVideos(
           profileData?._id,
@@ -171,6 +171,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
         const responseData = await fetchProfilePosts(
           profileData?._id,
           count + 10,
+          1
         );
 
         let newData = responseData?.data;
@@ -558,7 +559,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
                 TAG (
                 {
                   <div className="flex gap-1 text-xs sm:text-base">
-                    <span>{taggedVideo.length || 0} </span>
+                    <span>{taggedVideo?.length || 0} </span>
                     {/* <span >Reviews</span> */}
                   </div>
                 }
@@ -585,7 +586,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
                     }
                     onTouchStart={handleTouchStart}
                   >
-                    {videoData.length > 0 || !videoData ? (
+                  {videoData?.length > 0 || !videoData ? (
                       videoData.map((item: VideoData, index: number) => (
                         <ProfileItem
                           data={item}
