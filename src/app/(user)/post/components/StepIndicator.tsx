@@ -17,8 +17,11 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
             key={step.number}
             className="flex-1 md:flex-none"
             style={{
-              paddingTop: `${index === 0 && !isMobile ? "18px" : "0"}`,
-              paddingLeft: `${isMobile && "18px"}`,
+              paddingTop: `${index === 0 && !isMobile ? "18px" : "4px"}`,
+              paddingLeft: `${isMobile && "1px"}`,
+              display: "flex",
+              alignItems: "center", 
+              justifyContent: "center",
             }}
           >
             {index > 0 && !isMobile && (

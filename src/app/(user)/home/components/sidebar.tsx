@@ -17,7 +17,7 @@ import {
   CreditCard,
   Watch,
   HistoryIcon,
-  ThumbsUp,
+  Wallet,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,6 +29,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { WalletModal } from "./wallet-modal";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -36,6 +37,7 @@ export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
   const [businessPageData, setBusinessPageData] = useState<any[]>([]);
   const [isBusinessPageOpen, setIsBusinessPageOpen] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
       const storedValue = localStorage.getItem("sidebarCollapsed");
@@ -126,21 +128,6 @@ export function Sidebar({ className }: SidebarProps) {
     <ScrollArea className="h-screen">
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          {!isMobile && (
-            <div className="flex justify-start mb-4 ml-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="h-8 w-8"
-              >
-                <Menu
-                  className="h-8 w-8"
-                  style={{ width: "24px", height: "24px" }}
-                />
-              </Button>
-            </div>
-          )}
           <div
             className="space-y-4"
             style={{ display: "flex", flexDirection: "column", gap: "8px" }}
@@ -153,7 +140,7 @@ export function Sidebar({ className }: SidebarProps) {
             />
             <NavButton
               icon={CirclePlus}
-              label="Post"
+              label="Post Review"
               onClick={() => router.push("/post")}
               forceExpanded={forceExpanded}
             />
@@ -175,17 +162,18 @@ export function Sidebar({ className }: SidebarProps) {
               onClick={() => router.push("/history")}
               forceExpanded={forceExpanded}
             />
-            {/* <NavButton
-              icon={ThumbsUp}
-              label="Likes"
-              onClick={() => router.push("/likes")}
+            <NavButton
+              icon={Wallet}
+              label="Wallet"
+              onClick={() => setShowWalletModal(true)}
               forceExpanded={forceExpanded}
-            /> */}
-            {/* <NavButton
+            />
+            <NavButton
               icon={CreditCard}
               label="Pricing"
               onClick={() => router.push("/pricing")}
-            />  */}
+              forceExpanded={forceExpanded}
+            />
 
             {businessPageData.length > 0 &&
               (!isCollapsed || isHovered || forceExpanded) && (
@@ -280,6 +268,11 @@ export function Sidebar({ className }: SidebarProps) {
             <SidebarContent forceExpanded={true} />
           </SheetContent>
         </Sheet>
+
+        <WalletModal
+          isOpen={showWalletModal}
+          onClose={() => setShowWalletModal(false)}
+        />
       </>
     )
   );

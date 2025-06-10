@@ -353,14 +353,14 @@ export function VideoControls({ video }: VideoControlsProps) {
         {
           <>
             <div className="flex flex-col items-center gap-1">
-              {/* <Button
+              <Button
                 variant="ghost"
                 size="icon"
                 className="text-white"
                 onClick={() => handleAuthAction(handleReward)}
               >
                 <Gift className="h-6 w-6" />
-              </Button> */}
+              </Button>
               <span className="text-white text-sm">Reward</span>
             </div>
             <div className="flex flex-col items-center gap-1">
