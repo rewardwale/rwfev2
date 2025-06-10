@@ -27,6 +27,7 @@ import Hls from "hls.js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import dynamic from "next/dynamic";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import PushNotifications from "@/components/PushNotification";
 
 interface ShortCardProps {
   title: string;
@@ -244,7 +245,7 @@ const HeroSlideContent = memo(
         setShouldLoadVideo(true);
         setShowVideo(false);
 
-         if (!isSingleSlide) {
+        if (!isSingleSlide) {
           timeoutRef.current = setTimeout(() => {
             setShowVideo(true);
           }, VIDEO_TRANSITION_DELAY);
@@ -476,21 +477,26 @@ const ShortCard = memo(
         className="w-[220px] sm:w-[200px] flex-shrink-0"
       >
         <Card
-          className="w-full h-[400px] flex flex-col justify-between rounded-xl overflow-hidden
-            shadow-lg hover:shadow-2xl transition-all duration-210 hover:scale-[1.02]
-            bg-black/5 backdrop-blur-sm"
+          className="w-full flex flex-col justify-between rounded-xl overflow-hidden shadow-xl
+            hover:shadow-2xl transition-all duration-220 hover:scale-[1.02] bg-black/5
+            backdrop-blur-sm"
           onClick={handleClick}
+
+          // style={{
+          //   minHeight: "400px",
+          // }}
         >
           <CardContent className="p-0 flex flex-col h-full">
             {/* Image Section */}
             <motion.div
-              className="relative w-full h-full overflow-hidden rounded-md"
+              className="relative overflow-hidden rounded-md"
               whileHover={{ scale: 1.04 }}
               transition={{ duration: 0.14 }}
               whileTap={{ scale: 0.98 }}
               style={{
-                minHeight: "280px",
+                // minHeight: "300px",
                 paddingBlockEnd: "12px",
+                height: "400px",
               }}
             >
               <Image
@@ -506,7 +512,12 @@ const ShortCard = memo(
             </motion.div>
 
             {/* Text Section */}
-            <div className="p-4 flex flex-col flex-grow">
+            <div
+              className="p-4 flex flex-col flex-grow"
+              style={{
+                height: "150px",
+              }}
+            >
               <p className="font-semibold text-base line-clamp-2 h-[42px] overflow-hidden">
                 {title}
               </p>
@@ -524,7 +535,12 @@ const ShortCard = memo(
               </p>
 
               {/* Views Section */}
-              {/* <div className="flex items-center gap-2 text-sm text-gray-500 mt-auto">
+              <div
+                className="flex items-center gap-2 text-sm text-gray-500 mt-auto"
+                style={{
+                  minHeight: "40px",
+                }}
+              >
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -545,7 +561,7 @@ const ShortCard = memo(
                   />
                 </svg>
                 <span>{totalViewCount.toLocaleString()} views</span>
-              </div> */}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -708,6 +724,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categoriesData }) => {
 
   return (
     <>
+      <PushNotifications />
       <div className="min-h-screen">
         {globalAds && globalAds.length > 0 && (
           <div className="mb-12">
