@@ -17,6 +17,7 @@ export interface ProfileDataProps {
     isPrivateAccount: boolean;
     avgRating: number;
     totalRating: number;
+    walletBalance: number;
     indGender: string;
     indPic: IndPic;
     indLanPref: string;

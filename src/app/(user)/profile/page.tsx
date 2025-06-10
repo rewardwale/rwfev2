@@ -13,9 +13,13 @@ const ProfilePage = lazy(() => import("./components/profile-page"));
 export default function HomePage() {
   const [data, setData] = useState<ProfileDataProps | undefined>(undefined);
   const [userId, setUserId] = useState<any>(null);
-
   const isMobile = useIsMobile();
 
+  useEffect(() => {
+    if (data?.walletBalance !== undefined) {
+      localStorage.setItem("wallet_val", data.walletBalance.toString());
+    }
+  }, [data]);
 
   const init = async () => {
     const profileData = await fetchProfileData();
