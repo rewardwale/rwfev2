@@ -37,6 +37,7 @@ import Image from "next/image";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { LocationModal } from "./location-modal";
 import { WalletModal } from "./wallet-modal";
+import { NotificationModal } from "./notification-modal";
 
 interface LocationData {
   city: string;
@@ -59,6 +60,8 @@ export function Header() {
   const [loadingLocation, setLoadingLocation] = useState(true);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
   const userDataString = localStorage.getItem("uib");
 
@@ -218,6 +221,27 @@ export function Header() {
           >
             <Wallet className="h-8 w-8" />
           </Button>
+          {/* Notification Bell */}
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowNotificationModal(!showNotificationModal)}
+              className="relative"
+            >
+              <Bell className="h-5 w-5" />
+              {unreadNotificationCount > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex
+                    items-center justify-center font-medium"
+                >
+                  {unreadNotificationCount > 99
+                    ? "99+"
+                    : unreadNotificationCount}
+                </span>
+              )}
+            </Button>
+          </div>
           <div className="hidden md:flex items-center space-x-4">
             <ThemeModeToggle />
           </div>
@@ -250,7 +274,7 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          {isHome && (
+          {!isLoggedIn && (
             <Button
               onClick={() => {
                 isLoggedIn ? router.push("/home") : router.push("/login");
@@ -268,6 +292,14 @@ export function Header() {
         onClose={() => setShowLocationModal(false)}
         currentLocation={location}
         onLocationUpdate={handleLocationUpdate}
+      />
+
+      {/* Notification Modal */}
+      <NotificationModal
+        isOpen={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+        unreadCount={unreadNotificationCount}
+        onUnreadCountChange={setUnreadNotificationCount}
       />
       <WalletModal
         isOpen={showWalletModal}
