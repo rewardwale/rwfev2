@@ -8,25 +8,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { 
-  ArrowLeft, 
-  Clock, 
-  ExternalLink, 
-  Coins, 
-  Gift, 
-  CheckCircle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  ArrowLeft,
+  Clock,
+  ExternalLink,
+  Coins,
+  Gift,
+  CheckCircle,
   Copy,
   AlertCircle,
-  Info
+  Info,
 } from "lucide-react";
 import Image from "next/image";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { 
-  fetchVoucherDetails, 
+import {
+  fetchVoucherDetails,
   redeemVoucher,
   type Voucher,
-  type RedeemVoucherResponse 
+  type RedeemVoucherResponse,
 } from "@/apis/coupon";
 import { toast } from "sonner";
 
@@ -40,7 +45,8 @@ export default function VoucherDetailPage() {
   const [loading, setLoading] = useState(true);
   const [redeeming, setRedeeming] = useState(false);
   const [showRedeemModal, setShowRedeemModal] = useState(false);
-  const [redeemResult, setRedeemResult] = useState<RedeemVoucherResponse | null>(null);
+  const [redeemResult, setRedeemResult] =
+    useState<RedeemVoucherResponse | null>(null);
 
   useEffect(() => {
     if (voucherId) {
@@ -72,14 +78,17 @@ export default function VoucherDetailPage() {
     try {
       setRedeeming(true);
       const response = await redeemVoucher(voucher.voucherId);
-      
+
       if (response) {
         setRedeemResult(response);
         setShowRedeemModal(true);
         toast.success("Voucher redeemed successfully!");
-        
+
         // Update wallet balance in localStorage
-        localStorage.setItem('wallet_val', response.data.remainingRCoinsBalance.toString());
+        localStorage.setItem(
+          "wallet_val",
+          response.data.remainingRCoinsBalance.toString(),
+        );
       } else {
         toast.error("Failed to redeem voucher");
       }
@@ -100,7 +109,7 @@ export default function VoucherDetailPage() {
 
   const openRedemptionUrl = () => {
     if (voucher?.redemptionUrl) {
-      window.open(voucher.redemptionUrl, '_blank');
+      window.open(voucher.redemptionUrl, "_blank");
     }
   };
 
@@ -143,7 +152,9 @@ export default function VoucherDetailPage() {
             <div className="max-w-4xl mx-auto text-center py-12">
               <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h2 className="text-xl font-semibold mb-2">Voucher not found</h2>
-              <p className="text-muted-foreground mb-4">The voucher you're looking for doesn't exist.</p>
+              <p className="text-muted-foreground mb-4">
+                The voucher you're looking for doesn't exist.
+              </p>
               <Button onClick={() => router.push("/coupons")}>
                 Back to Coupons
               </Button>
@@ -162,8 +173,8 @@ export default function VoucherDetailPage() {
         <main className="flex-1 p-6">
           <div className="max-w-4xl mx-auto">
             {/* Back button */}
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => router.back()}
               className="mb-6"
             >
@@ -177,7 +188,9 @@ export default function VoucherDetailPage() {
                 <div className="flex items-start gap-4">
                   <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white p-2">
                     <Image
-                      src={voucher.logo || voucher.icon || "/placeholder-brand.png"}
+                      src={
+                        voucher.logo || voucher.icon || "/placeholder-brand.png"
+                      }
                       alt={voucher.brandName}
                       fill
                       className="object-contain"
@@ -188,10 +201,17 @@ export default function VoucherDetailPage() {
                     />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-2xl mb-2">{voucher.brandName}</CardTitle>
-                    <p className="text-lg text-muted-foreground mb-3">{voucher.details}</p>
+                    <CardTitle className="text-2xl mb-2">
+                      {voucher.brandName}
+                    </CardTitle>
+                    <p className="text-lg text-muted-foreground mb-3">
+                      {voucher.details}
+                    </p>
                     <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="border-primary text-primary">
+                      <Badge
+                        variant="outline"
+                        className="border-primary text-primary"
+                      >
                         {voucher.discountType}
                       </Badge>
                       <Badge variant="secondary">{voucher.type}</Badge>
@@ -209,15 +229,19 @@ export default function VoucherDetailPage() {
                       <Clock className="w-5 h-5 text-muted-foreground" />
                       <div>
                         <p className="font-medium">Validity</p>
-                        <p className="text-sm text-muted-foreground">{voucher.validity}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {voucher.validity}
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
                       <Coins className="w-5 h-5 text-primary" />
                       <div>
                         <p className="font-medium">Cost</p>
-                        <p className="text-sm text-primary font-semibold">{voucher.inputCost} coins</p>
+                        <p className="text-sm text-primary font-semibold">
+                          {voucher.inputCost} coins
+                        </p>
                       </div>
                     </div>
 
@@ -225,7 +249,9 @@ export default function VoucherDetailPage() {
                       <Info className="w-5 h-5 text-muted-foreground" />
                       <div>
                         <p className="font-medium">Consumption Type</p>
-                        <p className="text-sm text-muted-foreground">{voucher.consumptionType}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {voucher.consumptionType}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -233,7 +259,9 @@ export default function VoucherDetailPage() {
                   <div className="space-y-4">
                     <div>
                       <h3 className="font-semibold mb-2">Redemption Process</h3>
-                      <p className="text-sm text-muted-foreground">{voucher.redemptionProcess}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {voucher.redemptionProcess}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -252,11 +280,14 @@ export default function VoucherDetailPage() {
 
                 {/* Action buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button 
+                  <Button
                     onClick={handleRedeem}
                     disabled={redeeming}
                     className="flex-1"
                     size="lg"
+                    style={{
+                      lineHeight: "40px",
+                    }}
                   >
                     {redeeming ? (
                       <>
@@ -270,13 +301,16 @@ export default function VoucherDetailPage() {
                       </>
                     )}
                   </Button>
-                  
+
                   {voucher.redemptionUrl && (
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={openRedemptionUrl}
                       className="flex-1"
                       size="lg"
+                      style={{
+                        lineHeight: "40px",
+                      }}
                     >
                       <ExternalLink className="w-4 h-4 mr-2" />
                       Visit Store
@@ -298,13 +332,18 @@ export default function VoucherDetailPage() {
               Voucher Redeemed Successfully!
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-6 py-4">
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div
+                className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto
+                  mb-4"
+              >
                 <Gift className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Your voucher code is ready!</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Your voucher code is ready!
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Use this code at checkout to get your discount
               </p>
@@ -313,12 +352,18 @@ export default function VoucherDetailPage() {
             {redeemResult && (
               <>
                 <div className="bg-muted/30 p-4 rounded-lg text-center">
-                  <p className="text-sm text-muted-foreground mb-2">Voucher Code</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Voucher Code
+                  </p>
                   <div className="flex items-center justify-center gap-2">
                     <code className="text-lg font-mono font-bold bg-white px-3 py-2 rounded border">
                       {redeemResult.data.voucherCode}
                     </code>
-                    <Button size="sm" variant="outline" onClick={copyVoucherCode}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={copyVoucherCode}
+                    >
                       <Copy className="w-4 h-4" />
                     </Button>
                   </div>
@@ -326,7 +371,8 @@ export default function VoucherDetailPage() {
 
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
-                    Remaining Balance: <span className="font-semibold text-primary">
+                    Remaining Balance:{" "}
+                    <span className="font-semibold text-primary">
                       {redeemResult.data.remainingRCoinsBalance} coins
                     </span>
                   </p>
@@ -335,15 +381,15 @@ export default function VoucherDetailPage() {
             )}
 
             <div className="flex gap-3">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setShowRedeemModal(false)}
                 className="flex-1"
               >
                 Close
               </Button>
               {voucher.redemptionUrl && (
-                <Button 
+                <Button
                   onClick={() => {
                     openRedemptionUrl();
                     setShowRedeemModal(false);
