@@ -18,6 +18,7 @@ import {
   Watch,
   HistoryIcon,
   Wallet,
+  Gift,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -165,7 +166,13 @@ export function Sidebar({ className }: SidebarProps) {
             <NavButton
               icon={Wallet}
               label="Wallet"
-              onClick={() => setShowWalletModal(true)}
+              onClick={() => router.push("/wallet")}
+              forceExpanded={forceExpanded}
+            />
+            <NavButton
+              icon={Gift}
+              label="Coupons"
+              onClick={() => router.push("/coupons")}
               forceExpanded={forceExpanded}
             />
             <NavButton
