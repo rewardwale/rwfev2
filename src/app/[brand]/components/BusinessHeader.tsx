@@ -17,7 +17,7 @@ import {
 } from "@/apis/business";
 import { toast } from "sonner";
 import { EditBusinessDialog } from "./EditBusinessDialog";
-import { Pencil, Share2 } from "lucide-react";
+import { CheckCircle, Pencil, Share2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface BusinessHeaderProps {
@@ -45,7 +45,7 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
   const [selectedBannerFile, setSelectedBannerFile] = useState<File | null>(
     null,
   );
-
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
   const isOwner = useIsOwner(business.businessPageOwner);
@@ -57,7 +57,11 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
     setSelectedFile(file || null);
   };
   const handleLogoClick = () => {
-    setIsModalOpen(true);
+    if (isOwner) {
+      setIsModalOpen(true);
+    } else {
+      setZoomedImage(business.defaultBusinessImage.original);
+    }
   };
 
   const handleShare = async () => {
@@ -249,6 +253,23 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
         )}
       </div>
 
+      {zoomedImage && (
+        <Dialog
+          open={!!zoomedImage}
+          onOpenChange={(open) => {
+            if (!open) setZoomedImage(null);
+          }}
+        >
+          <DialogContent className="max-w-[45vw] max-h-[45vh] p-0 overflow-hidden">
+            <img
+              src={zoomedImage}
+              alt={`Zoomed ${business.businessName} logo`}
+              className="w-full h-full object-contain"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
       {/* Business business */}
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-36 z-10">
         <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-xl p-6">
@@ -264,9 +285,18 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
               />
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold mb-1 dark:text-white">
-              {business.businessName}
-            </h1>
+            <div className="flex items-center gap-2 justify-center">
+              <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
+                {business.businessName}
+              </h1>
+              {!business.isVerified && (
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Twitter_Verified_Badge.svg/2048px-Twitter_Verified_Badge.svg.png"
+                  height={"28px"}
+                  width={"28px"}
+                />
+              )}
+            </div>
             <p className="text-xl md:text-xl font-bold mb-1 dark:text-white">
               {business.title}
             </p>
