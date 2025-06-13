@@ -17,7 +17,7 @@ import {
 } from "@/apis/business";
 import { toast } from "sonner";
 import { EditBusinessDialog } from "./EditBusinessDialog";
-import { Pencil, Share2 } from "lucide-react";
+import { CheckCircle, Pencil, Share2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface BusinessHeaderProps {
@@ -285,9 +285,18 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
               />
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold mb-1 dark:text-white">
-              {business.businessName}
-            </h1>
+            <div className="flex items-center gap-2 justify-center">
+              <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
+                {business.businessName}
+              </h1>
+              {business.isVerified && (
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Twitter_Verified_Badge.svg/2048px-Twitter_Verified_Badge.svg.png"
+                  height={"28px"}
+                  width={"28px"}
+                />
+              )}
+            </div>
             <p className="text-xl md:text-xl font-bold mb-1 dark:text-white">
               {business.title}
             </p>
