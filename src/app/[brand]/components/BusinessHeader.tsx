@@ -289,7 +289,7 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
               <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
                 {business.businessName}
               </h1>
-              {!business.isVerified && (
+              {business.isVerified && (
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Twitter_Verified_Badge.svg/2048px-Twitter_Verified_Badge.svg.png"
                   height={"28px"}
