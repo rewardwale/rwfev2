@@ -285,7 +285,7 @@ const BusinessHeader: React.FC<BusinessHeaderProps> = ({ business }) => {
               />
             </div>
 
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 justify-center">
               <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
                 {business.businessName}
               </h1>
