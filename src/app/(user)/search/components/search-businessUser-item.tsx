@@ -18,7 +18,7 @@ export default function MerchantItem({ data, handleFollow }: userProps) {
         className="flex justify-center items-center relative"
         onClick={() => router.push("/" + data?.handle)}
         style={{
-          width:"120px",
+          // width:"120px",
           height:'100px',
           background:'grey',
           padding:'12px',
