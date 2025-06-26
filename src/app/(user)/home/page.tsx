@@ -68,6 +68,7 @@ export default function HomePage() {
             <main
               className="min-h-screen bg-gradient-to-b from-background to-secondary h-full
                 overflow-scroll scrollbar-hide"
+              style={{ marginTop: '56px' }}
             >
               {!loadingLandingPage && landingPageData && (
                 <div className="mb-8">
