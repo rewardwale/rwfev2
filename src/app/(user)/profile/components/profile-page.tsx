@@ -29,6 +29,7 @@ import { FollowingList } from "./following";
 import EditProfilePicture from "./profilePicture";
 import { isUserLoggedIn } from "@/lib/utils";
 import AuthModal from "@/components/ui/AuthModal";
+import SocialMedia from "./SocialMedia";
 
 export async function generateMetadata(
   profileData: ProfileDataProps,
@@ -71,11 +72,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
     location: string;
     interest: string;
     categoryPref: string[];
-    watsapp: string;
-    linkdin: string;
-    facebook: string;
-    instagram: string;
-    twitter: string;
+    SocialUrls: {
+      whatsapp: string;
+      linkedin: string;
+      facebook: string;
+      instagram: string;
+      twitter: string;
+    };
   }>({
     fname: "",
     lname: "",
@@ -90,11 +93,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
     location: "",
     interest: "",
     categoryPref: [],
-    watsapp: "",
-    linkdin: "",
-    facebook: "",
-    instagram: "",
-    twitter: "",
+    SocialUrls: {
+      whatsapp: "",
+      linkedin: "",
+      facebook: "",
+      instagram: "",
+      twitter: "",
+    },
   });
 
   useEffect(() => {
@@ -144,11 +149,13 @@ const ProfilePage = ({ profileData, id }: Props) => {
           profileImage: profileData?.indPic.original,
 
           // Social URLs
-          watsapp: profileData?.socialUrls?.whatsapp || "", // Added
-          linkdin: profileData?.socialUrls?.linkedin || "", // Added
-          facebook: profileData?.socialUrls?.facebook || "", // Added
-          instagram: profileData?.socialUrls?.instagram || "", // Added
-          twitter: profileData?.socialUrls?.twitter || "", // Added
+          SocialUrls: {
+            whatsapp: profileData?.socialUrls?.whatsapp || "", // Added
+            linkedin: profileData?.socialUrls?.linkedin || "", // Added
+            facebook: profileData?.socialUrls?.facebook || "", // Added
+            instagram: profileData?.socialUrls?.instagram || "", // Added
+            twitter: profileData?.socialUrls?.twitter || "", // Added
+          },
         }));
 
         const responseData = await fetchProfilePosts(profileData?._id, count, 1);
@@ -255,7 +262,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
     phone: string | undefined,
     whatsapp: string,
     linkedin: string,
-    // facebook: string,
+    facebook: string,
     instagram: string,
     twitter: string,
   ) => {
@@ -273,7 +280,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
         SocialUrls: {
           whatsapp: whatsapp,
           linkedin: linkedin,
-          // facebook: facebook,
+          facebook: facebook,
           instagram: instagram,
           twitter: twitter,
         },
@@ -534,7 +541,7 @@ const ProfilePage = ({ profileData, id }: Props) => {
               </div>
             </div>
 
-            {/* <SocialMedia profileData={data} /> */}
+            <SocialMedia profileData={data} />
           </div>
 
           <Tabs defaultValue="posts" className="w-full">
