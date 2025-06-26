@@ -75,6 +75,8 @@ interface LandingPageProps {
   } | null; // Allow null when data hasn't loaded.
 }
 
+
+
 // Memoize the HLSVideo component
 const HLSVideo = memo(
   ({
@@ -275,7 +277,7 @@ const HeroSlideContent = memo(
     }, [isInView]);
 
     return (
-      <div className="relative w-full h-[70vh] group" ref={ref}>
+      <div className="relative w-full group" ref={ref}>
         {/* Background Image (always shown) */}
         <div
           className={`relative h-[400px] inset-0 transition-all duration-700 ${
@@ -313,7 +315,7 @@ const HeroSlideContent = memo(
 
         {/* Content Overlay */}
         <div
-          className="absolute inset-0 flex flex-col justify-end p-12 transition-all duration-350
+          className="inset-0 flex flex-col justify-end p-12 transition-all duration-350
             bg-gradient-to-t from-black/90 via-black/50 to-transparent
             group-hover:from-black/95"
         >
