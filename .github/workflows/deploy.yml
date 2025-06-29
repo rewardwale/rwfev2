@@ -27,6 +27,7 @@ jobs:
           ssh -i ~/.ssh/id_rsa root@52.66.60.53 << 'EOF'
             cd /root/rwfev2
             git pull origin master
+            rm -rf .next
             npm i --legacy-peer-deps
             npm run build
             pm2 restart 0
